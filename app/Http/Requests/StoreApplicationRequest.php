@@ -8,7 +8,7 @@ class StoreApplicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // guest boleh akses
+        return $this->user() && $this->user()->isSeeker();
     }
 
     public function rules(): array

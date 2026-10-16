@@ -7,6 +7,7 @@ use App\Http\Requests\StoreApplicationRequest;
 use App\Models\Application;
 use App\Models\CompanyProfile;
 use App\Models\JobListing;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class CareerController extends Controller
@@ -17,6 +18,13 @@ class CareerController extends Controller
      */
     public function index(Request $request)
     {
+        // Pengguna yang sudah login diarahkan ke portal sesuai role
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.lowongan.index')
+                : redirect()->route('seeker.jobs');
+        }
+
         $query = JobListing::publiclyVisible()->latest();
 
         // Filter keyword
@@ -50,6 +58,13 @@ class CareerController extends Controller
      */
     public function show(JobListing $jobListing)
     {
+        // Pengguna yang sudah login diarahkan ke portal internal
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.lowongan.show', $jobListing)
+                : redirect()->route('seeker.jobs.show', $jobListing);
+        }
+
         // Hanya tampilkan lowongan yang boleh dilihat publik
         abort_unless(
             $jobListing->status === 'active' || $jobListing->status === 'closed',
@@ -62,34 +77,88 @@ class CareerController extends Controller
     }
 
     /**
-     * Submit lamaran (guest).
+     * Form lamaran lowongan.
+     * GET /career/apply-job/{jobListing} — route name: careers.apply.create
+     */
+    public function apply(JobListing $jobListing)
+    {
+        // Hanya tampilkan lowongan yang boleh dilihat publik
+        abort_unless(
+            $jobListing->status === 'active' || $jobListing->status === 'closed',
+            404
+        );
+
+        abort_unless(
+            $jobListing->isOpenForApplication(),
+            403,
+            'Lowongan sudah ditutup atau melewati deadline.'
+        );
+
+        // Pengunjung wajib login sebelum melamar
+        if (! auth()->check()) {
+            return redirect()->guest(route('login'))
+                ->with('info', 'Silakan login terlebih dahulu sebagai pencari kerja untuk melamar posisi ini.');
+        }
+
+        // Admin perusahaan dilarang melamar
+        abort_if(
+            auth()->user()->isAdmin(),
+            403,
+            'Akun Admin Perusahaan tidak dapat melamar lowongan kerja. Silakan gunakan akun Pencari Kerja.'
+        );
+
+        $user = auth()->user();
+        $profile = $user->profile();
+
+        return view('careers.apply-job', compact('jobListing', 'user', 'profile'));
+    }
+
+    /**
+     * Submit lamaran (wajib login sebagai pencari kerja).
      * POST /careers/{jobListing}/apply — route name: careers.apply.store
      */
     public function storeApplication(StoreApplicationRequest $request, JobListing $jobListing)
     {
-        // BR-03: cek lowongan masih aktif & belum deadline
+        $user = $request->user();
+
+        // BR-Role: Hanya job_seeker yang boleh melamar
+        abort_unless(
+            $user && $user->isSeeker(),
+            403,
+            'Hanya akun pencari kerja yang dapat mengirimkan berkas lamaran.'
+        );
+
+        // BR-03: Cek lowongan masih aktif & belum deadline
         abort_unless($jobListing->isOpenForApplication(), 403, 'Lowongan sudah ditutup atau melewati deadline.');
 
-        // BR-02: cegah lamaran ganda by email + job
+        // BR-02: Cegah lamaran ganda by user_id atau email untuk lowongan yang sama
         $exists = Application::where('job_listing_id', $jobListing->id)
-            ->where('applicant_email', $request->validated('applicant_email'))
+            ->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->orWhere('applicant_email', $user->email);
+            })
             ->exists();
 
         if ($exists) {
             return back()
                 ->withInput()
                 ->withErrors([
-                    'applicant_email' => 'Email ini sudah pernah melamar lowongan ini.',
+                    'applicant_email' => 'Anda sudah pernah mengirimkan lamaran untuk posisi ini.',
                 ]);
         }
 
-        // Upload CV
+        // Upload berkas CV
         $cvPath = $request->file('cv')->store('cvs', 'local');
 
-        Application::create([
+        // Pastikan nama dan email terikat pada akun pencari kerja yang login
+        $applicantName = $request->validated('applicant_name', $user->name);
+        $applicantEmail = $user->email;
+
+        $application = Application::create([
+            'user_id'           => $user->id,
             'job_listing_id'    => $jobListing->id,
-            'applicant_name'    => $request->validated('applicant_name'),
-            'applicant_email'   => $request->validated('applicant_email'),
+            'applicant_name'    => $applicantName,
+            'applicant_email'   => $applicantEmail,
             'applicant_phone'   => $request->validated('applicant_phone'),
             'applicant_address' => $request->validated('applicant_address'),
             'education'         => $request->validated('education'),
@@ -99,8 +168,27 @@ class CareerController extends Controller
             'status'            => 'pending',
         ]);
 
+        ActivityLog::record(
+            'create',
+            'Lamaran Masuk',
+            "Pelamar {$applicantName} mengirimkan berkas lamaran untuk posisi {$jobListing->title}.",
+            $user
+        );
+
+        // Simpan / update profil pencari kerja agar memudahkan lamaran berikutnya
+        $user->jobSeekerProfile()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'phone'     => $request->validated('applicant_phone'),
+                'address'   => $request->validated('applicant_address'),
+                'education' => $request->validated('education'),
+                'skills'    => $request->validated('skills'),
+                'cv_path'   => $cvPath,
+            ]
+        );
+
         return redirect()
-            ->route('careers.show', $jobListing)
-            ->with('apply_success', 'Lamaran Anda berhasil dikirim! Tim rekrutmen akan meninjau berkas Anda dan menghubungi via email/WhatsApp.');
+            ->route('seeker.applications')
+            ->with('apply_success', 'Lamaran Anda untuk posisi "' . $jobListing->title . '" berhasil dikirim! Anda dapat memantau statusnya di halaman Lamaran Saya.');
     }
 }

@@ -70,10 +70,24 @@
             {{-- Right: CTA --}}
             <div class="career-hero__cta">
                 @if ($jobListing->isOpenForApplication())
-                    <a href="#apply-form" class="career-hero__btn-primary">
-                        <span>Lamar Sekarang</span>
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </a>
+                    @auth
+                        @if (auth()->user()->isAdmin())
+                            <span class="career-hero__btn-primary" style="opacity:0.75; cursor:not-allowed; background:#47607a;" title="Admin perusahaan tidak dapat melamar pekerjaan">
+                                <span class="material-symbols-outlined" style="font-size:18px;">admin_panel_settings</span>
+                                <span>Akun Admin (Tidak Dapat Melamar)</span>
+                            </span>
+                        @else
+                            <a href="{{ route('careers.apply.create', $jobListing) }}" class="career-hero__btn-primary">
+                                <span>Lamar Sekarang</span>
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('careers.apply.create', $jobListing) }}" class="career-hero__btn-primary">
+                            <span>Lamar Sekarang</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                    @endauth
                 @else
                     <span class="career-hero__btn-primary" style="opacity:0.5; cursor:not-allowed;">
                         <span>Lowongan Ditutup</span>
@@ -129,6 +143,17 @@
             {{-- ================= LEFT COLUMN ================= --}}
             <div class="career-content">
 
+                {{-- Success alert --}}
+                @if (session('apply_success'))
+                    <div class="apply-alert apply-alert--success" style="margin-bottom: 1.5rem;">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <div>
+                            <p class="apply-alert__title">Lamaran Berhasil Terkirim!</p>
+                            <p class="apply-alert__msg">{{ session('apply_success') }}</p>
+                        </div>
+                    </div>
+                @endif
+
                 {{-- Deskripsi --}}
                 <article class="content-card">
                     <div class="content-card__accent"></div>
@@ -172,220 +197,7 @@
                     </div>
                 </article>
 
-                {{-- ============ APPLICATION FORM ============ --}}
-                <article class="apply-card" id="apply-form">
 
-                    {{-- Success alert --}}
-                    @if (session('apply_success'))
-                        <div class="apply-alert apply-alert--success">
-                            <span class="material-symbols-outlined">check_circle</span>
-                            <div>
-                                <p class="apply-alert__title">Lamaran Berhasil Terkirim!</p>
-                                <p class="apply-alert__msg">{{ session('apply_success') }}</p>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- Error global --}}
-                    @if ($errors->any())
-                        <div class="apply-alert apply-alert--error">
-                            <span class="material-symbols-outlined">error</span>
-                            <div>
-                                <p class="apply-alert__title">Ada kesalahan pada form Anda</p>
-                                <ul style="margin: 0.25rem 0 0 1rem; padding: 0;">
-                                    @foreach ($errors->all() as $err)
-                                        <li>{{ $err }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- Closed notice --}}
-                    @if (! $jobListing->isOpenForApplication())
-                        <div class="career-closed-notice">
-                            <span class="material-symbols-outlined">event_busy</span>
-                            <div>
-                                <strong>Lowongan sudah ditutup.</strong>
-                                Batas lamaran telah terlewati atau lowongan tidak menerima lamaran baru.
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="apply-card__header">
-                        <div class="apply-card__icon">
-                            <span class="material-symbols-outlined">send</span>
-                        </div>
-                        <div>
-                            <h3 class="apply-card__title">Kirimkan Berkas Lamaran Anda</h3>
-                            <p class="apply-card__subtitle">
-                                Lengkapi formulir di bawah ini. Tim People &amp; Talent kami akan merespons dalam 3×24 jam.
-                            </p>
-                        </div>
-                    </div>
-
-                    @if ($jobListing->isOpenForApplication())
-                        <form action="{{ route('careers.apply.store', $jobListing) }}"
-                              method="POST"
-                              enctype="multipart/form-data"
-                              class="apply-form"
-                              id="job-application-form">
-                            @csrf
-
-                            {{-- Nama + Email --}}
-                            <div class="apply-form__row">
-                                <div class="apply-field">
-                                    <label for="applicant_name" class="apply-field__label">
-                                        Nama Lengkap <span class="apply-field__required">*</span>
-                                    </label>
-                                    <input type="text"
-                                           name="applicant_name"
-                                           id="applicant_name"
-                                           class="apply-field__input @error('applicant_name') is-invalid @enderror"
-                                           placeholder="Contoh: Budi Santoso"
-                                           value="{{ old('applicant_name') }}"
-                                           required>
-                                    @error('applicant_name')
-                                        <span class="apply-field__error">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="apply-field">
-                                    <label for="applicant_email" class="apply-field__label">
-                                        Alamat Email Aktif <span class="apply-field__required">*</span>
-                                    </label>
-                                    <input type="email"
-                                           name="applicant_email"
-                                           id="applicant_email"
-                                           class="apply-field__input @error('applicant_email') is-invalid @enderror"
-                                           placeholder="budi@example.com"
-                                           value="{{ old('applicant_email') }}"
-                                           required>
-                                    @error('applicant_email')
-                                        <span class="apply-field__error">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            {{-- Phone + Pendidikan --}}
-                            <div class="apply-form__row">
-                                <div class="apply-field">
-                                    <label for="applicant_phone" class="apply-field__label">
-                                        Nomor WhatsApp Aktif <span class="apply-field__required">*</span>
-                                    </label>
-                                    <input type="tel"
-                                           name="applicant_phone"
-                                           id="applicant_phone"
-                                           class="apply-field__input @error('applicant_phone') is-invalid @enderror"
-                                           placeholder="+62 812-3456-7890"
-                                           value="{{ old('applicant_phone') }}"
-                                           required>
-                                    @error('applicant_phone')
-                                        <span class="apply-field__error">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="apply-field">
-                                    <label for="education" class="apply-field__label">Pendidikan Terakhir</label>
-                                    <input type="text"
-                                           name="education"
-                                           id="education"
-                                           class="apply-field__input @error('education') is-invalid @enderror"
-                                           placeholder="Contoh: S1 Manajemen"
-                                           value="{{ old('education') }}">
-                                    @error('education')
-                                        <span class="apply-field__error">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            {{-- Alamat --}}
-                            <div class="apply-field">
-                                <label for="applicant_address" class="apply-field__label">Alamat Domisili</label>
-                                <input type="text"
-                                       name="applicant_address"
-                                       id="applicant_address"
-                                       class="apply-field__input @error('applicant_address') is-invalid @enderror"
-                                       placeholder="Contoh: Jl. Merdeka No. 12, Jakarta Timur"
-                                       value="{{ old('applicant_address') }}">
-                                @error('applicant_address')
-                                    <span class="apply-field__error">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            {{-- Skills --}}
-                            <div class="apply-field">
-                                <label for="skills" class="apply-field__label">Keahlian Utama</label>
-                                <textarea name="skills"
-                                          id="skills"
-                                          rows="2"
-                                          class="apply-field__textarea @error('skills') is-invalid @enderror"
-                                          placeholder="Contoh: Microsoft Excel, Komunikasi, Manajemen Waktu">{{ old('skills') }}</textarea>
-                                @error('skills')
-                                    <span class="apply-field__error">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            {{-- Cover Letter --}}
-                            <div class="apply-field">
-                                <label for="cover_letter" class="apply-field__label">Surat Lamaran Singkat</label>
-                                <textarea name="cover_letter"
-                                          id="cover_letter"
-                                          rows="4"
-                                          class="apply-field__textarea @error('cover_letter') is-invalid @enderror"
-                                          placeholder="Ceritakan singkat mengapa Anda tertarik dan cocok untuk posisi ini...">{{ old('cover_letter') }}</textarea>
-                                @error('cover_letter')
-                                    <span class="apply-field__error">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            {{-- CV Upload --}}
-                            <div class="apply-field">
-                                <label class="apply-field__label">
-                                    Unggah CV (PDF) <span class="apply-field__required">*</span>
-                                </label>
-
-                                <div class="apply-upload @error('cv') is-invalid @enderror"
-                                     id="drop-area"
-                                     onclick="document.getElementById('cv-upload').click()">
-                                    <input type="file"
-                                           name="cv"
-                                           id="cv-upload"
-                                           accept=".pdf,application/pdf"
-                                           onchange="fileChosen(event)">
-                                    <span class="material-symbols-outlined apply-upload__icon" id="upload-icon">upload_file</span>
-                                    <p class="apply-upload__title" id="file-label-text">
-                                        Klik untuk memilih file atau seret ke sini
-                                    </p>
-                                    <p class="apply-upload__hint">Format PDF, maksimal 2 MB</p>
-                                </div>
-                                @error('cv')
-                                    <span class="apply-field__error">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            {{-- Consent --}}
-                            <div class="apply-consent">
-                                <input type="checkbox" name="consent" id="consent" value="1" required>
-                                <label for="consent">
-                                    Saya menyatakan bahwa data yang diisi akurat dan memberikan izin
-                                    kepada Tim Rekrutmen CV Maju Sukses untuk memproses data pribadi saya
-                                    sesuai kebijakan privasi perusahaan.
-                                </label>
-                            </div>
-
-                            {{-- Submit --}}
-                            <div>
-                                <button type="submit" class="apply-submit" id="btn-submit-app">
-                                    <span class="material-symbols-outlined">send</span>
-                                    <span>Kirim Lamaran Sekarang</span>
-                                </button>
-                            </div>
-
-                        </form>
-                    @endif
-
-                </article>
 
             </div>
 
@@ -451,10 +263,24 @@
                     </div>
 
                     @if ($jobListing->isOpenForApplication())
-                        <a href="#apply-form" class="sidebar-cta">
-                            <span>Lamar Sekarang</span>
-                            <span class="material-symbols-outlined">north_east</span>
-                        </a>
+                        @auth
+                            @if (auth()->user()->isAdmin())
+                                <div style="margin-top:1rem; padding:0.75rem 1rem; border-radius:8px; background:rgba(0,39,78,0.06); font-size:13px; color:var(--primary); text-align:center; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">admin_panel_settings</span>
+                                    <span>Akun Admin Perusahaan tidak dapat melamar lowongan.</span>
+                                </div>
+                            @else
+                                <a href="{{ route('careers.apply.create', $jobListing) }}" class="sidebar-cta">
+                                    <span>Lamar Sekarang</span>
+                                    <span class="material-symbols-outlined">north_east</span>
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('careers.apply.create', $jobListing) }}" class="sidebar-cta">
+                                <span>Lamar Sekarang</span>
+                                <span class="material-symbols-outlined">north_east</span>
+                            </a>
+                        @endauth
                     @endif
                 </div>
 
@@ -511,60 +337,3 @@
 </section>
 
 @endsection
-
-@push('scripts')
-<script>
-    // Drag & drop CV upload
-    const dropArea = document.getElementById('drop-area');
-    const fileInput = document.getElementById('cv-upload');
-    const labelText = document.getElementById('file-label-text');
-    const uploadIcon = document.getElementById('upload-icon');
-
-    if (dropArea && fileInput) {
-        ['dragenter', 'dragover'].forEach(evt => {
-            dropArea.addEventListener(evt, (e) => {
-                e.preventDefault();
-                dropArea.classList.add('is-dragover');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(evt => {
-            dropArea.addEventListener(evt, (e) => {
-                e.preventDefault();
-                dropArea.classList.remove('is-dragover');
-            });
-        });
-
-        dropArea.addEventListener('drop', (e) => {
-            if (e.dataTransfer.files.length > 0) {
-                fileInput.files = e.dataTransfer.files;
-                updateFileLabel(e.dataTransfer.files[0].name);
-            }
-        });
-    }
-
-    function fileChosen(e) {
-        if (e.target.files && e.target.files.length > 0) {
-            updateFileLabel(e.target.files[0].name);
-        }
-    }
-
-    function updateFileLabel(name) {
-        if (!labelText) return;
-        labelText.textContent = 'File terpilih: ' + name;
-        if (uploadIcon) uploadIcon.textContent = 'task';
-        if (dropArea) dropArea.classList.add('has-file');
-    }
-
-    // Submit loading state
-    const form = document.getElementById('job-application-form');
-    const submitBtn = document.getElementById('btn-submit-app');
-
-    if (form && submitBtn) {
-        form.addEventListener('submit', () => {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span><span>Mengirim...</span>';
-        });
-    }
-</script>
-@endpush

@@ -29,15 +29,25 @@ class LogoutController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
+        if ($user) {
+            \App\Models\ActivityLog::record(
+                'auth',
+                'Autentikasi',
+                "Pengguna {$user->name} ({$user->role_label}) logout dari sistem.",
+                $user
+            );
+        }
+
         //1.Logout the user
         Auth::logout(); 
         //2.Invalidate the existing session
         $request->session()->invalidate(); 
-            //3.Regenerate the CSRF token
+        //3.Regenerate the CSRF token
         $request->session()->regenerateToken(); 
         //4.Redirect to the homepage or login page
         return redirect()->route('home')
-            ->with('success', 'Anda berhasil login.');
+            ->with('success', 'Anda berhasil keluar dari sistem.');
     }
 
     /**

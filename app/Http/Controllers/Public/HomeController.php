@@ -11,6 +11,13 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
+        // Jika sudah login, arahkan langsung ke dashboard sesuai role
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('seeker.dashboard');
+        }
+
         // Ambil profil perusahaan (singleton, auto-create kalau belum ada)
         $company = CompanyProfile::current();
 

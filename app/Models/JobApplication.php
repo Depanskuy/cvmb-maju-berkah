@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class JobApplication extends Model
+class JobApplication extends Application
 {
     use HasFactory;
 

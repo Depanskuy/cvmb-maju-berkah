@@ -14,7 +14,7 @@ class User extends Authenticatable
     public const ROLE_SEEKER = 'job_seeker';
 
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -27,6 +27,27 @@ class User extends Authenticatable
         ];
     }
 
+    // ============ Role Helpers ============
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSeeker(): bool
+    {
+        return $this->role === self::ROLE_SEEKER;
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->role) {
+            self::ROLE_ADMIN  => 'Admin Perusahaan',
+            self::ROLE_SEEKER => 'Pencari Kerja',
+            default           => ucfirst($this->role ?? 'User'),
+        };
+    }
+
     // ============ Relasi ============
 
     // Satu job_seeker punya satu profil
@@ -35,9 +56,14 @@ class User extends Authenticatable
         return $this->hasOne(JobSeekerProfile::class);
     }
 
-
     public function profile(): JobSeekerProfile
     {
         return $this->jobSeekerProfile()->firstOrCreate([]);
+    }
+
+    // Lamaran pekerjaan milik user ini
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
     }
 }

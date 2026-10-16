@@ -1,4 +1,4 @@
-2{{-- resources/views/partials/tailwind.blade.php --}}
+{{-- resources/views/partials/tailwind.blade.php --}}
 <script src="https://cdn.tailwindcss.com"></script>
 <script id="tailwind-config">
   tailwind.config = {

@@ -29,24 +29,42 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        //1.Validate the input fields
+        // 1. Validasi input
         $credentials = $request->validate([
-        'email' => ['required','email'],
-        'password' => ['required'],
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
+        ], [
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
-        //2.Attempt to log the user in 
-        if(! Auth::attempt($credentials)){
-        return back()
-        ->withInput($request->only('email'))
-        ->withErrors([
-            'email' => 'Email Atau Password yang anda masukan salah.'
-        ]);
+        // 2. Coba autentikasi
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => 'Email atau kata sandi yang Anda masukkan salah.',
+                ]);
         }
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('company.dashboard'));
+        $user = Auth::user();
+
+        \App\Models\ActivityLog::record(
+            'auth',
+            'Autentikasi',
+            "Pengguna {$user->name} ({$user->role_label}) berhasil login ke sistem.",
+            $user
+        );
+
+        // 3. Redirect sesuai role
+        if ($user->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('seeker.dashboard'));
     }
 
     /**

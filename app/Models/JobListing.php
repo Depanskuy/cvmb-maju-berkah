@@ -37,7 +37,7 @@ class JobListing extends Model
 
     public function applications()
     {
-        return $this->hasMany(JobApplication::class, 'job_listing_id');
+        return $this->hasMany(Application::class, 'job_listing_id');
     }
 
     // ============ Scopes ============
@@ -59,6 +59,11 @@ class JobListing extends Model
     {
         return $this->status === self::STATUS_ACTIVE
             && $this->deadline->endOfDay()->isFuture();
+    }
+
+    public function canAcceptApplications(): bool
+    {
+        return $this->isOpenForApplication();
     }
 
     public function getEmploymentTypeLabelAttribute(): string

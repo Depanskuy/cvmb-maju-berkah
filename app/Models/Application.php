@@ -27,6 +27,7 @@ class Application extends Model
      * Kolom yang boleh diisi massal.
      */
     protected $fillable = [
+        'user_id',
         'job_listing_id',
         'applicant_name',
         'applicant_email',
@@ -38,6 +39,7 @@ class Application extends Model
         'cv_path',
         'status',
         'review_note',
+        'withdrawn_at',
     ];
 
     /**
@@ -46,12 +48,21 @@ class Application extends Model
     protected function casts(): array
     {
         return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'withdrawn_at' => 'datetime',
+            'created_at'   => 'datetime',
+            'updated_at'   => 'datetime',
         ];
     }
 
     // ============ RELASI ============
+
+    /**
+     * User pencari kerja yang memiliki lamaran ini (jika login).
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Lamaran ini untuk lowongan apa.
@@ -103,11 +114,16 @@ class Application extends Model
      */
     public function getStatusLabelAttribute(): string
     {
+        if ($this->isWithdrawn()) {
+            return 'Dibatalkan';
+        }
+
         return match ($this->status) {
             self::STATUS_PENDING    => 'Menunggu',
             self::STATUS_PROCESSING => 'Diproses',
             self::STATUS_ACCEPTED   => 'Diterima',
             self::STATUS_REJECTED   => 'Ditolak',
+            'interview'             => 'Interview',
             default                 => $this->status,
         };
     }
@@ -118,9 +134,13 @@ class Application extends Model
      */
     public function getStatusBadgeAttribute(): string
     {
+        if ($this->isWithdrawn()) {
+            return 'neutral';
+        }
+
         return match ($this->status) {
             self::STATUS_PENDING    => 'pending',
-            self::STATUS_PROCESSING => 'processing',
+            self::STATUS_PROCESSING, 'interview' => 'processing',
             self::STATUS_ACCEPTED   => 'accepted',
             self::STATUS_REJECTED   => 'rejected',
             default                 => 'draft',
@@ -129,13 +149,23 @@ class Application extends Model
 
     // ============ HELPERS ============
 
+    public function isWithdrawn(): bool
+    {
+        return ! is_null($this->withdrawn_at);
+    }
+
+    public function canBeWithdrawn(): bool
+    {
+        return $this->status === self::STATUS_PENDING && ! $this->isWithdrawn();
+    }
+
     /**
      * Apakah lamaran masih bisa diubah admin?
-     * (setelah accepted/rejected, dianggap final)
+     * (setelah accepted/rejected/withdrawn, dianggap final)
      */
     public function isFinal(): bool
     {
-        return in_array($this->status, [
+        return $this->isWithdrawn() || in_array($this->status, [
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
         ], true);

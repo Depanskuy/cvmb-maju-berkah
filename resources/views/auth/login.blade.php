@@ -30,22 +30,21 @@
                         <div class="auth-brand__logo">MS</div>
                         <div>
                             <div class="auth-brand__name">CV Maju Sukses</div>
-                            <div class="auth-brand__subtitle">Enterprise Core</div>
+                            <div class="auth-brand__subtitle">Sistem Terpadu</div>
                         </div>
                     </div>
                     <span class="auth-brand__pill">
                         <span class="auth-brand__pill-dot"></span>
-                        Admin Portal
+                        Portal Akun
                     </span>
                 </div>
 
                 {{-- Center content --}}
                 <div class="auth-brand__content">
-                    <span class="auth-brand__tag">Internal Operations Suite</span>
+                    <span class="auth-brand__tag">Akses Akun Terintegrasi</span>
                     <h1 class="auth-brand__title">Selamat Datang Kembali</h1>
                     <p class="auth-brand__description">
-                        Masuk untuk mengelola website dan operasional digital perusahaan
-                        CV Maju Sukses secara aman, terintegrasi, dan presisi.
+                        Masuk untuk mengakses layanan CV Maju Sukses, baik untuk pengelolaan operasional perusahaan maupun portal karir dan lamaran kerja Anda.
                     </p>
 
                     {{-- Security badges --}}
@@ -73,11 +72,10 @@
                     <span class="material-symbols-outlined auth-brand__quote-icon">format_quote</span>
                     <div>
                         <p class="auth-brand__quote-text">
-                            "Sistem tata kelola dan manajemen data korporat terintegrasi
-                            dengan standar keamanan enterprise."
+                            "Satu portal terpadu untuk kemudahan pelamar memantau proses seleksi kerja dan tim perusahaan mengelola operasional secara efisien."
                         </p>
                         <p class="auth-brand__quote-author">
-                            — Tim IT &amp; Security CV Maju Sukses
+                            — CV Maju Sukses Portal
                         </p>
                     </div>
                 </div>
@@ -95,7 +93,7 @@
                 <div class="auth-form-panel__top">
                     <span class="auth-gateway">
                         <span class="auth-gateway__dot"></span>
-                        Gateway: v3.4.2-prod
+                        Portal Masuk Terpadu
                     </span>
                 </div>
 
@@ -106,9 +104,9 @@
                         <div class="auth-form-header__icon">
                             <span class="material-symbols-outlined">shield_person</span>
                         </div>
-                        <h2 class="auth-form-header__title">Masuk ke Admin Panel</h2>
+                        <h2 class="auth-form-header__title">Masuk ke Akun Anda</h2>
                         <p class="auth-form-header__subtitle">
-                            Gunakan kredensial akun administrator Anda
+                            Silakan masuk dengan akun Admin Perusahaan atau Pencari Kerja
                         </p>
                     </div>
 
@@ -120,7 +118,7 @@
                         </div>
                     @endif
 
-                    {{-- Success message dari logout --}}
+                    {{-- Success message --}}
                     @if (session('success'))
                         <div class="auth-alert auth-alert--success">
                             <span class="material-symbols-outlined" style="font-size:1.125rem;">check_circle</span>
@@ -133,7 +131,7 @@
 
                         {{-- Email --}}
                         <div class="auth-field">
-                            <label for="email" class="auth-field__label">Email Resmi Administrator</label>
+                            <label for="email" class="auth-field__label">Alamat Email</label>
                             <div class="auth-field__wrap">
                                 <span class="material-symbols-outlined auth-field__icon">alternate_email</span>
                                 <input
@@ -141,7 +139,7 @@
                                     name="email"
                                     type="email"
                                     class="auth-field__input @error('email') is-invalid @enderror"
-                                    placeholder="admin@majusukses.co.id"
+                                    placeholder="email@example.com"
                                     value="{{ old('email') }}"
                                     autocomplete="email"
                                     autofocus
@@ -185,17 +183,24 @@
                                 <span>Ingat saya selama 30 hari</span>
                             </label>
                             <a href="#" class="auth-options__forgot"
-                               onclick="event.preventDefault(); alert('Silakan hubungi IT Security Administrator (ext. 402) untuk reset akun.');">
+                               onclick="event.preventDefault(); alert('Silakan hubungi administrator CV Maju Sukses untuk bantuan pemulihan akun.');">
                                 Lupa password?
                             </a>
                         </div>
 
                         {{-- Submit --}}
                         <button type="submit" class="auth-submit">
-                            <span>Masuk ke Dashboard</span>
+                            <span>Masuk ke Akun</span>
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </form>
+
+                    <div style="margin-top: 1.25rem; text-align: center; font-size: 14px; color: var(--on-surface-variant);">
+                        Belum memiliki akun pencari kerja?
+                        <a href="{{ route('register') }}" style="color: var(--primary); font-weight: 600; text-decoration: underline;">
+                            Daftar di sini
+                        </a>
+                    </div>
 
                     {{-- Divider --}}
                     <div class="auth-divider">
@@ -213,7 +218,7 @@
 
                 {{-- Footer --}}
                 <div class="auth-form-panel__footer">
-                    <p>&copy; {{ date('Y') }} CV Maju Sukses. Dilindungi sistem keamanan internal.</p>
+                    <p>&copy; {{ date('Y') }} CV Maju Sukses. Seluruh hak cipta dilindungi.</p>
                 </div>
             </div>
         </div>

@@ -69,7 +69,28 @@
                     </div>
                 </div>
 
-                <form style="display:flex; flex-direction:column; gap:1rem;" id="consultation-form" onsubmit="event.preventDefault(); handleConsultationSubmit();">
+                @if (session('success_contact'))
+                    <div style="margin-bottom:1.5rem; padding:1.25rem; border-radius:0.75rem; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; display:flex; align-items:flex-start; gap:0.75rem;">
+                        <span class="material-symbols-outlined" style="color:#059669; font-size:24px;">check_circle</span>
+                        <div>
+                            <strong style="font-family:var(--font-display); font-size:15px; display:block;">Permintaan Kemitraan Berhasil Dikirim!</strong>
+                            <p style="font-size:13px; margin:0.25rem 0 0;">{{ session('success_contact') }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div style="margin-bottom:1.5rem; padding:1rem; border-radius:0.75rem; background:#fff1f2; border:1px solid #fecdd3; color:#9f1239; font-size:13px;">
+                        <ul style="margin:0; padding-left:1.25rem;">
+                            @foreach ($errors->all() as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('contact.partnership') }}" style="display:flex; flex-direction:column; gap:1rem;" id="consultation-form">
+                    @csrf
 
                     <div class="contact-form-grid">
                         <div class="contact-field">
@@ -78,7 +99,7 @@
                             </label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">person</span>
-                                <input class="contact-field__input" id="pic_name" placeholder="Contoh: Budi Santoso" required type="text"/>
+                                <input class="contact-field__input" id="pic_name" name="contact_name" value="{{ old('contact_name') }}" placeholder="Contoh: Budi Santoso" required type="text"/>
                             </div>
                         </div>
                         <div class="contact-field">
@@ -87,7 +108,7 @@
                             </label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">mail</span>
-                                <input class="contact-field__input" id="corporate_email" placeholder="nama@perusahaan.co.id" required type="email"/>
+                                <input class="contact-field__input" id="corporate_email" name="email" value="{{ old('email') }}" placeholder="nama@perusahaan.co.id" required type="email"/>
                             </div>
                         </div>
                     </div>
@@ -99,7 +120,7 @@
                             </label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">phone</span>
-                                <input class="contact-field__input" id="pic_phone" placeholder="+62 812-XXXX-XXXX" required type="tel"/>
+                                <input class="contact-field__input" id="pic_phone" name="phone" value="{{ old('phone') }}" placeholder="+62 812-XXXX-XXXX" required type="tel"/>
                             </div>
                         </div>
                         <div class="contact-field">
@@ -108,7 +129,7 @@
                             </label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">corporate_fare</span>
-                                <input class="contact-field__input" id="company_name" placeholder="PT Mega Graha Sentosa" required type="text"/>
+                                <input class="contact-field__input" id="company_name" name="company_name" value="{{ old('company_name') }}" placeholder="PT Mega Graha Sentosa" required type="text"/>
                             </div>
                         </div>
                     </div>
@@ -120,13 +141,13 @@
                             </label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">tune</span>
-                                <select class="contact-field__select" id="service_interest" required>
+                                <select class="contact-field__select" id="service_interest" name="service_interest" required>
                                     <option disabled selected value="">Pilih Layanan Konsultasi</option>
-                                    <option value="finansial">Konsultasi Finansial &amp; Restrukturisasi</option>
-                                    <option value="digital">Transformasi Digital Enterprise</option>
-                                    <option value="risiko">Tata Kelola, Kepatuhan &amp; Manajemen Risiko (GRC)</option>
-                                    <option value="strategis">Manajemen Strategis &amp; M&amp;A Advisory</option>
-                                    <option value="lainnya">Layanan Konsultasi Lainnya</option>
+                                    <option value="Subkontraktor Sipil & MEP" {{ old('service_interest') === 'Subkontraktor Sipil & MEP' ? 'selected' : '' }}>Subkontraktor Sipil &amp; MEP</option>
+                                    <option value="Penyedia Material Konstruksi" {{ old('service_interest') === 'Penyedia Material Konstruksi' ? 'selected' : '' }}>Penyedia Material Konstruksi</option>
+                                    <option value="Transformasi Digital & IT" {{ old('service_interest') === 'Transformasi Digital & IT' ? 'selected' : '' }}>Transformasi Digital &amp; IT Enterprise</option>
+                                    <option value="Jasa Konsultansi K3 & Lingkungan" {{ old('service_interest') === 'Jasa Konsultansi K3 & Lingkungan' ? 'selected' : '' }}>Jasa Konsultansi K3 &amp; Lingkungan</option>
+                                    <option value="Lainnya" {{ old('service_interest') === 'Lainnya' ? 'selected' : '' }}>Layanan Kemitraan Lainnya</option>
                                 </select>
                                 <span class="material-symbols-outlined contact-field__arrow">expand_more</span>
                             </div>
@@ -135,11 +156,11 @@
                             <label class="contact-field__label" for="project_timeline">Estimasi Skala Proyek / Waktu</label>
                             <div class="contact-field__wrap">
                                 <span class="material-symbols-outlined contact-field__icon">schedule</span>
-                                <select class="contact-field__select" id="project_timeline">
-                                    <option value="urgent">Sangat Mendesak (&lt; 1 Bulan)</option>
-                                    <option value="q1">Kuartal Mendatang (1 - 3 Bulan)</option>
-                                    <option value="strategic">Inisiatif Strategis Jangka Menengah (3 - 6 Bulan)</option>
-                                    <option value="exploratory">Eksplorasi Pendahuluan / Studi Kelayakan</option>
+                                <select class="contact-field__select" id="project_timeline" name="project_timeline">
+                                    <option value="Sangat Mendesak (< 1 Bulan)">Sangat Mendesak (&lt; 1 Bulan)</option>
+                                    <option value="Kuartal Mendatang (1 - 3 Bulan)" selected>Kuartal Mendatang (1 - 3 Bulan)</option>
+                                    <option value="Inisiatif Strategis Jangka Menengah (3 - 6 Bulan)">Inisiatif Strategis Jangka Menengah (3 - 6 Bulan)</option>
+                                    <option value="Eksplorasi Pendahuluan / Studi Kelayakan">Eksplorasi Pendahuluan / Studi Kelayakan</option>
                                 </select>
                                 <span class="material-symbols-outlined contact-field__arrow">expand_more</span>
                             </div>
@@ -149,20 +170,20 @@
                     <div class="contact-field">
                         <label class="contact-field__label" for="project_details" style="justify-content:space-between;">
                             <span>Pesan / Detail Kebutuhan Bisnis <span class="contact-field__required">*</span></span>
-                            <span style="font-size:12px; color:var(--outline); font-weight:400;">Min. 20 karakter</span>
+                            <span style="font-size:12px; color:var(--outline); font-weight:400;">Min. 10 karakter</span>
                         </label>
-                        <textarea class="contact-field__textarea" id="project_details" placeholder="Jelaskan secara ringkas tantangan saat ini, tujuan akhir transformasi, ruang lingkup unit kerja, dan ekspektasi capaian..." required rows="4"></textarea>
+                        <textarea class="contact-field__textarea" id="project_details" name="project_details" placeholder="Jelaskan secara ringkas tantangan saat ini, tujuan akhir transformasi, ruang lingkup unit kerja, dan ekspektasi capaian..." required rows="4">{{ old('project_details') }}</textarea>
                     </div>
 
                     <div class="contact-consent">
-                        <input id="nda_agreement" required type="checkbox"/>
+                        <input id="nda_agreement" required type="checkbox" checked/>
                         <label for="nda_agreement">
                             Saya menyetujui bahwa data ini dilindungi secara legal oleh <strong style="color:var(--primary);">Kebijakan Privasi</strong> dan standar kerahasiaan non-disclosure agreement (<strong style="color:var(--primary);">NDA</strong>) CV Maju Sukses.
                         </label>
                     </div>
 
                     <div class="contact-submit-row">
-                        <button class="btn-page btn-page--dark" id="submit-btn" type="submit">
+                        <button class="btn-page btn-page--dark cursor-pointer" id="submit-btn" type="submit">
                             <span>Kirim Pesan &amp; Jadwalkan Diskusi</span>
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </button>
@@ -172,14 +193,6 @@
                         </div>
                     </div>
                 </form>
-
-                <div id="form-success-alert" style="display:none; margin-top:1rem; padding:1rem; border-radius:0.75rem; background:var(--surface-container-high); display:flex; align-items:flex-start; gap:0.75rem;">
-                    <span class="material-symbols-outlined" style="color:var(--secondary-container); font-size:24px;">task_alt</span>
-                    <div>
-                        <span style="font-family:var(--font-display); font-size:16px; font-weight:700; color:var(--primary);">Permintaan Berhasil Terkirim!</span>
-                        <p style="font-size:13px; color:var(--on-surface-variant); margin:0.25rem 0 0;">Tim Managing Partner kami akan meninjau dokumen dan menghubungi nomor PIC Anda dalam kurun waktu kurang dari 24 jam kerja.</p>
-                    </div>
-                </div>
             </div>
 
             {{-- SIDEBAR --}}
