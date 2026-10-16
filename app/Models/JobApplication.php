@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class JobApplication extends Model
 {
@@ -18,15 +19,25 @@ class JobApplication extends Model
     public const STATUS_REJECTED   = 'rejected';
 
     protected $fillable = [
-        'job_listing_id', 'job_seeker_id', 'cover_letter',
-        'cv_path', 'status', 'review_note', 'withdrawn_at',
+        'job_listing_id',
+        'applicant_name',
+        'applicant_email',
+        'applicant_phone',
+        'applicant_address',
+        'education',
+        'skills',
+        'cover_letter',
+        'cv_path',
+        'status',
+        'review_note',
+        'reference_code',
     ];
 
-    protected function casts(): array
+    protected static function booted(): void
     {
-        return [
-            'withdrawn_at' => 'datetime',
-        ];
+        static::creating(function (self $application) {
+            $application->reference_code ??= 'APP-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+        });
     }
 
     public function jobListing()
@@ -39,38 +50,9 @@ class JobApplication extends Model
         return $this->jobListing();
     }
 
-    public function jobSeeker()
-    {
-        return $this->belongsTo(User::class, 'job_seeker_id');
-    }
-
-    // Helper: ambil profil pelamar lewat relasi
-    public function jobSeekerProfile()
-    {
-        return $this->hasOneThrough(
-            JobSeekerProfile::class,
-            User::class,
-            'id',           // PK users
-            'user_id',      // FK di job_seeker_profiles
-            'job_seeker_id',// FK di applications → users
-            'id'            // PK users
-        );
-    }
-
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->whereNull('withdrawn_at');
-    }
-
     public function scopePending(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_PENDING);
-    }
-
-    public function isEditableBySeeker(): bool
-    {
-        return $this->status === self::STATUS_PENDING
-            && is_null($this->withdrawn_at);
     }
 
     public function getStatusLabelAttribute(): string

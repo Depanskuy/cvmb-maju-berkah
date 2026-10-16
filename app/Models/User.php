@@ -14,7 +14,7 @@ class User extends Authenticatable
     public const ROLE_SEEKER = 'job_seeker';
 
     protected $fillable = [
-        'name', 'email', 'password', 'role',
+        'name', 'email', 'password',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -35,25 +35,7 @@ class User extends Authenticatable
         return $this->hasOne(JobSeekerProfile::class);
     }
 
-    // Semua lamaran yang dikirim user ini
-    public function applications()
-    {
-        return $this->hasMany(JobApplication::class, 'job_seeker_id');
-    }
 
-    // ============ Helper role ============
-
-    public function isCompanyAdmin(): bool
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
-
-    public function isJobSeeker(): bool
-    {
-        return $this->role === self::ROLE_SEEKER;
-    }
-
-    // Shortcut: ambil atau buat profil kosong
     public function profile(): JobSeekerProfile
     {
         return $this->jobSeekerProfile()->firstOrCreate([]);

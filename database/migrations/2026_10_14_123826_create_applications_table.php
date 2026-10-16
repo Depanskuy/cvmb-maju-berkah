@@ -13,15 +13,21 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_listing_id')->constrained('job_listing')->cascadeOnDelete(); 
-            $table->foreignId('job_seeker_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('job_listing_id')->constrained('job_listings')->cascadeOnDelete(); 
+            $table->string('applicant_name');
+            $table->string('applicant_email');
+            $table->string('applicant_phone')->nullable();
+            $table->text('applicant_address')->nullable();
+            $table->string('education')->nullable();  
+            $table->text('skills')->nullable();
             $table->text('cover_letter')->nullable();
             $table->string('cv_path');
-            $table->enum('status', ['menunggu', 'interview' ,'accepted', 'rejected'])->default('menunggu');
+            $table->enum('status', ['pending', 'processing', 'accepted', 'rejected', 'menunggu', 'interview'])->default('pending');
             $table->text('review_note')->nullable();
             $table->timestamp('withdrawn_at')->nullable();
             $table->timestamps();
-            $table->unique(['job_listing_id', 'job_seeker_id']);
+            $table->unique(['job_listing_id', 'applicant_email']);
+            
         });
     }
 
