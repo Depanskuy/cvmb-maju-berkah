@@ -8,7 +8,7 @@
             {{-- Brand --}}
             <div class="public-footer__brand">
                 <div class="public-footer__logo">
-                    <div class="public-footer__logo-icon"><span>MB</span></div>
+                    @include('partials.brand-mark', ['class' => 'public-footer__logo-icon'])
                     <span class="public-footer__name">{{ $company->name }}</span>
                 </div>
                 <p class="public-footer__desc">{{ $company->tagline }}</p>

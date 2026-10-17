@@ -27,7 +27,7 @@
                 {{-- Header branding --}}
                 <div class="auth-brand__header">
                     <div class="auth-brand__identity">
-                        <div class="auth-brand__logo">MB</div>
+                        @include('partials.brand-mark', ['class' => 'auth-brand__logo'])
                         <div>
                             <div class="auth-brand__name">CV Maju Berkah</div>
                             <div class="auth-brand__subtitle">Sistem Terpadu</div>

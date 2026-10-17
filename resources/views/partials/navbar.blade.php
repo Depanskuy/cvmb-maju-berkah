@@ -2,7 +2,7 @@
     <div class="container-public public-navbar__inner">
 
         <a href="{{ route('home') }}" class="public-navbar__brand">
-            <div class="public-navbar__logo"><span>MB</span></div>
+            @include('partials.brand-mark', ['class' => 'public-navbar__logo'])
             <span class="public-navbar__name">CV Maju Berkah</span>
         </a>
 

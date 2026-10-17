@@ -18,9 +18,7 @@
         {{-- Brand --}}
         <div class="h-16 px-space-lg flex items-center justify-between border-b border-white/10">
             <a href="{{ route('company.dashboard') }}" class="flex items-center gap-space-md text-decoration-none">
-                <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center font-headline-sm text-headline-sm text-on-primary-fixed font-bold tracking-wider shadow-sm">
-                    MB
-                </div>
+                @include('partials.brand-mark', ['class' => 'w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center font-headline-sm text-headline-sm text-on-primary-fixed font-bold tracking-wider shadow-sm'])
                 <div class="flex flex-col">
                     <span class="font-title-md text-title-md text-on-primary tracking-tight leading-snug">CV Maju Berkah</span>
                     <span class="font-label-sm text-label-sm text-secondary-fixed tracking-wide uppercase">Admin Portal</span>

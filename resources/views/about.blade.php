@@ -91,7 +91,7 @@
 
             <div class="about-showcase">
                 <div class="about-showcase__image">
-                    <img alt="Gudang dan Distribusi CV Maju Berkah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBjr9R82ZZunNUbDUd7T-LEP_UTZTf0zQtnCK6cYDEHF1cKrPXfUWwYTdbITmGBHlwnIDTmQZiIExD0G4HTstTjyPxCyjtjCX5dTDLy4esKiP0gtlATnW3WbV56b7bSw0815ZQb4KRK_jyYrpLqFjaJRz4cpiD0Jyi9QlLv7Okq0g1N_QUO-CyzwdAPzEy7hbbYJ1R4GPxSEr54jlyQi1nE3TtQLUdNl8ukcLmcJf1FsrCHVSP6Zq_Bw"/>
+                    <img alt="Tim CV Maju Berkah berdiskusi di kantor" src="{{ asset('images/team-meeting.jpg') }}"/>
                 </div>
 
                 <div class="about-float-card about-float-card--top">

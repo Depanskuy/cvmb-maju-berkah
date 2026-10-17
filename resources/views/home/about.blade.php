@@ -7,7 +7,9 @@
             {{-- Visual --}}
             <div class="about__visual">
                 <div class="about__visual-main">
-                    <span class="about__visual-text">MB</span>
+                    <img class="about__visual-img"
+                         src="{{ asset('images/team-meeting.jpg') }}"
+                         alt="Tim CV Maju Berkah berdiskusi di kantor"/>
                 </div>
                 <div class="about__badge">
                     <span class="material-symbols-outlined">verified</span>
