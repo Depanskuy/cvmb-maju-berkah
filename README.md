@@ -248,7 +248,7 @@ php artisan test                          # seluruh suite
 php artisan test tests/Feature/FullRouteSmokeTest.php   # satu berkas
 ```
 
-Status saat ini: **72 test lulus / 400 assertion**.
+Status saat ini: **77 test lulus / 413 assertion**.
 
 | Berkas | Cakupan |
 |---|---|
@@ -274,7 +274,7 @@ Sebuah fitur dianggap selesai bila seluruh poin berikut terpenuhi
 - [x] Hak akses benar (middleware `role` + pemeriksaan kepemilikan data/IDOR)
 - [x] Tidak menimbulkan error pada fitur lain (dibuktikan smoke test seluruh route)
 - [x] Tampilan responsif dan konsisten (satu sumber token desain)
-- [x] Diuji melalui test otomatis (72 test) **dan** smoke test seluruh route
+- [x] Diuji melalui test otomatis (77 test) **dan** smoke test seluruh route
 - [x] Kode sudah di-commit pada branch `feature/dashboard-admin-pelamar`
 - [x] Dokumentasi diperbarui bila ada kontrak yang berubah (dokumen ini + laporan implementasi)
 
@@ -303,6 +303,8 @@ Checklist pengujian blueprint §16 tercentang satu per satu pada
 [`docs/LAPORAN_IMPLEMENTASI.md`](docs/LAPORAN_IMPLEMENTASI.md) memuat laporan audit
 kesesuaian dengan blueprint, daftar perubahan per fase, keputusan desain, peta route lengkap,
 status lingkungan, dan sisa pekerjaan.
+
+[`CHANGELOG.md`](CHANGELOG.md) mencatat riwayat perubahan penting (format Keep a Changelog).
 
 ## Lisensi
 

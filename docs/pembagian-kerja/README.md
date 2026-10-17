@@ -88,7 +88,10 @@ memuat ruang lingkup, daftar berkas yang dipegang, dan checklist tugas. **Baca b
 
 Basis keempat branch adalah kode yang sudah berjalan:
 
-- **58 test lulus / 358 assertion** (`php artisan test`)
+- **77 test lulus / 413 assertion** (`php artisan test`)
 - Seluruh **60 route** tersapu tanpa error 500
+- Aturan **status final** (lamaran `accepted`/`rejected` tidak dapat diubah lagi; kerja sama,
+  feedback, dan project satu arah) serta **batas nilai gaji** (maks. 9.999.999.999) sudah aktif
+  sejak basis ini — jangan dibuat ulang di branch masing-masing.
 - PostgreSQL 18.6 · Laravel 12.69.3 · PHP 8.5.9
 - Detail lengkap: [`docs/LAPORAN_IMPLEMENTASI.md`](../LAPORAN_IMPLEMENTASI.md) dan [`README.md`](../../README.md)

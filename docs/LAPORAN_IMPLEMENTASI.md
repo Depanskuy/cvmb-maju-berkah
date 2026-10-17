@@ -7,7 +7,7 @@ peta route lengkap, status lingkungan, dan sisa pekerjaan.
 
 Terakhir diperbarui: 17 Oktober 2026
 Branch: `feature/dashboard-admin-pelamar`
-Status: **selesai dan terverifikasi** — 72 test lulus, seluruh route tersapu tanpa error 500.
+Status: **selesai dan terverifikasi** — 77 test lulus, seluruh route tersapu tanpa error 500.
 
 ---
 
@@ -105,7 +105,7 @@ Audit ulang seluruh fitur dilakukan sebelum dokumentasi ini ditulis:
 
 | Lapis pengujian | Cakupan | Hasil |
 |---|---|---|
-| Test suite | 72 test / 400 assertion | **Lulus semua** |
+| Test suite | 77 test / 413 assertion | **Lulus semua** |
 | Smoke test seluruh route | 60 route × 3 peran (guest, admin, pelamar) + semua alur tulis | **Lulus semua, nol error 500** |
 | Sapuan HTTP nyata | 20 halaman + 70 tautan & aset unik | **0 gagal (semua 200)** |
 
@@ -160,6 +160,27 @@ keputusan. Diuji oleh `tests/Feature/StatusTransitionTest.php` (14 test).
 
 Catatan urutan: pengecekan transisi dijalankan **setelah** validasi, supaya nilai status yang
 tidak sah (mis. `interview`) tetap dilaporkan sebagai kesalahan validasi, bukan pesan transisi.
+
+### Audit lanjutan kedua (penyisiran seluruh fitur)
+
+Penyisiran ulang seluruh modul menemukan dua kejanggalan perilaku dan beberapa perapian:
+
+**T3 — Deadline lowongan hanya divalidasi saat pembuatan.** `store` memakai `after:today`,
+tetapi `update` hanya memakai `date`, sehingga admin dapat mengubah deadline ke masa lalu
+tanpa peringatan (lowongan langsung hilang dari katalog publik tanpa jejak yang jelas).
+**Perbaikan:** validasi kondisional saat edit — nilai lama boleh dipertahankan (agar lowongan
+lama tetap bisa dirapikan), tetapi bila diubah wajib setelah hari ini. Dikunci oleh 3 test.
+
+**T4 — Kartu "Lowongan Aktif" di dashboard menghitung lowongan kedaluwarsa.**
+Katalog publik sudah memfilter `status aktif DAN deadline belum lewat`, dan tabel lowongan
+sudah menandai "Expired" merah, tetapi kartu dashboard memakai `status = active` saja.
+**Perbaikan:** kartu dan daftar memakai scope `publiclyVisible()`; bila ada lowongan aktif yang
+sudah lewat deadline, muncul badge "n kedaluwarsa".
+
+Perapian pendukung: **status "Selesai" pada project otomatis menyetel progres 100%**
+(mencegah data "Selesai tetapi 60%"), kartu feedback yang sudah ditindaklanjuti tidak lagi
+membungkus `<form>` kosong, `.env.example` memakai `APP_DEBUG=false`, dan `CHANGELOG.md` dibuat.
+Total test naik menjadi **77 test / 413 assertion**.
 
 ---
 
@@ -246,8 +267,9 @@ Termasuk rename route parameter menjadi `{jobApplication}`, penyesuaian seluruh 
   60 route × 3 peran plus semua alur tulis.
 - Perbaikan hasil audit akhir (transaksi DB, `PATCH`, `job_seeker_id` NOT NULL,
   `APP_DEBUG=false`, pembersihan stub) — lihat §3.
-- **Audit lanjutan atas laporan pemilik produk** (T1 & T2 pada §3): validasi batas gaji
-  dan kontrak transisi status final, dikunci oleh `tests/Feature/StatusTransitionTest.php` (14 test).
+- **Audit lanjutan atas laporan pemilik produk** (T1–T4 pada §3): validasi batas gaji,
+  kontrak transisi status final, deadline edit kondisional, dan penanda lowongan kedaluwarsa —
+  dikunci oleh `tests/Feature/StatusTransitionTest.php` (19 test).
 
 ### Keamanan & kualitas
 - Verifikasi kepemilikan data (IDOR) pada seluruh aksi lamaran pelamar dan aksi admin
@@ -281,6 +303,9 @@ Termasuk rename route parameter menjadi `{jobApplication}`, penyesuaian seluruh 
 | 11 | **Halaman error 422 tidak dibuat** | Blueprint §12 poin 11 menyebut "jika dibutuhkan"; kegagalan validasi dikembalikan ke form beserta pesan, sehingga halaman 422 khusus tidak diperlukan. Yang tersedia: 403, 404, 419, 500 |
 | 12 | **Status final tidak dapat dikembalikan** (lamaran, kerja sama, feedback, project) | Atas permintaan pemilik produk: keputusan `accepted`/`rejected` bersifat final. Kontrak transisi ditaruh di model (`ALLOWED_TRANSITIONS`), ditegakkan controller + UI, dan dikunci oleh `StatusTransitionTest` |
 | 13 | **Gaji dibatasi 9.999.999.999** | Mengikuti kapasitas kolom `decimal(12,2)`; melampaui itu ditolak sebagai kesalahan validasi, bukan error 500 |
+| 14 | **Deadline lowongan divalidasi kondisional saat edit** | Nilai lama boleh dipertahankan (lowongan lama tetap dapat dirapikan), tetapi deadline baru wajib setelah hari ini. Menyatukan ketegasan `store` dengan keluwesan kebutuhan admin |
+| 15 | **Status "Selesai" menyetel progres 100%** | Mencegah data janggal "Selesai tetapi 60%"; arah lain tidak dipaksa |
+| 16 | **"Lowongan Aktif" dashboard = terbuka untuk publik** | Memakai scope `publiclyVisible()` + badge jumlah kedaluwarsa, konsisten dengan katalog dan tabel lowongan |
 
 ---
 
@@ -387,7 +412,7 @@ Sumber kebenaran: `routes/web.php`. Verifikasi: `php artisan route:list`.
 
 ## 8. Checklist Pengujian (Blueprint §16)
 
-Seluruh butir checklist pengujian blueprint sudah dipenuhi. Bukti: test suite (72 test)
+Seluruh butir checklist pengujian blueprint sudah dipenuhi. Bukti: test suite (77 test)
 dan smoke test seluruh route. Butir yang bersifat manual ditandai **(manual)**.
 
 ### Autentikasi
@@ -454,7 +479,7 @@ dan smoke test seluruh route. Butir yang bersifat manual ditandai **(manual)**.
 | Model | **9** (`User`, `Company`, `Job`, `JobApplication`, `JobSeekerProfile`, `Partnership`, `Project`, `Feedback`, `ActivityLog`) |
 | Seeder | **3 + DatabaseSeeder** (`Company`, `User`, `Job`) |
 | Route aplikasi | **57 route** (60 termasuk route bawaan framework) |
-| Test suite | **72 lulus / 400 assertion** |
+| Test suite | **77 lulus / 413 assertion** |
 | Deprecation PHP 8.5 (`config/database.php`) | **Diperbaiki** |
 | Symlink `public/storage` | **Ada** |
 
@@ -486,7 +511,7 @@ php artisan optimize:clear      # bersihkan cache config/route/view
 ### Hasil verifikasi akhir
 
 ```
-php artisan test                     ->  Tests: 72 passed (400 assertions)
+php artisan test                     ->  Tests: 77 passed (413 assertions)
 GET /                                ->  HTTP 200
 GET /careers                         ->  HTTP 200
 GET /login                           ->  HTTP 200
@@ -504,9 +529,10 @@ Smoke test 60 route x 3 peran        ->  15 test lulus, nol error 500
 3. **Penyempurnaan tampilan mobile** — fungsional dan responsif, masih dapat dirapikan
    lebih lanjut pada beberapa tabel dashboard bila diinginkan.
 4. ~~**Keputusan entitas D**~~ — **selesai**: dipertahankan dan didokumentasikan (§6).
-5. ~~**Jalankan migrasi + test**~~ — **selesai**: 72 test lulus, seluruh route tersapu.
-6. **Opsional (belum diminta)**: berkas `CHANGELOG.md` dan pembaruan `.env.example`
-   agar mencerminkan nilai demo (`APP_DEBUG=false`).
+5. ~~**Jalankan migrasi + test**~~ — **selesai**: 77 test lulus, seluruh route tersapu.
+6. ~~**Opsional (belum diminta)**: berkas `CHANGELOG.md` dan pembaruan `.env.example`~~
+   — **selesai**: `CHANGELOG.md` dibuat dan `.env.example` memakai `APP_DEBUG=false`
+   (kondisi demo; `phpunit.xml` tetap memaksa `true` untuk test).
 
 ---
 
@@ -531,6 +557,7 @@ Smoke test 60 route x 3 peran        ->  15 test lulus, nol error 500
 | `790c84b` | **Fase 6**: laporan implementasi disinkronkan dengan kondisi akhir |
 | `ced396c` | **Pembagian kerja**: `docs/pembagian-kerja/` (4 bagian adil sesuai §13) |
 | `d1024b1` | **Perbaikan T1 & T2**: kontrak transisi status final + batas nilai gaji |
+| `8c7a414` | **Perbaikan T3 & T4**: deadline edit kondisional, penanda kedaluwarsa, perapian kosmetik |
 
 > Empat branch pembagian kerja dibuat dari basis ini (belum di-push):
 > `feature/1-auth-dan-integrasi`, `feature/2-company-profile`, `feature/3-jobs-crud`,
