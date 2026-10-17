@@ -7,7 +7,7 @@ peta route lengkap, status lingkungan, dan sisa pekerjaan.
 
 Terakhir diperbarui: 17 Oktober 2026
 Branch: `feature/dashboard-admin-pelamar`
-Status: **selesai dan terverifikasi** — 58 test lulus, seluruh route tersapu tanpa error 500.
+Status: **selesai dan terverifikasi** — 72 test lulus, seluruh route tersapu tanpa error 500.
 
 ---
 
@@ -40,9 +40,22 @@ pending | processing | accepted | rejected
 - Nilai lama `menunggu` dan `interview` **tidak lagi valid** dan sudah dibersihkan dari
   model, controller, view, dan dikunci oleh `CHECK` constraint di database.
 - **Hanya admin** yang boleh mengubah status seleksi.
+- **Keputusan final**: setelah `accepted`/`rejected`, status tidak dapat dikembalikan ke
+  `pending`/`processing` maupun ditukar ke keputusan lain (lihat kontrak transisi di bawah).
 - Pelamar hanya dapat mengubah/menarik lamaran selama berstatus `pending`.
 - Kolom `withdrawn_at` menandai lamaran yang ditarik pelamar. Lamaran yang ditarik
   **tidak** menghalangi pelamar melamar ulang.
+
+Kontrak transisi yang ditegakkan (model `JobApplication::ALLOWED_TRANSITIONS`):
+
+```
+pending    → processing | accepted | rejected
+processing → accepted | rejected
+accepted   → (final)
+rejected   → (final)
+```
+
+Menyimpan status yang sama tetap diizinkan (mis. admin hanya menambahkan catatan).
 
 Constraint & index aktif pada tabel `applications`:
 
@@ -92,7 +105,7 @@ Audit ulang seluruh fitur dilakukan sebelum dokumentasi ini ditulis:
 
 | Lapis pengujian | Cakupan | Hasil |
 |---|---|---|
-| Test suite | 58 test / 358 assertion | **Lulus semua** |
+| Test suite | 72 test / 400 assertion | **Lulus semua** |
 | Smoke test seluruh route | 60 route × 3 peran (guest, admin, pelamar) + semua alur tulis | **Lulus semua, nol error 500** |
 | Sapuan HTTP nyata | 20 halaman + 70 tautan & aset unik | **0 gagal (semua 200)** |
 
@@ -109,6 +122,44 @@ Temuan dari audit akhir dan perbaikannya (commit `f094da9`):
 4. **`APP_DEBUG=true`** (blueprint §12 poin 12) → diset `false` pada `.env` demo;
    `phpunit.xml` menyetel `APP_DEBUG=true` agar diagnostik test tetap lengkap.
 5. **Stub method kosong** sisa template pada `Auth\LogoutController` dihapus.
+
+### Audit lanjutan (temuan pengguna, setelah Fase 6)
+
+Dua temuan dilaporkan langsung oleh pemilik produk saat mencoba aplikasi:
+
+**T1 — Error 500 akibat gaji di luar kapasitas kolom.**
+Saat admin menambah lowongan dengan `salary_min` = 20.000.000.000 dan `salary_max` = 299.991.100.000,
+PostgreSQL menolak insert (`SQLSTATE[22003] numeric field overflow`) karena kolom
+`salary_min`/`salary_max` bertipe `decimal(12,2)` (batas < 10^10). Karena tidak ada validasi batas
+atas, `QueryException` muncul sebagai halaman 500, bukan pesan validasi.
+**Perbaikan:** konstanta `Job::SALARY_MAX_ALLOWED` (9.999.999.999) + aturan `max:` pada validasi
+`store`/`update` + atribut `max` pada form + pesan Bahasa Indonesia. Kini input seperti itu ditolak
+sebagai kesalahan validasi (302 dengan pesan), bukan 500.
+
+**T2 — Status lamaran yang sudah diputus masih dapat diubah kembali.**
+`company.applications.status` menerima keempat nilai status tanpa aturan transisi, sehingga
+lamaran `accepted` dapat dikembalikan ke `pending`/`processing` atau diubah menjadi `rejected`
+(dan sebaliknya). Pola serupa ditemukan di modul lain: kerja sama (`approved` → `pending`),
+feedback (toggle bolak-balik `Baru` ⇄ `Ditindaklanjuti`), dan project (`completed` → `planning`).
+**Perbaikan:** kontrak transisi ditaruh di **model** (`JobApplication`, `Partnership`, `Project`)
+melalui `ALLOWED_TRANSITIONS` + `canTransitionTo()` + `allowedTransitionsFrom()`:
+
+```
+lamaran    : pending → processing → accepted | rejected
+             accepted & rejected = FINAL (tidak dapat diubah lagi)
+kerja sama : pending → approved → archived   (approved tidak kembali ke pending)
+feedback   : Baru → Ditindaklanjuti          (satu arah)
+project    : planning → ongoing → completed  (satu arah)
+```
+
+Controller menolak transisi yang tidak sah dengan pesan ramah (status tidak berubah), dan UI hanya
+menampilkan status tujuan yang masih sah (`resources/views/company/applications/show.blade.php`,
+`partnership/index.blade.php`, `project/index.blade.php`, `feedback/index.blade.php`).
+Menyimpan status yang sama tetap diizinkan agar admin masih bisa menambah catatan tanpa mengubah
+keputusan. Diuji oleh `tests/Feature/StatusTransitionTest.php` (14 test).
+
+Catatan urutan: pengecekan transisi dijalankan **setelah** validasi, supaya nilai status yang
+tidak sah (mis. `interview`) tetap dilaporkan sebagai kesalahan validasi, bukan pesan transisi.
 
 ---
 
@@ -195,6 +246,8 @@ Termasuk rename route parameter menjadi `{jobApplication}`, penyesuaian seluruh 
   60 route × 3 peran plus semua alur tulis.
 - Perbaikan hasil audit akhir (transaksi DB, `PATCH`, `job_seeker_id` NOT NULL,
   `APP_DEBUG=false`, pembersihan stub) — lihat §3.
+- **Audit lanjutan atas laporan pemilik produk** (T1 & T2 pada §3): validasi batas gaji
+  dan kontrak transisi status final, dikunci oleh `tests/Feature/StatusTransitionTest.php` (14 test).
 
 ### Keamanan & kualitas
 - Verifikasi kepemilikan data (IDOR) pada seluruh aksi lamaran pelamar dan aksi admin
@@ -226,6 +279,8 @@ Termasuk rename route parameter menjadi `{jobApplication}`, penyesuaian seluruh 
 | 9 | **`APP_DEBUG=false` untuk demo** | Sesuai §12 poin 12; `phpunit.xml` menyetel `true` untuk test |
 | 10 | **Detail lowongan `closed`/kedaluwarsa tetap dapat dibuka publik (HTTP 200)** | **Deviasi disengaja dari BR-10.** Halaman tetap tampil dengan label "Lowongan Ditutup" dan **tombol lamar disembunyikan**; katalog publik tetap hanya menampilkan lowongan aktif & belum kedaluwarsa. Backend tetap menolak lamaran (403). Dipilih agar riwayat lowongan tetap dapat diakses/untuk SEO. Alternatif yang ditolak: mengembalikan 404 untuk detail lowongan tutup |
 | 11 | **Halaman error 422 tidak dibuat** | Blueprint §12 poin 11 menyebut "jika dibutuhkan"; kegagalan validasi dikembalikan ke form beserta pesan, sehingga halaman 422 khusus tidak diperlukan. Yang tersedia: 403, 404, 419, 500 |
+| 12 | **Status final tidak dapat dikembalikan** (lamaran, kerja sama, feedback, project) | Atas permintaan pemilik produk: keputusan `accepted`/`rejected` bersifat final. Kontrak transisi ditaruh di model (`ALLOWED_TRANSITIONS`), ditegakkan controller + UI, dan dikunci oleh `StatusTransitionTest` |
+| 13 | **Gaji dibatasi 9.999.999.999** | Mengikuti kapasitas kolom `decimal(12,2)`; melampaui itu ditolak sebagai kesalahan validasi, bukan error 500 |
 
 ---
 
@@ -332,7 +387,7 @@ Sumber kebenaran: `routes/web.php`. Verifikasi: `php artisan route:list`.
 
 ## 8. Checklist Pengujian (Blueprint §16)
 
-Seluruh butir checklist pengujian blueprint sudah dipenuhi. Bukti: test suite (58 test)
+Seluruh butir checklist pengujian blueprint sudah dipenuhi. Bukti: test suite (72 test)
 dan smoke test seluruh route. Butir yang bersifat manual ditandai **(manual)**.
 
 ### Autentikasi
@@ -399,7 +454,7 @@ dan smoke test seluruh route. Butir yang bersifat manual ditandai **(manual)**.
 | Model | **9** (`User`, `Company`, `Job`, `JobApplication`, `JobSeekerProfile`, `Partnership`, `Project`, `Feedback`, `ActivityLog`) |
 | Seeder | **3 + DatabaseSeeder** (`Company`, `User`, `Job`) |
 | Route aplikasi | **57 route** (60 termasuk route bawaan framework) |
-| Test suite | **58 lulus / 358 assertion** |
+| Test suite | **72 lulus / 400 assertion** |
 | Deprecation PHP 8.5 (`config/database.php`) | **Diperbaiki** |
 | Symlink `public/storage` | **Ada** |
 
@@ -431,7 +486,7 @@ php artisan optimize:clear      # bersihkan cache config/route/view
 ### Hasil verifikasi akhir
 
 ```
-php artisan test                     ->  Tests: 58 passed (358 assertions)
+php artisan test                     ->  Tests: 72 passed (400 assertions)
 GET /                                ->  HTTP 200
 GET /careers                         ->  HTTP 200
 GET /login                           ->  HTTP 200
@@ -449,7 +504,7 @@ Smoke test 60 route x 3 peran        ->  15 test lulus, nol error 500
 3. **Penyempurnaan tampilan mobile** — fungsional dan responsif, masih dapat dirapikan
    lebih lanjut pada beberapa tabel dashboard bila diinginkan.
 4. ~~**Keputusan entitas D**~~ — **selesai**: dipertahankan dan didokumentasikan (§6).
-5. ~~**Jalankan migrasi + test**~~ — **selesai**: 58 test lulus, seluruh route tersapu.
+5. ~~**Jalankan migrasi + test**~~ — **selesai**: 72 test lulus, seluruh route tersapu.
 6. **Opsional (belum diminta)**: berkas `CHANGELOG.md` dan pembaruan `.env.example`
    agar mencerminkan nilai demo (`APP_DEBUG=false`).
 
@@ -473,3 +528,10 @@ Smoke test 60 route x 3 peran        ->  15 test lulus, nol error 500
 | `e5a6c8d` | **Fase 6**: smoke test menyeluruh seluruh route & alur fitur |
 | `f094da9` | **Fase 6**: perbaikan hasil audit (transaksi, PATCH, NOT NULL, debug, stub) |
 | `27d813c` | **Fase 6**: README sesuai blueprint §15 |
+| `790c84b` | **Fase 6**: laporan implementasi disinkronkan dengan kondisi akhir |
+| `ced396c` | **Pembagian kerja**: `docs/pembagian-kerja/` (4 bagian adil sesuai §13) |
+| `d1024b1` | **Perbaikan T1 & T2**: kontrak transisi status final + batas nilai gaji |
+
+> Empat branch pembagian kerja dibuat dari basis ini (belum di-push):
+> `feature/1-auth-dan-integrasi`, `feature/2-company-profile`, `feature/3-jobs-crud`,
+> `feature/4-applications` — masing-masing berisi seluruh kode + dokumen pembagiannya.

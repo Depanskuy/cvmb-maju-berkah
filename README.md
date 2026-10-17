@@ -49,8 +49,14 @@ pending → processing → accepted | rejected
 
 - Hanya keempat nilai di atas yang sah (dikunci juga oleh `CHECK` constraint di database).
 - **Hanya admin** yang boleh mengubah status seleksi.
+- **Keputusan bersifat final**: setelah `accepted` atau `rejected`, status **tidak dapat**
+  dikembalikan ke `pending`/`processing` maupun ditukar ke keputusan lain. Admin masih dapat
+  menambah/memperbarui catatan untuk pelamar.
 - Pelamar hanya dapat **mengubah** atau **menarik** lamaran selama berstatus `pending`.
 - Lamaran yang ditarik (`withdrawn_at` terisi) **tidak** menghalangi pelamar melamar ulang.
+
+Kontrak transisi yang sama juga berlaku pada modul kerja sama (`pending → approved → archived`),
+feedback (`Baru → Ditindaklanjuti`, satu arah), dan project (`planning → ongoing → completed`).
 
 ---
 
@@ -242,7 +248,7 @@ php artisan test                          # seluruh suite
 php artisan test tests/Feature/FullRouteSmokeTest.php   # satu berkas
 ```
 
-Status saat ini: **58 test lulus / 358 assertion**.
+Status saat ini: **72 test lulus / 400 assertion**.
 
 | Berkas | Cakupan |
 |---|---|
@@ -250,6 +256,7 @@ Status saat ini: **58 test lulus / 358 assertion**.
 | `tests/Feature/BusinessModulesTest.php` | Modul bisnis: project, feedback, kerja sama |
 | `tests/Feature/SecurityAndAccessTest.php` | Keamanan akses per peran, aturan ubah/tarik lamaran, filter, profil perusahaan |
 | `tests/Feature/FullRouteSmokeTest.php` | **Smoke test** seluruh 60 route × 3 peran + semua alur tulis (deteksi 500) |
+| `tests/Feature/StatusTransitionTest.php` | **Kontrak transisi status** (lamaran, kerja sama, feedback, project) + batas gaji |
 
 Test memakai `RefreshDatabase` dan database terpisah `cv_maju_berkah_testing`
 (diatur di `phpunit.xml`), jadi database dev tidak tersentuh.
@@ -267,7 +274,7 @@ Sebuah fitur dianggap selesai bila seluruh poin berikut terpenuhi
 - [x] Hak akses benar (middleware `role` + pemeriksaan kepemilikan data/IDOR)
 - [x] Tidak menimbulkan error pada fitur lain (dibuktikan smoke test seluruh route)
 - [x] Tampilan responsif dan konsisten (satu sumber token desain)
-- [x] Diuji melalui test otomatis (58 test) **dan** smoke test seluruh route
+- [x] Diuji melalui test otomatis (72 test) **dan** smoke test seluruh route
 - [x] Kode sudah di-commit pada branch `feature/dashboard-admin-pelamar`
 - [x] Dokumentasi diperbarui bila ada kontrak yang berubah (dokumen ini + laporan implementasi)
 
