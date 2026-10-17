@@ -114,6 +114,22 @@ Kolom `withdrawn_at` menandai lamaran yang ditarik pelamar. Lamaran yang ditarik
   di view, CSS, seeder, dan test.
 - Inisial logo `MS` → `MB` pada halaman login, register, dan beranda.
 
+### Tema & desain (Fase 5)
+- **Deviasi blueprint §11.1 (disetujui pemilik produk)**: blueprint menyarankan tema gelap
+  (charcoal `#1A1A1A` / terracotta `#C98F7C`). Atas arahan pemilik produk melalui style guide
+  tersendiri, aplikasi memakai **tema terang dengan aksen biru `#3B82F6`**.
+- `public/css/tokens.css` menjadi **sumber tunggal** token desain: warna semantik, token
+  kompatibilitas Material 3, tipografi **Inter** (Heading 1 32px, Heading 2 24px, Heading 3
+  20px, body 16px, small 14px, caption 12px), spacing, radius, serta komponen bersama
+  (`.badge`, `.alert`, `.empty-state`, `.pagination`, `.btn-*`, `.form-*`).
+- Blok `:root` pada `home.css`, `pages.css`, dan `auth.css` dihapus supaya tidak ada duplikasi
+  definisi variabel; warna lama (navy `#00355f`, emas `#feae2c`) dipetakan ke palet baru.
+- Skala navy gelap (`#0F2E5B` / `#153F91` / `#2563EB`) dipakai untuk hero, band CTA, footer,
+  dan sidebar dashboard; permukaan halaman memakai `#F1F5F9` / `#FFFFFF`.
+- Konfigurasi Tailwind (CDN) pada `partials/tailwind.blade.php` disamakan dengan token tersebut
+  agar dashboard dan halaman publik konsisten.
+- `resources/views/welcome.blade.php` (view bawaan Laravel, tidak terpakai) dihapus.
+
 ### Konten & kebersihan kode
 - Halaman publik **Tentang** (`about`), **Layanan** (`services`), dan **Kontak** (`contact`)
   ditulis ulang agar konsisten dengan profil perusahaan **distribusi** (sebelumnya bernuansa
