@@ -76,7 +76,7 @@ Route::middleware(['auth', 'role:job_seeker'])->prefix('job-seeker')->name('job-
     Route::get('/applications', [SeekerApplicationController::class, 'index'])->name('applications.index');
     Route::get('/applications/{jobApplication}', [SeekerApplicationController::class, 'show'])->name('applications.show');
     Route::get('/applications/{jobApplication}/edit', [SeekerApplicationController::class, 'edit'])->name('applications.edit');
-    Route::put('/applications/{jobApplication}', [SeekerApplicationController::class, 'update'])->name('applications.update');
+    Route::patch('/applications/{jobApplication}', [SeekerApplicationController::class, 'update'])->name('applications.update');
     Route::delete('/applications/{jobApplication}', [SeekerApplicationController::class, 'withdraw'])->name('applications.destroy');
     Route::get('/applications/{jobApplication}/cv', [SeekerApplicationController::class, 'downloadCv'])->name('applications.cv');
 

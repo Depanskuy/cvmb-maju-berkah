@@ -533,7 +533,7 @@ class FullRouteSmokeTest extends TestCase
         $this->assertDatabaseHas('feedbacks', ['user_id' => $this->seeker->id]);
 
         // Perbarui lamaran yang masih pending (PUT)
-        $this->put(route('job-seeker.applications.update', $this->application), [
+        $this->patch(route('job-seeker.applications.update', $this->application), [
             'cover_letter' => 'Surat lamaran yang diperbarui.',
             'education'    => 'S1 Sistem Informasi',
             'skills'       => 'PHP, Laravel, PostgreSQL, Docker',

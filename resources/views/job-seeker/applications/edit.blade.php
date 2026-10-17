@@ -56,7 +56,7 @@
     <div class="p-6 sm:p-8 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
         <form method="POST" action="{{ route('job-seeker.applications.update', $jobApplication) }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
-            @method('PUT')
+            @method('PATCH')
 
             <div class="pb-4 border-b border-outline-variant/30">
                 <h2 class="text-base font-bold font-display text-on-surface">Perbarui Data Lamaran</h2>

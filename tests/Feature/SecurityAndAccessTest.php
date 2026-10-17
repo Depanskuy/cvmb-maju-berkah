@@ -101,7 +101,7 @@ class SecurityAndAccessTest extends TestCase
 
         $this->actingAs($other)->get(route('job-seeker.applications.show', $app))->assertStatus(403);
         $this->actingAs($other)->get(route('job-seeker.applications.edit', $app))->assertStatus(403);
-        $this->actingAs($other)->put(route('job-seeker.applications.update', $app), [])->assertStatus(403);
+        $this->actingAs($other)->patch(route('job-seeker.applications.update', $app), [])->assertStatus(403);
         $this->actingAs($other)->delete(route('job-seeker.applications.destroy', $app))->assertStatus(403);
     }
 
@@ -162,7 +162,7 @@ class SecurityAndAccessTest extends TestCase
 
         $this->actingAs($seeker)->get(route('job-seeker.applications.edit', $app))->assertStatus(200);
 
-        $response = $this->actingAs($seeker)->put(route('job-seeker.applications.update', $app), [
+        $response = $this->actingAs($seeker)->patch(route('job-seeker.applications.update', $app), [
             'education'    => 'S1 Manajemen',
             'skills'       => 'Negosiasi, Distribusi',
             'cover_letter' => 'Saya berminat bergabung.',

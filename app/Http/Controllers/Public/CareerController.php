@@ -9,6 +9,8 @@ use App\Models\Company;
 use App\Models\Job;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CareerController extends Controller
 {
@@ -175,38 +177,50 @@ class CareerController extends Controller
         $applicantName = $request->validated('applicant_name', $user->name);
         $applicantEmail = $user->email;
 
-        $jobApplication = JobApplication::create([
-            'job_seeker_id'     => $user->id,
-            'job_id'            => $job->id,
-            'applicant_name'    => $applicantName,
-            'applicant_email'   => $applicantEmail,
-            'applicant_phone'   => $request->validated('applicant_phone'),
-            'applicant_address' => $request->validated('applicant_address'),
-            'education'         => $request->validated('education'),
-            'skills'            => $request->validated('skills'),
-            'cover_letter'      => $request->validated('cover_letter'),
-            'cv_path'           => $cvPath,
-            'status'            => 'pending',
-        ]);
+        // §12 poin 9: ketiga penulisan di bawah harus berhasil sebagai satu unit.
+        try {
+            DB::transaction(function () use (
+                $request, $user, $job, $cvPath, $applicantName, $applicantEmail
+            ) {
+                JobApplication::create([
+                    'job_seeker_id'     => $user->id,
+                    'job_id'            => $job->id,
+                    'applicant_name'    => $applicantName,
+                    'applicant_email'   => $applicantEmail,
+                    'applicant_phone'   => $request->validated('applicant_phone'),
+                    'applicant_address' => $request->validated('applicant_address'),
+                    'education'         => $request->validated('education'),
+                    'skills'            => $request->validated('skills'),
+                    'cover_letter'      => $request->validated('cover_letter'),
+                    'cv_path'           => $cvPath,
+                    'status'            => 'pending',
+                ]);
 
-        ActivityLog::record(
-            'create',
-            'Lamaran Masuk',
-            "Pelamar {$applicantName} mengirimkan berkas lamaran untuk posisi {$job->title}.",
-            $user
-        );
+                ActivityLog::record(
+                    'create',
+                    'Lamaran Masuk',
+                    "Pelamar {$applicantName} mengirimkan berkas lamaran untuk posisi {$job->title}.",
+                    $user
+                );
 
-        // Simpan / update profil pencari kerja agar memudahkan lamaran berikutnya
-        $user->jobSeekerProfile()->updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'phone'     => $request->validated('applicant_phone'),
-                'address'   => $request->validated('applicant_address'),
-                'education' => $request->validated('education'),
-                'skills'    => $request->validated('skills'),
-                'cv_path'   => $cvPath,
-            ]
-        );
+                // Simpan / update profil pencari kerja agar memudahkan lamaran berikutnya
+                $user->jobSeekerProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'phone'     => $request->validated('applicant_phone'),
+                        'address'   => $request->validated('applicant_address'),
+                        'education' => $request->validated('education'),
+                        'skills'    => $request->validated('skills'),
+                        'cv_path'   => $cvPath,
+                    ]
+                );
+            });
+        } catch (\Throwable $e) {
+            // Jangan tinggalkan berkas CV yatim bila penyimpanan data gagal.
+            Storage::disk('local')->delete($cvPath);
+
+            throw $e;
+        }
 
         return redirect()
             ->route('job-seeker.applications.index')
