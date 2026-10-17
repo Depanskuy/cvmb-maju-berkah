@@ -211,17 +211,21 @@
         <div class="leaders-grid">
             @php
                 $leaders = [
-                    ['name' => 'Hendra Wijaya, S.E.',      'role' => 'Direktur Utama & Pendiri', 'spec' => 'Fokus: Strategi Distribusi, Pengembangan Jaringan Mitra, dan Manajemen Rantai Pasok.',      'tag' => '15+ Thn Pengalaman'],
-                    ['name' => 'Ratna Dewi, S.E., M.M.',   'role' => 'Direktur Operasional',      'spec' => 'Fokus: Manajemen Pergudangan, Logistik, dan Optimalisasi Rute Pengiriman.',                  'tag' => 'Ahli Supply Chain'],
-                    ['name' => 'Budi Santoso, S.T.',       'role' => 'Manajer Pengadaan',         'spec' => 'Fokus: Pengadaan Barang, Negosiasi dengan Pemasok, dan Kendali Kualitas Produk.',            'tag' => 'Jaringan 200+ Pemasok'],
-                    ['name' => 'Siti Aminah, S.E.',        'role' => 'Manajer Pelayanan Mitra',   'spec' => 'Fokus: Layanan Pelanggan, Penanganan Pesanan, dan Retensi Mitra Usaha.',                     'tag' => 'Layanan Responsif'],
+                    ['name' => 'Hendra Wijaya, S.E.',      'role' => 'Direktur Utama & Pendiri', 'spec' => 'Fokus: Strategi Distribusi, Pengembangan Jaringan Mitra, dan Manajemen Rantai Pasok.',      'tag' => '15+ Thn Pengalaman',   'photo' => 'images/team/hendra-wijaya.jpg'],
+                    ['name' => 'Ratna Dewi, S.E., M.M.',   'role' => 'Direktur Operasional',      'spec' => 'Fokus: Manajemen Pergudangan, Logistik, dan Optimalisasi Rute Pengiriman.',                  'tag' => 'Ahli Supply Chain',    'photo' => 'images/team/ratna-dewi.jpg'],
+                    ['name' => 'Budi Santoso, S.T.',       'role' => 'Manajer Pengadaan',         'spec' => 'Fokus: Pengadaan Barang, Negosiasi dengan Pemasok, dan Kendali Kualitas Produk.',            'tag' => 'Jaringan 200+ Pemasok', 'photo' => 'images/team/budi-santoso.jpg'],
+                    ['name' => 'Siti Aminah, S.E.',        'role' => 'Manajer Pelayanan Mitra',   'spec' => 'Fokus: Layanan Pelanggan, Penanganan Pesanan, dan Retensi Mitra Usaha.',                     'tag' => 'Layanan Responsif',    'photo' => 'images/team/siti-aminah.jpg'],
                 ];
             @endphp
 
             @foreach ($leaders as $l)
                 <div class="leader-card">
                     <div class="leader-card__photo">
-                        <span class="leader-card__initials">{{ strtoupper(substr($l['name'], 0, 2)) }}</span>
+                        @if (! empty($l['photo']) && file_exists(public_path($l['photo'])))
+                            <img src="{{ asset($l['photo']) }}" alt="Foto {{ $l['name'] }}"/>
+                        @else
+                            <span class="leader-card__initials">{{ strtoupper(substr($l['name'], 0, 2)) }}</span>
+                        @endif
                     </div>
                     <div class="leader-card__body">
                         <h3 class="leader-card__name">{{ $l['name'] }}</h3>
