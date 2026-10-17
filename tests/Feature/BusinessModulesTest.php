@@ -7,10 +7,13 @@ use App\Models\Feedback;
 use App\Models\Partnership;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BusinessModulesTest extends TestCase
 {
+    use RefreshDatabase;
+
     private function createAdmin(): User
     {
         return User::firstOrCreate(
@@ -82,11 +85,11 @@ class BusinessModulesTest extends TestCase
             'status'       => 'pending',
         ]);
 
-        $responseView = $this->actingAs($admin)->get(route('admin.kerja-sama.index'));
+        $responseView = $this->actingAs($admin)->get(route('company.partnership.index'));
         $responseView->assertStatus(200);
         $responseView->assertSee('CV Mitra Sejati Test');
 
-        $responseUpdate = $this->actingAs($admin)->patch(route('admin.kerja-sama.status.update', $partnership->id), [
+        $responseUpdate = $this->actingAs($admin)->patch(route('company.partnership.status.update', $partnership->id), [
             'status'     => 'approved',
             'admin_note' => 'Dokumen MoU sudah diverifikasi legal.',
         ]);
@@ -110,7 +113,7 @@ class BusinessModulesTest extends TestCase
         $projectName = 'Pembangunan Pabrik ' . uniqid();
 
         // 1. Tambah project baru
-        $responseCreate = $this->actingAs($admin)->post(route('admin.project.store'), [
+        $responseCreate = $this->actingAs($admin)->post(route('company.project.store'), [
             'name'        => $projectName,
             'client'      => 'PT Petroindo Sentosa',
             'category'    => 'Konstruksi Bangunan',
@@ -127,12 +130,12 @@ class BusinessModulesTest extends TestCase
         $this->assertEquals(15, $project->progress);
 
         // 2. Admin melihat index
-        $responseIndex = $this->actingAs($admin)->get(route('admin.project.index'));
+        $responseIndex = $this->actingAs($admin)->get(route('company.project.index'));
         $responseIndex->assertStatus(200);
         $responseIndex->assertSee($projectName);
 
         // 3. Update progres lapangan dari 15% ke 65%
-        $responseUpdate = $this->actingAs($admin)->put(route('admin.project.update', $project->id), [
+        $responseUpdate = $this->actingAs($admin)->put(route('company.project.update', $project->id), [
             'name'        => $projectName,
             'client'      => 'PT Petroindo Sentosa',
             'category'    => 'Konstruksi Bangunan',
@@ -153,7 +156,7 @@ class BusinessModulesTest extends TestCase
         ]);
 
         // 4. Hapus project
-        $responseDelete = $this->actingAs($admin)->delete(route('admin.project.destroy', $project->id));
+        $responseDelete = $this->actingAs($admin)->delete(route('company.project.destroy', $project->id));
         $responseDelete->assertSessionHas('success');
         $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
@@ -164,7 +167,7 @@ class BusinessModulesTest extends TestCase
         $admin = $this->createAdmin();
 
         // 1. Seeker kirim feedback
-        $responseSeeker = $this->actingAs($seeker)->post(route('seeker.feedback.store'), [
+        $responseSeeker = $this->actingAs($seeker)->post(route('job-seeker.feedback.store'), [
             'category' => 'Proses Rekrutmen',
             'rating'   => 5,
             'message'  => 'Proses interview sangat ramah dan transparan!',
@@ -177,18 +180,18 @@ class BusinessModulesTest extends TestCase
         $this->assertEquals('Baru', $feedback->status);
 
         // 2. Admin view feedback index
-        $responseAdmin = $this->actingAs($admin)->get(route('admin.feedback.index'));
+        $responseAdmin = $this->actingAs($admin)->get(route('company.feedback.index'));
         $responseAdmin->assertStatus(200);
         $responseAdmin->assertSee('Proses interview sangat ramah dan transparan!');
 
         // 3. Admin tandai ditindaklanjuti
-        $responseStatus = $this->actingAs($admin)->patch(route('admin.feedback.status.update', $feedback->id));
+        $responseStatus = $this->actingAs($admin)->patch(route('company.feedback.status.update', $feedback->id));
         $responseStatus->assertSessionHas('success');
         $feedback->refresh();
         $this->assertEquals('Ditindaklanjuti', $feedback->status);
 
         // 4. Admin hapus feedback
-        $responseDestroy = $this->actingAs($admin)->delete(route('admin.feedback.destroy', $feedback->id));
+        $responseDestroy = $this->actingAs($admin)->delete(route('company.feedback.destroy', $feedback->id));
         $responseDestroy->assertSessionHas('success');
         $this->assertDatabaseMissing('feedbacks', ['id' => $feedback->id]);
     }

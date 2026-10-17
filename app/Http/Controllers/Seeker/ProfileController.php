@@ -14,19 +14,19 @@ class ProfileController extends Controller
 {
     /**
      * READ: Tampilkan detail profil pencari kerja.
-     * GET /seeker/profile — route name: seeker.profile.show
+     * GET /seeker/profile — route name: job-seeker.profile.show
      */
     public function show(Request $request)
     {
         $user = $request->user();
         $profile = $user->jobSeekerProfile()->first();
 
-        return view('seeker.profile.show', compact('user', 'profile'));
+        return view('job-seeker.profile.show', compact('user', 'profile'));
     }
 
     /**
      * CREATE: Form pembuatan profil baru pencari kerja.
-     * GET /seeker/profile/create — route name: seeker.profile.create
+     * GET /seeker/profile/create — route name: job-seeker.profile.create
      */
     public function create(Request $request)
     {
@@ -34,23 +34,23 @@ class ProfileController extends Controller
 
         if ($user->jobSeekerProfile()->exists()) {
             return redirect()
-                ->route('seeker.profile.edit')
+                ->route('job-seeker.profile.edit')
                 ->with('info', 'Anda sudah memiliki profil. Silakan perbarui data profil Anda di bawah ini.');
         }
 
-        return view('seeker.profile.create', compact('user'));
+        return view('job-seeker.profile.create', compact('user'));
     }
 
     /**
      * CREATE (Store): Simpan data profil baru ke database.
-     * POST /seeker/profile — route name: seeker.profile.store
+     * POST /seeker/profile — route name: job-seeker.profile.store
      */
     public function store(Request $request)
     {
         $user = $request->user();
 
         if ($user->jobSeekerProfile()->exists()) {
-            return redirect()->route('seeker.profile.edit');
+            return redirect()->route('job-seeker.profile.edit');
         }
 
         $validated = $request->validate([
@@ -81,25 +81,25 @@ class ProfileController extends Controller
         ActivityLog::record('create', 'Profil Pelamar', "Pencari kerja {$user->name} membuat profil baru.", $user);
 
         return redirect()
-            ->route('seeker.profile.show')
+            ->route('job-seeker.profile.show')
             ->with('success', 'Profil pencari kerja berhasil dibuat.');
     }
 
     /**
      * UPDATE: Form edit profil pencari kerja.
-     * GET /seeker/profile/edit — route name: seeker.profile.edit
+     * GET /seeker/profile/edit — route name: job-seeker.profile.edit
      */
     public function edit(Request $request)
     {
         $user = $request->user();
         $profile = $user->profile(); // firstOrCreate
 
-        return view('seeker.profile.edit', compact('user', 'profile'));
+        return view('job-seeker.profile.edit', compact('user', 'profile'));
     }
 
     /**
      * UPDATE (Update): Simpan pembaruan data profil dan CV.
-     * PUT /seeker/profile — route name: seeker.profile.update
+     * PUT /seeker/profile — route name: job-seeker.profile.update
      */
     public function update(Request $request)
     {
@@ -146,13 +146,13 @@ class ProfileController extends Controller
         ActivityLog::record('update', 'Profil Pelamar', "Pencari kerja {$user->name} memperbarui data profil.", $user);
 
         return redirect()
-            ->route('seeker.profile.show')
+            ->route('job-seeker.profile.show')
             ->with('success', 'Profil pencari kerja berhasil diperbarui.');
     }
 
     /**
      * DELETE: Hapus/reset data profil pencari kerja dan berkas CV.
-     * DELETE /seeker/profile — route name: seeker.profile.destroy
+     * DELETE /seeker/profile — route name: job-seeker.profile.destroy
      */
     public function destroy(Request $request)
     {
@@ -169,13 +169,13 @@ class ProfileController extends Controller
         }
 
         return redirect()
-            ->route('seeker.profile.show')
+            ->route('job-seeker.profile.show')
             ->with('success', 'Data profil pencari kerja dan berkas CV berhasil dihapus.');
     }
 
     /**
      * Unduh berkas CV profil pencari kerja.
-     * GET /seeker/profile/cv — route name: seeker.profile.cv
+     * GET /seeker/profile/cv — route name: job-seeker.profile.cv
      */
     public function downloadCv(Request $request): StreamedResponse
     {

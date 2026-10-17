@@ -1,14 +1,14 @@
 {{-- resources/views/components/sidebar.blade.php --}}
 @php
     $menu = [
-        ['route' => 'admin.dashboard',        'match' => 'admin.dashboard',        'icon' => 'dashboard',      'label' => 'Dashboard'],
-        ['route' => 'admin.lowongan.index',   'match' => 'admin.lowongan.*',       'icon' => 'work',           'label' => 'Lowongan Kerja'],
-        ['route' => 'admin.lamaran.index',    'match' => 'admin.lamaran.*',        'icon' => 'assignment_ind', 'label' => 'Lamaran Masuk'],
-        ['route' => 'admin.kerja-sama.index', 'match' => 'admin.kerja-sama.*',     'icon' => 'handshake',      'label' => 'Pengajuan Kerja Sama'],
-        ['route' => 'admin.feedback.index',   'match' => 'admin.feedback.*',       'icon' => 'forum',          'label' => 'Feedback'],
-        ['route' => 'admin.project.index',    'match' => 'admin.project.*',        'icon' => 'folder_copy',    'label' => 'Project'],
-        ['route' => 'admin.log.index',        'match' => 'admin.log.*',            'icon' => 'history',        'label' => 'Log Aktivitas'],
-        ['route' => 'admin.pengaturan.index', 'match' => 'admin.pengaturan.*',     'icon' => 'settings',       'label' => 'Pengaturan'],
+        ['route' => 'company.dashboard',        'match' => 'company.dashboard',        'icon' => 'dashboard',      'label' => 'Dashboard'],
+        ['route' => 'company.jobs.index',   'match' => 'company.jobs.*',       'icon' => 'work',           'label' => 'Lowongan Kerja'],
+        ['route' => 'company.applications.index',    'match' => 'company.applications.*',        'icon' => 'assignment_ind', 'label' => 'Lamaran Masuk'],
+        ['route' => 'company.partnership.index', 'match' => 'company.partnership.*',     'icon' => 'handshake',      'label' => 'Pengajuan Kerja Sama'],
+        ['route' => 'company.feedback.index',   'match' => 'company.feedback.*',       'icon' => 'forum',          'label' => 'Feedback'],
+        ['route' => 'company.project.index',    'match' => 'company.project.*',        'icon' => 'folder_copy',    'label' => 'Project'],
+        ['route' => 'company.activity-log.index',        'match' => 'company.activity-log.*',            'icon' => 'history',        'label' => 'Log Aktivitas'],
+        ['route' => 'company.profile.edit', 'match' => 'company.profile.*',     'icon' => 'settings',       'label' => 'Pengaturan'],
     ];
 @endphp
 
@@ -17,9 +17,9 @@
     <div class="flex flex-col">
         {{-- Brand --}}
         <div class="h-16 px-space-lg flex items-center justify-between border-b border-white/10">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-space-md text-decoration-none">
+            <a href="{{ route('company.dashboard') }}" class="flex items-center gap-space-md text-decoration-none">
                 <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center font-headline-sm text-headline-sm text-on-primary-fixed font-bold tracking-wider shadow-sm">
-                    MS
+                    MB
                 </div>
                 <div class="flex flex-col">
                     <span class="font-title-md text-title-md text-on-primary tracking-tight leading-snug">CV Maju Berkah</span>

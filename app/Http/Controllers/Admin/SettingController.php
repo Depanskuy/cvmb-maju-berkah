@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use App\Models\CompanyProfile;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -13,26 +13,26 @@ class SettingController extends Controller
 {
     /**
      * Tampilkan halaman pengaturan sistem & profil perusahaan.
-     * GET /admin/pengaturan — route name: admin.pengaturan.index
+     * GET /company/profile — route name: company.profile.edit
      */
     public function index()
     {
-        $company = CompanyProfile::current();
+        $company = Company::current();
 
-        return view('admin.pengaturan.index', compact('company'));
+        return view('company.profile.index', compact('company'));
     }
 
     /**
      * Simpan pembaruan pengaturan profil perusahaan.
-     * PUT /admin/pengaturan — route name: admin.pengaturan.update
+     * PUT /company/profile — route name: company.profile.update
      */
     public function update(Request $request)
     {
-        $company = CompanyProfile::current();
+        $company = Company::current();
 
         $validated = $request->validate([
             'name'          => ['required', 'string', 'max:150'],
-            'slug'          => ['required', 'string', 'max:150', Rule::unique('company_profile', 'slug')->ignore($company->id)],
+            'slug'          => ['required', 'string', 'max:150', Rule::unique('companies', 'slug')->ignore($company->id)],
             'tagline'       => ['nullable', 'string', 'max:200'],
             'description'   => ['required', 'string'],
             'vision'        => ['nullable', 'string'],

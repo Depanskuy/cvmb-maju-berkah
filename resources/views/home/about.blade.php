@@ -1,4 +1,4 @@
-@php $company = \App\Models\CompanyProfile::current(); @endphp
+@php $company = \App\Models\Company::current(); @endphp
 
 <section class="about">
     <div class="container-public">

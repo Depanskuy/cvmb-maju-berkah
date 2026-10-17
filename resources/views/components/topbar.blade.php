@@ -19,13 +19,13 @@
         default                                        => $title ?? 'Dashboard',
     };
 
-    $pendingCount = \App\Models\Application::whereNull('withdrawn_at')
-        ->where('status', \App\Models\Application::STATUS_PENDING)
+    $pendingCount = \App\Models\JobApplication::whereNull('withdrawn_at')
+        ->where('status', \App\Models\JobApplication::STATUS_PENDING)
         ->count();
 
-    $recentPending = \App\Models\Application::with('jobListing')
+    $recentPending = \App\Models\JobApplication::with('job')
         ->whereNull('withdrawn_at')
-        ->where('status', \App\Models\Application::STATUS_PENDING)
+        ->where('status', \App\Models\JobApplication::STATUS_PENDING)
         ->latest()
         ->take(5)
         ->get();
@@ -40,7 +40,7 @@
         </button>
 
         <nav class="flex items-center gap-2 font-display text-sm sm:text-base">
-            <a href="{{ route('admin.dashboard') }}" class="text-on-surface-variant hover:text-primary transition-colors font-semibold">
+            <a href="{{ route('company.dashboard') }}" class="text-on-surface-variant hover:text-primary transition-colors font-semibold">
                 Admin
             </a>
             <span class="text-outline-variant font-bold text-sm">›</span>
@@ -82,13 +82,13 @@
 
                 <div id="admin-notif-list" class="max-h-80 overflow-y-auto divide-y divide-outline-variant/10 text-xs">
                     @forelse ($recentPending as $item)
-                        <a href="{{ route('admin.lamaran.show', $item) }}" onclick="clearAdminNotifBadge()" class="p-3.5 flex items-start gap-3 hover:bg-surface-container-low/60 transition-colors block">
+                        <a href="{{ route('company.applications.show', $item) }}" onclick="clearAdminNotifBadge()" class="p-3.5 flex items-start gap-3 hover:bg-surface-container-low/60 transition-colors block">
                             <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
                                 <span class="material-symbols-outlined text-[16px]">assignment_ind</span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="font-bold text-on-surface truncate">{{ $item->applicant_name }}</div>
-                                <div class="text-on-surface-variant truncate">Melamar: {{ $item->jobListing->title ?? 'Lowongan Kerja' }}</div>
+                                <div class="text-on-surface-variant truncate">Melamar: {{ $item->job->title ?? 'Lowongan Kerja' }}</div>
                                 <div class="text-[10px] text-outline mt-1">{{ $item->created_at->diffForHumans() }}</div>
                             </div>
                             <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0 mt-2"></span>
@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="p-3 border-t border-outline-variant/20 bg-surface-container-low/30 text-center">
-                    <a href="{{ route('admin.lamaran.index') }}" onclick="clearAdminNotifBadge()" class="text-xs font-semibold text-primary hover:underline">
+                    <a href="{{ route('company.applications.index') }}" onclick="clearAdminNotifBadge()" class="text-xs font-semibold text-primary hover:underline">
                         Lihat Seluruh Lamaran Masuk &rarr;
                     </a>
                 </div>

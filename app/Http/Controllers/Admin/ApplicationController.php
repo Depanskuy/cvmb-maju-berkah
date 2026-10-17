@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Application;
-use App\Models\JobListing;
+use App\Models\JobApplication;
+use App\Models\Company;
+use App\Models\Job;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,16 +15,36 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ApplicationController extends Controller
 {
     /**
+     * Id perusahaan milik admin yang login (BR-08).
+     */
+    private function companyId(Request $request): int
+    {
+        return $request->user()->company?->id ?? Company::current()->id;
+    }
+
+    /**
+     * Query dasar lamaran milik perusahaan admin yang login (BR-08).
+     */
+    private function scopedQuery(Request $request)
+    {
+        $companyId = $this->companyId($request);
+
+        return JobApplication::query()
+            ->whereHas('job', fn ($q) => $q->where('company_id', $companyId));
+    }
+
+    /**
      * Tampilkan daftar seluruh lamaran masuk di panel admin.
-     * GET /admin/lamaran — route name: admin.lamaran.index
+     * GET /company/applications — route name: company.applications.index
      */
     public function index(Request $request)
     {
-        $query = Application::with(['jobListing', 'user'])->latest();
+        $companyId = $this->companyId($request);
+        $query = $this->scopedQuery($request)->with(['job', 'jobSeeker'])->latest();
 
         // Filter lowongan
         if ($request->filled('job_id')) {
-            $query->where('job_listing_id', $request->input('job_id'));
+            $query->where('job_id', $request->input('job_id'));
         }
 
         // Filter status
@@ -47,54 +68,59 @@ class ApplicationController extends Controller
         }
 
         $applications = $query->paginate(15)->withQueryString();
-        $jobListings = JobListing::orderBy('title')->get();
+        $jobs = Job::where('company_id', $companyId)->orderBy('title')->get();
 
+        $base = $this->scopedQuery($request);
         $stats = [
-            'total'      => Application::count(),
-            'pending'    => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_PENDING)->count(),
-            'processing' => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING)->count(),
-            'accepted'   => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_ACCEPTED)->count(),
-            'rejected'   => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_REJECTED)->count(),
-            'withdrawn'  => Application::whereNotNull('withdrawn_at')->count(),
+            'total'      => (clone $base)->count(),
+            'pending'    => (clone $base)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_PENDING)->count(),
+            'processing' => (clone $base)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_PROCESSING)->count(),
+            'accepted'   => (clone $base)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_ACCEPTED)->count(),
+            'rejected'   => (clone $base)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_REJECTED)->count(),
+            'withdrawn'  => (clone $base)->whereNotNull('withdrawn_at')->count(),
         ];
 
-        return view('admin.lamaran.index', compact('applications', 'jobListings', 'stats'));
+        return view('company.applications.index', compact('applications', 'jobs', 'stats'));
     }
 
     /**
      * Tampilkan detail lamaran tertentu.
-     * GET /admin/lamaran/{application} — route name: admin.lamaran.show
+     * GET /company/applications/{jobApplication} — route name: company.applications.show
      */
-    public function show(Application $application)
+    public function show(Request $request, JobApplication $jobApplication)
     {
-        $application->load(['jobListing', 'user']);
+        abort_unless($jobApplication->job?->company_id === $this->companyId($request), 403);
 
-        return view('admin.lamaran.show', compact('application'));
+        $jobApplication->load(['job', 'jobSeeker']);
+
+        return view('company.applications.show', compact('jobApplication'));
     }
 
     /**
      * Perbarui status dan catatan review lamaran.
-     * PATCH /admin/lamaran/{application}/status — route name: admin.lamaran.status.update
+     * PATCH /company/applications/{jobApplication}/status — route name: company.applications.status
      */
-    public function updateStatus(Request $request, Application $application)
+    public function updateStatus(Request $request, JobApplication $jobApplication)
     {
-        if ($application->isWithdrawn()) {
+        abort_unless($jobApplication->job?->company_id === $this->companyId($request), 403);
+
+        if ($jobApplication->isWithdrawn()) {
             return back()->with('error', 'Lamaran ini telah dibatalkan oleh pelamar dan tidak dapat diubah lagi.');
         }
 
         $validated = $request->validate([
             'status' => ['required', Rule::in([
-                Application::STATUS_PENDING,
-                Application::STATUS_PROCESSING,
-                Application::STATUS_ACCEPTED,
-                Application::STATUS_REJECTED,
+                JobApplication::STATUS_PENDING,
+                JobApplication::STATUS_PROCESSING,
+                JobApplication::STATUS_ACCEPTED,
+                JobApplication::STATUS_REJECTED,
             ])],
             'review_note' => ['nullable', 'string', 'max:1000'],
         ], [
             'status.required' => 'Status lamaran wajib dipilih.',
         ]);
 
-        $application->update([
+        $jobApplication->update([
             'status'      => $validated['status'],
             'review_note' => $validated['review_note'] ?? null,
         ]);
@@ -102,24 +128,26 @@ class ApplicationController extends Controller
         ActivityLog::record(
             'status_change',
             'Lamaran Masuk',
-            "Admin memperbarui status lamaran {$application->applicant_name} untuk posisi {$application->jobListing->title} menjadi '{$application->status_label}'."
+            "Admin memperbarui status lamaran {$jobApplication->applicant_name} untuk posisi {$jobApplication->job->title} menjadi '{$jobApplication->status_label}'."
         );
 
-        return back()->with('success', "Status lamaran {$application->applicant_name} berhasil diperbarui menjadi {$application->status_label}.");
+        return back()->with('success', "Status lamaran {$jobApplication->applicant_name} berhasil diperbarui menjadi {$jobApplication->status_label}.");
     }
 
     /**
      * Unduh berkas CV pelamar.
-     * GET /admin/lamaran/{application}/cv — route name: admin.lamaran.cv
+     * GET /company/applications/{jobApplication}/cv — route name: company.applications.cv
      */
-    public function downloadCv(Application $application): StreamedResponse
+    public function downloadCv(Request $request, JobApplication $jobApplication): StreamedResponse
     {
-        if (! $application->cv_path || ! Storage::disk('local')->exists($application->cv_path)) {
+        abort_unless($jobApplication->job?->company_id === $this->companyId($request), 403);
+
+        if (! $jobApplication->cv_path || ! Storage::disk('local')->exists($jobApplication->cv_path)) {
             abort(404, 'Berkas CV tidak ditemukan di penyimpanan server.');
         }
 
-        $filename = 'CV_' . str($application->applicant_name)->slug('_') . '.pdf';
+        $filename = 'CV_' . str($jobApplication->applicant_name)->slug('_') . '.pdf';
 
-        return Storage::disk('local')->download($application->cv_path, $filename);
+        return Storage::disk('local')->download($jobApplication->cv_path, $filename);
     }
 }

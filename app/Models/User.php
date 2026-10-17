@@ -64,6 +64,12 @@ class User extends Authenticatable
     // Lamaran pekerjaan milik user ini
     public function applications()
     {
-        return $this->hasMany(Application::class);
+        return $this->hasMany(JobApplication::class, 'job_seeker_id');
+    }
+
+    // Perusahaan yang dikelola admin ini (company_admin)
+    public function company()
+    {
+        return $this->hasOne(Company::class);
     }
 }

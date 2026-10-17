@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $jobListing->title . ' — CV Maju Berkah')
+@section('title', $job->title . ' — CV Maju Berkah')
 
 @section('content')
 
@@ -18,7 +18,7 @@
                 <span>Kembali ke Lowongan</span>
             </a>
             <span class="career-hero__breadcrumb-sep">•</span>
-            <span class="career-hero__breadcrumb-current">Divisi {{ $jobListing->category }}</span>
+            <span class="career-hero__breadcrumb-current">Divisi {{ $job->category }}</span>
         </nav>
 
         <div class="career-hero__flex">
@@ -27,19 +27,19 @@
             <div>
                 <div class="career-hero__badges">
 
-                    @if ($jobListing->isOpenForApplication())
+                    @if ($job->isOpenForApplication())
                         <span class="career-hero__badge career-hero__badge--green">
                             <span class="career-hero__badge-dot"></span>
-                            {{ $jobListing->employment_type_label }}
+                            {{ $job->employment_type_label }}
                         </span>
                     @else
                         <span class="career-hero__badge career-hero__badge--neutral">
-                            {{ $jobListing->status_label }}
+                            {{ $job->status_label }}
                         </span>
                     @endif
 
                     <span class="career-hero__badge career-hero__badge--neutral">
-                        {{ $jobListing->category }}
+                        {{ $job->category }}
                     </span>
 
                     <span class="career-hero__badge career-hero__badge--gold">
@@ -47,21 +47,21 @@
                     </span>
                 </div>
 
-                <h1 class="career-hero__title">{{ $jobListing->title }}</h1>
+                <h1 class="career-hero__title">{{ $job->title }}</h1>
 
                 <div class="career-hero__meta">
                     <div class="career-hero__meta-item">
                         <span class="material-symbols-outlined">location_on</span>
-                        <span>{{ $jobListing->location }}</span>
+                        <span>{{ $job->location }}</span>
                     </div>
                     <div class="career-hero__meta-item">
                         <span class="material-symbols-outlined">event</span>
-                        <span>Batas Lamaran: {{ $jobListing->deadline->format('d M Y') }}</span>
+                        <span>Batas Lamaran: {{ $job->deadline->format('d M Y') }}</span>
                     </div>
-                    @if ($jobListing->salary_min && $jobListing->salary_max)
+                    @if ($job->salary_min && $job->salary_max)
                         <div class="career-hero__meta-item">
                             <span class="material-symbols-outlined">payments</span>
-                            <span>Rp {{ number_format($jobListing->salary_min, 0, ',', '.') }} - {{ number_format($jobListing->salary_max, 0, ',', '.') }}</span>
+                            <span>Rp {{ number_format($job->salary_min, 0, ',', '.') }} - {{ number_format($job->salary_max, 0, ',', '.') }}</span>
                         </div>
                     @endif
                 </div>
@@ -69,7 +69,7 @@
 
             {{-- Right: CTA --}}
             <div class="career-hero__cta">
-                @if ($jobListing->isOpenForApplication())
+                @if ($job->isOpenForApplication())
                     @auth
                         @if (auth()->user()->isAdmin())
                             <span class="career-hero__btn-primary" style="opacity:0.75; cursor:not-allowed; background:#47607a;" title="Admin perusahaan tidak dapat melamar pekerjaan">
@@ -77,13 +77,13 @@
                                 <span>Akun Admin (Tidak Dapat Melamar)</span>
                             </span>
                         @else
-                            <a href="{{ route('careers.apply.create', $jobListing) }}" class="career-hero__btn-primary">
+                            <a href="{{ route('careers.apply.create', $job) }}" class="career-hero__btn-primary">
                                 <span>Lamar Sekarang</span>
                                 <span class="material-symbols-outlined">arrow_forward</span>
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('careers.apply.create', $jobListing) }}" class="career-hero__btn-primary">
+                        <a href="{{ route('careers.apply.create', $job) }}" class="career-hero__btn-primary">
                             <span>Lamar Sekarang</span>
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </a>
@@ -112,18 +112,18 @@
             <div class="career-strip__left">
                 <div class="career-strip__item">
                     <span class="material-symbols-outlined">badge</span>
-                    <span>{{ $jobListing->employment_type_label }}</span>
+                    <span>{{ $job->employment_type_label }}</span>
                 </div>
                 <div class="career-strip__item">
                     <span class="material-symbols-outlined">schedule</span>
-                    <span>Diposting {{ $jobListing->created_at->diffForHumans() }}</span>
+                    <span>Diposting {{ $job->created_at->diffForHumans() }}</span>
                 </div>
             </div>
 
             <div class="career-strip__right">
                 <span class="career-strip__dot"></span>
                 <span>
-                    @if ($jobListing->isOpenForApplication())
+                    @if ($job->isOpenForApplication())
                         Posisi aktif • Terbuka untuk dilamar
                     @else
                         Lowongan sudah ditutup
@@ -162,7 +162,7 @@
                         Deskripsi Pekerjaan
                     </h2>
                     <div class="content-card__body">
-                        {!! nl2br(e($jobListing->description)) !!}
+                        {!! nl2br(e($job->description)) !!}
                     </div>
                 </article>
 
@@ -174,7 +174,7 @@
                         Kualifikasi &amp; Persyaratan
                     </h2>
                     <div class="content-card__body">
-                        <p class="requirements-list">{{ $jobListing->requirements }}</p>
+                        <p class="requirements-list">{{ $job->requirements }}</p>
                     </div>
                 </article>
 
@@ -217,7 +217,7 @@
                             <span class="material-symbols-outlined">badge</span>
                             <div>
                                 <div class="summary-row__label">Tipe Pekerjaan</div>
-                                <div class="summary-row__value">{{ $jobListing->employment_type_label }}</div>
+                                <div class="summary-row__value">{{ $job->employment_type_label }}</div>
                             </div>
                         </div>
 
@@ -225,7 +225,7 @@
                             <span class="material-symbols-outlined">location_on</span>
                             <div>
                                 <div class="summary-row__label">Lokasi</div>
-                                <div class="summary-row__value">{{ $jobListing->location }}</div>
+                                <div class="summary-row__value">{{ $job->location }}</div>
                             </div>
                         </div>
 
@@ -233,17 +233,17 @@
                             <span class="material-symbols-outlined">domain</span>
                             <div>
                                 <div class="summary-row__label">Kategori</div>
-                                <div class="summary-row__value">{{ $jobListing->category }}</div>
+                                <div class="summary-row__value">{{ $job->category }}</div>
                             </div>
                         </div>
 
-                        @if ($jobListing->salary_min && $jobListing->salary_max)
+                        @if ($job->salary_min && $job->salary_max)
                             <div class="summary-row">
                                 <span class="material-symbols-outlined">payments</span>
                                 <div>
                                     <div class="summary-row__label">Rentang Gaji</div>
                                     <div class="summary-row__value summary-row__value--primary">
-                                        Rp {{ number_format($jobListing->salary_min, 0, ',', '.') }} - {{ number_format($jobListing->salary_max, 0, ',', '.') }}
+                                        Rp {{ number_format($job->salary_min, 0, ',', '.') }} - {{ number_format($job->salary_max, 0, ',', '.') }}
                                     </div>
                                     <div class="summary-row__sub">Per bulan</div>
                                 </div>
@@ -254,15 +254,15 @@
                             <span class="material-symbols-outlined">event_busy</span>
                             <div>
                                 <div class="summary-row__label">Batas Lamaran</div>
-                                <div class="summary-row__value {{ $jobListing->isOpenForApplication() ? '' : 'summary-row__value--danger' }}">
-                                    {{ $jobListing->deadline->format('d F Y') }}
+                                <div class="summary-row__value {{ $job->isOpenForApplication() ? '' : 'summary-row__value--danger' }}">
+                                    {{ $job->deadline->format('d F Y') }}
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
-                    @if ($jobListing->isOpenForApplication())
+                    @if ($job->isOpenForApplication())
                         @auth
                             @if (auth()->user()->isAdmin())
                                 <div style="margin-top:1rem; padding:0.75rem 1rem; border-radius:8px; background:rgba(0,39,78,0.06); font-size:13px; color:var(--primary); text-align:center; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
@@ -270,13 +270,13 @@
                                     <span>Akun Admin Perusahaan tidak dapat melamar lowongan.</span>
                                 </div>
                             @else
-                                <a href="{{ route('careers.apply.create', $jobListing) }}" class="sidebar-cta">
+                                <a href="{{ route('careers.apply.create', $job) }}" class="sidebar-cta">
                                     <span>Lamar Sekarang</span>
                                     <span class="material-symbols-outlined">north_east</span>
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('careers.apply.create', $jobListing) }}" class="sidebar-cta">
+                            <a href="{{ route('careers.apply.create', $job) }}" class="sidebar-cta">
                                 <span>Lamar Sekarang</span>
                                 <span class="material-symbols-outlined">north_east</span>
                             </a>
@@ -288,7 +288,7 @@
                 <div class="sidebar-card">
                     <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;">
                         <div style="width:3rem; height:3rem; border-radius:0.75rem; background:var(--primary); color:#fff; font-family:var(--font-display); font-weight:700; display:flex; align-items:center; justify-content:center; font-size:1.125rem;">
-                            MS
+                            MB
                         </div>
                         <div>
                             <div style="font-family:var(--font-display); font-size:18px; font-weight:700; color:var(--primary);">

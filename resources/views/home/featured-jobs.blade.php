@@ -1,5 +1,5 @@
 @php
-    $featuredJobs = \App\Models\JobListing::publiclyVisible()->latest()->take(3)->get();
+    $featuredJobs = \App\Models\Job::publiclyVisible()->latest()->take(3)->get();
 @endphp
 
 <section class="featured-jobs">

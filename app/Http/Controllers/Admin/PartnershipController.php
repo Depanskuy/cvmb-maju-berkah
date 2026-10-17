@@ -11,7 +11,7 @@ class PartnershipController extends Controller
 {
     /**
      * Tampilkan daftar pengajuan kerja sama & kemitraan B2B.
-     * GET /admin/kerja-sama — route name: admin.kerja-sama.index
+     * GET /admin/kerja-sama — route name: company.partnership.index
      */
     public function index(Request $request)
     {
@@ -41,7 +41,7 @@ class PartnershipController extends Controller
             'archived' => Partnership::where('status', 'archived')->count(),
         ];
 
-        return view('admin.kerja-sama.index', compact('stats', 'proposals'));
+        return view('company.partnership.index', compact('stats', 'proposals'));
     }
 
     /**

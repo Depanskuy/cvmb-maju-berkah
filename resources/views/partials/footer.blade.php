@@ -1,4 +1,4 @@
-@php $company = \App\Models\CompanyProfile::current(); @endphp
+@php $company = \App\Models\Company::current(); @endphp
 
 <footer class="public-footer">
     <div class="container-public public-footer__inner">
@@ -8,7 +8,7 @@
             {{-- Brand --}}
             <div class="public-footer__brand">
                 <div class="public-footer__logo">
-                    <div class="public-footer__logo-icon"><span>MS</span></div>
+                    <div class="public-footer__logo-icon"><span>MB</span></div>
                     <span class="public-footer__name">{{ $company->name }}</span>
                 </div>
                 <p class="public-footer__desc">{{ $company->tagline }}</p>

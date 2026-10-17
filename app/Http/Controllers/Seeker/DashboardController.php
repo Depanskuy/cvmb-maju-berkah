@@ -3,41 +3,41 @@
 namespace App\Http\Controllers\Seeker;
 
 use App\Http\Controllers\Controller;
-use App\Models\Application;
-use App\Models\JobListing;
+use App\Models\JobApplication;
+use App\Models\Job;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     /**
      * Tampilkan halaman dashboard utama pencari kerja (Pelamar).
-     * GET /seeker/dashboard — route name: seeker.dashboard
+     * GET /seeker/dashboard — route name: job-seeker.dashboard
      */
     public function index(Request $request)
     {
         $user = $request->user();
 
         $stats = [
-            'total'      => Application::where('user_id', $user->id)->count(),
-            'pending'    => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PENDING)->count(),
-            'processing' => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING)->count(),
-            'accepted'   => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_ACCEPTED)->count(),
+            'total'      => JobApplication::where('job_seeker_id', $user->id)->count(),
+            'pending'    => JobApplication::where('job_seeker_id', $user->id)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_PENDING)->count(),
+            'processing' => JobApplication::where('job_seeker_id', $user->id)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_PROCESSING)->count(),
+            'accepted'   => JobApplication::where('job_seeker_id', $user->id)->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_ACCEPTED)->count(),
         ];
 
-        $recentApplications = Application::with('jobListing')
-            ->where('user_id', $user->id)
+        $recentApplications = JobApplication::with('job')
+            ->where('job_seeker_id', $user->id)
             ->latest()
             ->take(5)
             ->get();
 
         $profile = $user->jobSeekerProfile;
 
-        $availableJobs = JobListing::where('status', JobListing::STATUS_ACTIVE)
+        $availableJobs = Job::where('status', Job::STATUS_ACTIVE)
             ->whereDate('deadline', '>=', now()->toDateString())
             ->latest()
             ->take(4)
             ->get();
 
-        return view('seeker.dashboard', compact('stats', 'recentApplications', 'profile', 'availableJobs'));
+        return view('job-seeker.dashboard', compact('stats', 'recentApplications', 'profile', 'availableJobs'));
     }
 }

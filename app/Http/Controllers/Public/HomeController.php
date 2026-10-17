@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\CompanyProfile;
-use App\Models\JobListing;
+use App\Models\Company;
+use App\Models\Job;
 
 class HomeController extends Controller
 {
@@ -14,22 +14,22 @@ class HomeController extends Controller
         // Jika sudah login, arahkan langsung ke dashboard sesuai role
         if (auth()->check()) {
             return auth()->user()->isAdmin()
-                ? redirect()->route('admin.dashboard')
-                : redirect()->route('seeker.dashboard');
+                ? redirect()->route('company.dashboard')
+                : redirect()->route('job-seeker.dashboard');
         }
 
         // Ambil profil perusahaan (singleton, auto-create kalau belum ada)
-        $company = CompanyProfile::current();
+        $company = Company::current();
 
         // Ambil 3 lowongan aktif terbaru untuk ditonjolkan di beranda
-        $featuredJobs = JobListing::publiclyVisible()
+        $featuredJobs = Job::publiclyVisible()
             ->latest()
             ->take(3)
             ->get();
 
         // Statistik ringkas untuk hero section (opsional)
         $stats = [
-            'active_jobs' => JobListing::publiclyVisible()->count(),
+            'active_jobs' => Job::publiclyVisible()->count(),
         ];
 
         return view('home', compact('company', 'featuredJobs', 'stats'));

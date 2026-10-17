@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_profile', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->unique()->constrained('users')->nullOnDelete();
             $table->string('name')->default('CV Maju Berkah');
             $table->string('slug')->unique()->default('cv-maju-berkah');
             $table->string('tagline')->nullable();

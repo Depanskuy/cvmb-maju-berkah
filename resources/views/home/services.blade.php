@@ -1,5 +1,5 @@
 @php
-    $company = \App\Models\CompanyProfile::current();
+    $company = \App\Models\Company::current();
     $services = array_filter(array_map('trim', explode("\n", $company->services ?? '')));
 
     $serviceMeta = [

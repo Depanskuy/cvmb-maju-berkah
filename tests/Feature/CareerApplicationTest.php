@@ -2,23 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Models\Application;
-use App\Models\JobListing;
+use App\Models\JobApplication;
+use App\Models\Company;
+use App\Models\Job;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CareerApplicationTest extends TestCase
 {
-    private function getActiveJob(): JobListing
+    use RefreshDatabase;
+
+    private function getActiveJob(): Job
     {
-        $job = JobListing::where('status', 'active')
+        $job = Job::where('status', 'active')
             ->whereDate('deadline', '>=', now())
             ->first();
 
         if (! $job) {
-            $job = JobListing::create([
+            $job = Job::create([
+                'company_id'      => Company::current()->id,
                 'title'           => 'Arsitek Senior ' . uniqid(),
                 'category'        => 'Teknik & Konstruksi',
                 'location'        => 'Jakarta Pusat',
@@ -129,7 +134,7 @@ class CareerApplicationTest extends TestCase
 
         // Admin kirim POST lamaran -> 403
         $cvFile = UploadedFile::fake()->create('cv.pdf', 200, 'application/pdf');
-        $responsePost = $this->actingAs($admin)->post(route('careers.apply.store', $job), [
+        $responsePost = $this->actingAs($admin)->post(route('careers.apply', $job), [
             'applicant_name'  => $admin->name,
             'applicant_email' => $admin->email,
             'applicant_phone' => '08123456789',
@@ -161,7 +166,7 @@ class CareerApplicationTest extends TestCase
         $job = $this->getActiveJob();
         $cvFile = UploadedFile::fake()->create('curriculum_vitae.pdf', 300, 'application/pdf');
 
-        $response = $this->actingAs($seeker)->post(route('careers.apply.store', $job), [
+        $response = $this->actingAs($seeker)->post(route('careers.apply', $job), [
             'applicant_name'    => $seeker->name,
             'applicant_email'   => $seeker->email,
             'applicant_phone'   => '081234567890',
@@ -173,12 +178,12 @@ class CareerApplicationTest extends TestCase
             'consent'           => '1',
         ]);
 
-        $response->assertRedirect(route('seeker.applications'));
+        $response->assertRedirect(route('job-seeker.applications.index'));
         $response->assertSessionHas('apply_success');
 
         $this->assertDatabaseHas('applications', [
-            'user_id'         => $seeker->id,
-            'job_listing_id'  => $job->id,
+            'job_seeker_id' => $seeker->id,
+            'job_id'  => $job->id,
             'applicant_name'  => $seeker->name,
             'applicant_email' => $seeker->email,
             'status'          => 'pending',
@@ -193,9 +198,9 @@ class CareerApplicationTest extends TestCase
         $job = $this->getActiveJob();
 
         // Lamaran pertama
-        Application::create([
-            'user_id'         => $seeker->id,
-            'job_listing_id'  => $job->id,
+        JobApplication::create([
+            'job_seeker_id' => $seeker->id,
+            'job_id'  => $job->id,
             'applicant_name'  => $seeker->name,
             'applicant_email' => $seeker->email,
             'applicant_phone' => '081234567890',
@@ -208,7 +213,7 @@ class CareerApplicationTest extends TestCase
 
         $response = $this->actingAs($seeker)
             ->from($applyUrl)
-            ->post(route('careers.apply.store', $job), [
+            ->post(route('careers.apply', $job), [
                 'applicant_name'  => $seeker->name,
                 'applicant_email' => $seeker->email,
                 'applicant_phone' => '081234567890',
@@ -229,19 +234,19 @@ class CareerApplicationTest extends TestCase
         $cvFile = UploadedFile::fake()->create('curriculum_vitae.pdf', 300, 'application/pdf');
 
         // Form mencoba mengirim email korban
-        $response = $this->actingAs($seeker)->post(route('careers.apply.store', $job), [
+        $response = $this->actingAs($seeker)->post(route('careers.apply', $job), [
             'applicant_name'  => 'Hacker Name',
             'applicant_email' => $victimEmail,
             'applicant_phone' => '081234567890',
             'cv'              => $cvFile,
         ]);
 
-        $response->assertRedirect(route('seeker.applications'));
+        $response->assertRedirect(route('job-seeker.applications.index'));
 
         // Database HARUS tetap menyimpan email asli akun yang login, bukan email victim
         $this->assertDatabaseHas('applications', [
-            'user_id'         => $seeker->id,
-            'job_listing_id'  => $job->id,
+            'job_seeker_id' => $seeker->id,
+            'job_id'  => $job->id,
             'applicant_email' => $seeker->email,
         ]);
         $this->assertDatabaseMissing('applications', [
@@ -256,9 +261,9 @@ class CareerApplicationTest extends TestCase
         $seekerB = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $appA = Application::create([
-            'user_id'         => $seekerA->id,
-            'job_listing_id'  => $job->id,
+        $appA = JobApplication::create([
+            'job_seeker_id' => $seekerA->id,
+            'job_id'  => $job->id,
             'applicant_name'  => 'Pelamar A Rahasia',
             'applicant_email' => $seekerA->email,
             'applicant_phone' => '08111111111',
@@ -266,9 +271,9 @@ class CareerApplicationTest extends TestCase
             'status'          => 'pending',
         ]);
 
-        $appB = Application::create([
-            'user_id'         => $seekerB->id,
-            'job_listing_id'  => $job->id,
+        $appB = JobApplication::create([
+            'job_seeker_id' => $seekerB->id,
+            'job_id'  => $job->id,
             'applicant_name'  => 'Pelamar B Rahasia',
             'applicant_email' => $seekerB->email,
             'applicant_phone' => '08222222222',
@@ -276,7 +281,7 @@ class CareerApplicationTest extends TestCase
             'status'          => 'pending',
         ]);
 
-        $response = $this->actingAs($seekerA)->get(route('seeker.applications'));
+        $response = $this->actingAs($seekerA)->get(route('job-seeker.applications.index'));
 
         $response->assertStatus(200);
         $response->assertSee('Pelamar A Rahasia');
@@ -290,9 +295,9 @@ class CareerApplicationTest extends TestCase
         $seekerB = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $appB = Application::create([
-            'user_id'         => $seekerB->id,
-            'job_listing_id'  => $job->id,
+        $appB = JobApplication::create([
+            'job_seeker_id' => $seekerB->id,
+            'job_id'  => $job->id,
             'applicant_name'  => 'Pelamar B',
             'applicant_email' => $seekerB->email,
             'applicant_phone' => '08222222222',
@@ -301,11 +306,11 @@ class CareerApplicationTest extends TestCase
         ]);
 
         // Seeker A buka detail lamaran Seeker B -> 403
-        $responseShow = $this->actingAs($seekerA)->get(route('seeker.applications.show', $appB));
+        $responseShow = $this->actingAs($seekerA)->get(route('job-seeker.applications.show', $appB));
         $responseShow->assertStatus(403);
 
         // Seeker A batalkan lamaran Seeker B -> 403
-        $responseWithdraw = $this->actingAs($seekerA)->delete(route('seeker.applications.withdraw', $appB));
+        $responseWithdraw = $this->actingAs($seekerA)->delete(route('job-seeker.applications.destroy', $appB));
         $responseWithdraw->assertStatus(403);
     }
 
@@ -315,9 +320,9 @@ class CareerApplicationTest extends TestCase
         $seeker = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $app = Application::create([
-            'user_id'         => $seeker->id,
-            'job_listing_id'  => $job->id,
+        $app = JobApplication::create([
+            'job_seeker_id' => $seeker->id,
+            'job_id'  => $job->id,
             'applicant_name'  => $seeker->name,
             'applicant_email' => $seeker->email,
             'applicant_phone' => '081234567890',
@@ -325,7 +330,7 @@ class CareerApplicationTest extends TestCase
             'status'          => 'pending',
         ]);
 
-        $response = $this->actingAs($seeker)->delete(route('seeker.applications.withdraw', $app));
+        $response = $this->actingAs($seeker)->delete(route('job-seeker.applications.destroy', $app));
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -336,16 +341,16 @@ class CareerApplicationTest extends TestCase
     }
 
     // 12. Admin perusahaan dapat CRUD lowongan kerja
-    public function test_admin_can_manage_job_listings_crud(): void
+    public function test_admin_can_manage_jobs_crud(): void
     {
         $admin = $this->createAdmin();
 
         // 1. Dashboard
-        $this->actingAs($admin)->get(route('admin.dashboard'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.dashboard'))->assertStatus(200);
 
         // 2. Create Lowongan
         $title = 'Mandor Proyek Lapangan ' . uniqid();
-        $responseCreate = $this->actingAs($admin)->post(route('admin.lowongan.store'), [
+        $responseCreate = $this->actingAs($admin)->post(route('company.jobs.store'), [
             'title'           => $title,
             'category'        => 'Operasional Lapangan',
             'employment_type' => 'full_time',
@@ -355,13 +360,13 @@ class CareerApplicationTest extends TestCase
             'requirements'    => 'Pengalaman minimal 5 tahun sebagai mandor.',
             'status'          => 'active',
         ]);
-        $responseCreate->assertRedirect(route('admin.lowongan.index'));
+        $responseCreate->assertRedirect(route('company.jobs.index'));
 
-        $job = JobListing::where('title', $title)->first();
+        $job = Job::where('title', $title)->first();
         $this->assertNotNull($job);
 
         // 3. Update Lowongan
-        $responseUpdate = $this->actingAs($admin)->put(route('admin.lowongan.update', $job), [
+        $responseUpdate = $this->actingAs($admin)->put(route('company.jobs.update', $job), [
             'title'           => $title . ' (Revisi)',
             'category'        => 'Operasional Lapangan',
             'employment_type' => 'contract',
@@ -371,18 +376,18 @@ class CareerApplicationTest extends TestCase
             'requirements'    => 'Kualifikasi revisi.',
             'status'          => 'active',
         ]);
-        $responseUpdate->assertRedirect(route('admin.lowongan.index'));
+        $responseUpdate->assertRedirect(route('company.jobs.index'));
         $job->refresh();
         $this->assertEquals($title . ' (Revisi)', $job->title);
 
         // 4. Toggle Status
-        $this->actingAs($admin)->patch(route('admin.lowongan.toggle', $job));
+        $this->actingAs($admin)->patch(route('company.jobs.toggle', $job));
         $job->refresh();
         $this->assertEquals('closed', $job->status);
 
         // 5. Delete Lowongan
-        $this->actingAs($admin)->delete(route('admin.lowongan.destroy', $job));
-        $this->assertDatabaseMissing('job_listings', ['id' => $job->id]);
+        $this->actingAs($admin)->delete(route('company.jobs.destroy', $job));
+        $this->assertDatabaseMissing('jobs', ['id' => $job->id]);
     }
 
     // 13. Admin dapat melihat lamaran masuk dan memperbarui status yang langsung tercermin di portal Seeker
@@ -392,9 +397,9 @@ class CareerApplicationTest extends TestCase
         $seeker = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $app = Application::create([
-            'user_id'         => $seeker->id,
-            'job_listing_id'  => $job->id,
+        $app = JobApplication::create([
+            'job_seeker_id' => $seeker->id,
+            'job_id'  => $job->id,
             'applicant_name'  => $seeker->name,
             'applicant_email' => $seeker->email,
             'applicant_phone' => '081234567890',
@@ -403,13 +408,13 @@ class CareerApplicationTest extends TestCase
         ]);
 
         // Admin lihat daftar lamaran
-        $this->actingAs($admin)->get(route('admin.lamaran.index'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.applications.index'))->assertStatus(200);
 
         // Admin buka detail lamaran
-        $this->actingAs($admin)->get(route('admin.lamaran.show', $app))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.applications.show', $app))->assertStatus(200);
 
         // Admin ubah status menjadi accepted dan beri catatan review
-        $responseUpdate = $this->actingAs($admin)->patch(route('admin.lamaran.status.update', $app), [
+        $responseUpdate = $this->actingAs($admin)->patch(route('company.applications.status', $app), [
             'status'      => 'accepted',
             'review_note' => 'Selamat! Anda diterima sebagai kandidat terpilih. Harap hadir tgl 1.',
         ]);
@@ -420,7 +425,7 @@ class CareerApplicationTest extends TestCase
         $this->assertEquals('Selamat! Anda diterima sebagai kandidat terpilih. Harap hadir tgl 1.', $app->review_note);
 
         // Seeker login dan lihat Lamaran Saya
-        $responseSeeker = $this->actingAs($seeker)->get(route('seeker.applications'));
+        $responseSeeker = $this->actingAs($seeker)->get(route('job-seeker.applications.index'));
         $responseSeeker->assertStatus(200);
         $responseSeeker->assertSee('Diterima');
         $responseSeeker->assertSee('Selamat! Anda diterima sebagai kandidat terpilih. Harap hadir tgl 1.');
@@ -431,9 +436,9 @@ class CareerApplicationTest extends TestCase
     {
         $seeker = $this->createSeeker();
 
-        $this->actingAs($seeker)->get(route('admin.dashboard'))->assertStatus(403);
-        $this->actingAs($seeker)->get(route('admin.lowongan.index'))->assertStatus(403);
-        $this->actingAs($seeker)->get(route('admin.lamaran.index'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.dashboard'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.jobs.index'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.applications.index'))->assertStatus(403);
     }
 
     // 15. Custom error pages tampil tanpa error bawaan Laravel
@@ -447,7 +452,7 @@ class CareerApplicationTest extends TestCase
 
         // 403 test
         $seeker = $this->createSeeker();
-        $response403 = $this->actingAs($seeker)->get(route('admin.dashboard'));
+        $response403 = $this->actingAs($seeker)->get(route('company.dashboard'));
         $response403->assertStatus(403);
         $response403->assertSee('Akses Ditolak');
         $response403->assertSee('Error 403');
@@ -468,20 +473,20 @@ class CareerApplicationTest extends TestCase
 
         // --- 1. CREATE ---
         // Buka form create
-        $responseCreateForm = $this->actingAs($seeker)->get(route('seeker.profile.create'));
+        $responseCreateForm = $this->actingAs($seeker)->get(route('job-seeker.profile.create'));
         $responseCreateForm->assertStatus(200);
         $responseCreateForm->assertSee('Buat Profil Pencari Kerja');
 
         // Simpan data profil baru
         $cvFile = UploadedFile::fake()->create('profil_cv.pdf', 300, 'application/pdf');
-        $responseStore = $this->actingAs($seeker)->post(route('seeker.profile.store'), [
+        $responseStore = $this->actingAs($seeker)->post(route('job-seeker.profile.store'), [
             'phone'     => '08123456789',
             'address'   => 'Jl. Pahlawan No. 7, Surabaya',
             'education' => 'S1 Teknik Industri',
             'skills'    => 'Supply Chain, Lean Six Sigma',
             'cv'        => $cvFile,
         ]);
-        $responseStore->assertRedirect(route('seeker.profile.show'));
+        $responseStore->assertRedirect(route('job-seeker.profile.show'));
         $responseStore->assertSessionHas('success');
 
         $this->assertDatabaseHas('job_seeker_profiles', [
@@ -491,17 +496,17 @@ class CareerApplicationTest extends TestCase
         ]);
 
         // --- 2. READ ---
-        $responseShow = $this->actingAs($seeker)->get(route('seeker.profile.show'));
+        $responseShow = $this->actingAs($seeker)->get(route('job-seeker.profile.show'));
         $responseShow->assertStatus(200);
         $responseShow->assertSee('S1 Teknik Industri');
         $responseShow->assertSee('Supply Chain, Lean Six Sigma');
         $responseShow->assertSee('Jl. Pahlawan No. 7, Surabaya');
 
         // --- 3. UPDATE ---
-        $responseEditForm = $this->actingAs($seeker)->get(route('seeker.profile.edit'));
+        $responseEditForm = $this->actingAs($seeker)->get(route('job-seeker.profile.edit'));
         $responseEditForm->assertStatus(200);
 
-        $responseUpdate = $this->actingAs($seeker)->put(route('seeker.profile.update'), [
+        $responseUpdate = $this->actingAs($seeker)->put(route('job-seeker.profile.update'), [
             'name'      => $seeker->name . ' M.T.',
             'email'     => $seeker->email,
             'phone'     => '081999888777',
@@ -509,7 +514,7 @@ class CareerApplicationTest extends TestCase
             'education' => 'S2 Teknik Industri',
             'skills'    => 'Supply Chain, Lean Six Sigma, ERP SAP',
         ]);
-        $responseUpdate->assertRedirect(route('seeker.profile.show'));
+        $responseUpdate->assertRedirect(route('job-seeker.profile.show'));
         $responseUpdate->assertSessionHas('success');
 
         $this->assertDatabaseHas('job_seeker_profiles', [
@@ -520,8 +525,8 @@ class CareerApplicationTest extends TestCase
         ]);
 
         // --- 4. DELETE ---
-        $responseDelete = $this->actingAs($seeker)->delete(route('seeker.profile.destroy'));
-        $responseDelete->assertRedirect(route('seeker.profile.show'));
+        $responseDelete = $this->actingAs($seeker)->delete(route('job-seeker.profile.destroy'));
+        $responseDelete->assertRedirect(route('job-seeker.profile.show'));
         $responseDelete->assertSessionHas('success');
 
         $this->assertDatabaseMissing('job_seeker_profiles', [
@@ -534,10 +539,10 @@ class CareerApplicationTest extends TestCase
     {
         $admin = $this->createAdmin();
 
-        $this->actingAs($admin)->get(route('seeker.dashboard'))->assertStatus(403);
-        $this->actingAs($admin)->get(route('seeker.applications'))->assertStatus(403);
-        $this->actingAs($admin)->get(route('seeker.profile.show'))->assertStatus(403);
-        $this->actingAs($admin)->get(route('seeker.profile.edit'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.dashboard'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.applications.index'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.profile.show'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.profile.edit'))->assertStatus(403);
     }
 
     // 18. Pencari kerja dapat melihat dashboard pencari kerja miliknya
@@ -546,7 +551,7 @@ class CareerApplicationTest extends TestCase
         $seeker = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $response = $this->actingAs($seeker)->get(route('seeker.dashboard'));
+        $response = $this->actingAs($seeker)->get(route('job-seeker.dashboard'));
         $response->assertStatus(200);
         $response->assertSee('Portal Pelamar');
         $response->assertSee($seeker->name);
@@ -554,13 +559,13 @@ class CareerApplicationTest extends TestCase
         $response->assertSee('Menunggu Review');
     }
 
-    // 19. Admin dapat melihat halaman detail lowongan kerja (admin.lowongan.show)
-    public function test_admin_can_view_job_listing_detail(): void
+    // 19. Admin dapat melihat halaman detail lowongan kerja (company.jobs.show)
+    public function test_admin_can_view_job_detail(): void
     {
         $admin = $this->createAdmin();
         $job = $this->getActiveJob();
 
-        $response = $this->actingAs($admin)->get(route('admin.lowongan.show', $job));
+        $response = $this->actingAs($admin)->get(route('company.jobs.show', $job));
         $response->assertStatus(200);
         $response->assertSee($job->title);
         $response->assertSee('Deskripsi Pekerjaan');
@@ -568,12 +573,12 @@ class CareerApplicationTest extends TestCase
     }
 
     // 20. Pencari kerja dilarang mengakses halaman detail lowongan admin
-    public function test_seeker_is_forbidden_from_admin_job_listing_detail(): void
+    public function test_seeker_is_forbidden_from_admin_job_detail(): void
     {
         $seeker = $this->createSeeker();
         $job = $this->getActiveJob();
 
-        $response = $this->actingAs($seeker)->get(route('admin.lowongan.show', $job));
+        $response = $this->actingAs($seeker)->get(route('company.jobs.show', $job));
         $response->assertStatus(403);
     }
 
@@ -583,8 +588,8 @@ class CareerApplicationTest extends TestCase
         $seeker = $this->createSeeker();
         $admin = $this->createAdmin();
 
-        $this->actingAs($seeker)->get(route('home'))->assertRedirect(route('seeker.dashboard'));
-        $this->actingAs($admin)->get(route('home'))->assertRedirect(route('admin.dashboard'));
+        $this->actingAs($seeker)->get(route('home'))->assertRedirect(route('job-seeker.dashboard'));
+        $this->actingAs($admin)->get(route('home'))->assertRedirect(route('company.dashboard'));
     }
 
     // 22. Pencari kerja dapat menjelajahi lowongan di dalam portal pelamar (tanpa keluar ke publik)
@@ -594,17 +599,17 @@ class CareerApplicationTest extends TestCase
         $job = $this->getActiveJob();
 
         // Katalog lowongan portal pelamar
-        $responseIndex = $this->actingAs($seeker)->get(route('seeker.jobs'));
+        $responseIndex = $this->actingAs($seeker)->get(route('job-seeker.jobs.index'));
         $responseIndex->assertStatus(200);
         $responseIndex->assertSee($job->title);
 
         // Detail lowongan portal pelamar
-        $responseShow = $this->actingAs($seeker)->get(route('seeker.jobs.show', $job));
+        $responseShow = $this->actingAs($seeker)->get(route('job-seeker.jobs.show', $job));
         $responseShow->assertStatus(200);
         $responseShow->assertSee($job->title);
 
         // Form lamar lowongan portal pelamar
-        $responseApply = $this->actingAs($seeker)->get(route('seeker.jobs.apply', $job));
+        $responseApply = $this->actingAs($seeker)->get(route('job-seeker.jobs.apply', $job));
         $responseApply->assertStatus(200);
         $responseApply->assertSee($job->title);
     }
@@ -614,9 +619,9 @@ class CareerApplicationTest extends TestCase
     {
         $admin = $this->createAdmin();
 
-        $this->actingAs($admin)->get(route('admin.kerja-sama.index'))->assertStatus(200);
-        $this->actingAs($admin)->get(route('admin.feedback.index'))->assertStatus(200);
-        $this->actingAs($admin)->get(route('admin.project.index'))->assertStatus(200);
-        $this->actingAs($admin)->get(route('admin.pengaturan.index'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.partnership.index'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.feedback.index'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.project.index'))->assertStatus(200);
+        $this->actingAs($admin)->get(route('company.profile.edit'))->assertStatus(200);
     }
 }

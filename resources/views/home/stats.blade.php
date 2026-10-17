@@ -23,7 +23,7 @@
             <div class="stat-item">
                 <span class="material-symbols-outlined">work</span>
                 <div class="stat-item__value">
-                    {{ \App\Models\JobListing::publiclyVisible()->count() }}
+                    {{ \App\Models\Job::publiclyVisible()->count() }}
                 </div>
                 <div class="stat-item__label">Lowongan Aktif</div>
             </div>

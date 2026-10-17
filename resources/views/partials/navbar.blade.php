@@ -2,7 +2,7 @@
     <div class="container-public public-navbar__inner">
 
         <a href="{{ route('home') }}" class="public-navbar__brand">
-            <div class="public-navbar__logo"><span>MS</span></div>
+            <div class="public-navbar__logo"><span>MB</span></div>
             <span class="public-navbar__name">CV Maju Berkah</span>
         </a>
 
@@ -25,17 +25,17 @@
 
             @auth
                 @if (auth()->user()->isSeeker())
-                    <a href="{{ route('seeker.dashboard') }}"
-                       class="public-navbar__link {{ request()->routeIs('seeker.dashboard') ? 'is-active' : '' }}"
+                    <a href="{{ route('job-seeker.dashboard') }}"
+                       class="public-navbar__link {{ request()->routeIs('job-seeker.dashboard') ? 'is-active' : '' }}"
                        style="font-weight:600; color:var(--primary);">
                         Dashboard Saya
                     </a>
-                    <a href="{{ route('seeker.applications') }}"
-                       class="public-navbar__link {{ request()->routeIs('seeker.applications*') ? 'is-active' : '' }}">
+                    <a href="{{ route('job-seeker.applications.index') }}"
+                       class="public-navbar__link {{ request()->routeIs('job-seeker.applications.index*') ? 'is-active' : '' }}">
                         Lamaran Saya
                     </a>
                 @elseif (auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}"
+                    <a href="{{ route('company.dashboard') }}"
                        class="public-navbar__link {{ request()->routeIs('admin.*') ? 'is-active' : '' }}"
                        style="font-weight:600; color:var(--primary);">
                         Panel Admin
@@ -54,12 +54,12 @@
                 </a>
             @else
                 @if (auth()->user()->isSeeker())
-                    <a href="{{ route('seeker.dashboard') }}"
+                    <a href="{{ route('job-seeker.dashboard') }}"
                        class="public-navbar__cta"
                        style="padding:0.4rem 1rem; font-size:13px; background:var(--primary);">
                         Dashboard
                     </a>
-                    <a href="{{ route('seeker.profile.show') }}"
+                    <a href="{{ route('job-seeker.profile.show') }}"
                        class="public-navbar__link"
                        style="display:inline-flex; align-items:center; gap:0.35rem; font-weight:600; font-size:14px;"
                        title="Lihat &amp; Kelola Profil Pencari Kerja">
@@ -67,7 +67,7 @@
                         <span class="hidden md:inline">{{ \Illuminate\Support\Str::limit(auth()->user()->name, 14) }}</span>
                     </a>
                 @else
-                    <a href="{{ route('admin.dashboard') }}"
+                    <a href="{{ route('company.dashboard') }}"
                        class="public-navbar__cta"
                        style="padding:0.4rem 1rem; font-size:13px;">
                         Dashboard Admin

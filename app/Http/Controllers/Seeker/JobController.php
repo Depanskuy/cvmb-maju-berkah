@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Seeker;
 
 use App\Http\Controllers\Controller;
-use App\Models\JobListing;
+use App\Models\Job;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
     /**
      * Tampilkan katalog lowongan kerja di dalam portal pencari kerja.
-     * GET /seeker/jobs — route name: seeker.jobs
+     * GET /seeker/jobs — route name: job-seeker.jobs.index
      */
     public function index(Request $request)
     {
-        $query = JobListing::publiclyVisible();
+        $query = Job::publiclyVisible();
 
         // Filter keyword
         if ($request->filled('q')) {
@@ -50,7 +50,7 @@ class JobController extends Controller
 
         $jobs = $query->paginate(9)->withQueryString();
 
-        $categories = JobListing::publiclyVisible()
+        $categories = Job::publiclyVisible()
             ->select('category')
             ->selectRaw('count(*) as count')
             ->groupBy('category')
@@ -59,53 +59,53 @@ class JobController extends Controller
 
         $appliedJobIds = auth()->user()->applications()
             ->whereNull('withdrawn_at')
-            ->pluck('job_listing_id')
+            ->pluck('job_id')
             ->toArray();
 
-        return view('seeker.jobs.index', compact('jobs', 'categories', 'appliedJobIds'));
+        return view('job-seeker.jobs.index', compact('jobs', 'categories', 'appliedJobIds'));
     }
 
     /**
      * Tampilkan rincian lowongan kerja di dalam portal pencari kerja.
-     * GET /seeker/jobs/{jobListing} — route name: seeker.jobs.show
+     * GET /seeker/jobs/{job} — route name: job-seeker.jobs.show
      */
-    public function show(JobListing $jobListing)
+    public function show(Job $job)
     {
         abort_unless(
-            $jobListing->status === 'active' || $jobListing->status === 'closed',
+            $job->status === 'active' || $job->status === 'closed',
             404
         );
 
         $hasApplied = auth()->user()->applications()
-            ->where('job_listing_id', $jobListing->id)
+            ->where('job_id', $job->id)
             ->whereNull('withdrawn_at')
             ->first();
 
-        return view('seeker.jobs.show', compact('jobListing', 'hasApplied'));
+        return view('job-seeker.jobs.show', compact('job', 'hasApplied'));
     }
 
     /**
      * Form lamar lowongan kerja di dalam portal pencari kerja.
-     * GET /seeker/jobs/{jobListing}/apply — route name: seeker.jobs.apply
+     * GET /seeker/jobs/{job}/apply — route name: job-seeker.jobs.apply
      */
-    public function apply(JobListing $jobListing)
+    public function apply(Job $job)
     {
-        abort_unless($jobListing->canAcceptApplications(), 403, 'Lowongan ini sudah tidak menerima lamaran.');
+        abort_unless($job->canAcceptApplications(), 403, 'Lowongan ini sudah tidak menerima lamaran.');
 
         $existing = auth()->user()->applications()
-            ->where('job_listing_id', $jobListing->id)
+            ->where('job_id', $job->id)
             ->whereNull('withdrawn_at')
             ->first();
 
         if ($existing) {
             return redirect()
-                ->route('seeker.applications.show', $existing)
+                ->route('job-seeker.applications.show', $existing)
                 ->with('info', 'Anda sudah pernah mengajukan lamaran untuk posisi ini.');
         }
 
         $user = auth()->user();
         $profile = $user->profile();
 
-        return view('seeker.jobs.apply', compact('jobListing', 'user', 'profile'));
+        return view('job-seeker.jobs.apply', compact('job', 'user', 'profile'));
     }
 }

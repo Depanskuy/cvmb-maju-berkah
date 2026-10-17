@@ -11,7 +11,7 @@ class ProjectController extends Controller
 {
     /**
      * Tampilkan daftar proyek & portofolio CV Maju Berkah.
-     * GET /admin/project — route name: admin.project.index
+     * GET /admin/project — route name: company.project.index
      */
     public function index(Request $request)
     {
@@ -39,7 +39,7 @@ class ProjectController extends Controller
             'planning'       => Project::where('status', 'planning')->count(),
         ];
 
-        return view('admin.project.index', compact('stats', 'projects'));
+        return view('company.project.index', compact('stats', 'projects'));
     }
 
     /**

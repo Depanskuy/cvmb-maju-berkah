@@ -61,7 +61,7 @@ class RegisterController extends Controller
             $user
         );
 
-        return redirect()->intended(route('seeker.dashboard'))
+        return redirect()->intended(route('job-seeker.dashboard'))
             ->with('success', 'Selamat datang, ' . $user->name . '! Akun pencari kerja Anda berhasil dibuat.');
     }
 }

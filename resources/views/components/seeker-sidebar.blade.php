@@ -1,10 +1,10 @@
 {{-- resources/views/components/seeker-sidebar.blade.php --}}
 @php
     $menu = [
-        ['route' => 'seeker.dashboard',    'match' => 'seeker.dashboard',      'icon' => 'dashboard',      'label' => 'Dashboard'],
-        ['route' => 'seeker.applications', 'match' => 'seeker.applications*', 'icon' => 'assignment_ind', 'label' => 'Lamaran Saya'],
-        ['route' => 'seeker.jobs',         'match' => 'seeker.jobs*',         'icon' => 'travel_explore',  'label' => 'Jelajahi Lowongan'],
-        ['route' => 'seeker.profile.show', 'match' => 'seeker.profile.*',      'icon' => 'account_circle', 'label' => 'Profil Saya'],
+        ['route' => 'job-seeker.dashboard',    'match' => 'job-seeker.dashboard',      'icon' => 'dashboard',      'label' => 'Dashboard'],
+        ['route' => 'job-seeker.applications.index', 'match' => 'job-seeker.applications.index*', 'icon' => 'assignment_ind', 'label' => 'Lamaran Saya'],
+        ['route' => 'job-seeker.jobs.index',         'match' => 'job-seeker.jobs.index*',         'icon' => 'travel_explore',  'label' => 'Jelajahi Lowongan'],
+        ['route' => 'job-seeker.profile.show', 'match' => 'job-seeker.profile.*',      'icon' => 'account_circle', 'label' => 'Profil Saya'],
     ];
 @endphp
 
@@ -13,9 +13,9 @@
     <div class="flex flex-col">
         {{-- Brand --}}
         <div class="h-16 px-space-lg flex items-center justify-between border-b border-white/10">
-            <a href="{{ route('seeker.dashboard') }}" class="flex items-center gap-space-md text-decoration-none">
+            <a href="{{ route('job-seeker.dashboard') }}" class="flex items-center gap-space-md text-decoration-none">
                 <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center font-headline-sm text-headline-sm text-on-primary-fixed font-bold tracking-wider shadow-sm">
-                    MS
+                    MB
                 </div>
                 <div class="flex flex-col">
                     <span class="font-title-md text-title-md text-on-primary tracking-tight leading-snug">CV Maju Berkah</span>

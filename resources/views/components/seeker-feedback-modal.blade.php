@@ -16,7 +16,7 @@
             </button>
         </div>
 
-        <form method="POST" action="{{ route('seeker.feedback.store') }}">
+        <form method="POST" action="{{ route('job-seeker.feedback.store') }}">
             @csrf
 
             <div class="p-6 space-y-4">

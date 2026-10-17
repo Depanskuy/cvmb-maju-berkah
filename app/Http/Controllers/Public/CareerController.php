@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreApplicationRequest;
-use App\Models\Application;
-use App\Models\CompanyProfile;
-use App\Models\JobListing;
+use App\Models\JobApplication;
+use App\Models\Company;
+use App\Models\Job;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
@@ -21,11 +21,11 @@ class CareerController extends Controller
         // Pengguna yang sudah login diarahkan ke portal sesuai role
         if (auth()->check()) {
             return auth()->user()->isAdmin()
-                ? redirect()->route('admin.lowongan.index')
-                : redirect()->route('seeker.jobs');
+                ? redirect()->route('company.jobs.index')
+                : redirect()->route('job-seeker.jobs.index');
         }
 
-        $query = JobListing::publiclyVisible();
+        $query = Job::publiclyVisible();
 
         // Filter keyword
         if ($request->filled('q')) {
@@ -61,7 +61,7 @@ class CareerController extends Controller
 
         $jobs = $query->paginate(9)->withQueryString();
 
-        $categories = JobListing::publiclyVisible()
+        $categories = Job::publiclyVisible()
             ->select('category')
             ->selectRaw('count(*) as count')
             ->groupBy('category')
@@ -73,42 +73,42 @@ class CareerController extends Controller
 
     /**
      * Detail lowongan.
-     * GET /careers/{jobListing} — route name: careers.show
+     * GET /careers/{job} — route name: careers.show
      */
-    public function show(JobListing $jobListing)
+    public function show(Job $job)
     {
         // Pengguna yang sudah login diarahkan ke portal internal
         if (auth()->check()) {
             return auth()->user()->isAdmin()
-                ? redirect()->route('admin.lowongan.show', $jobListing)
-                : redirect()->route('seeker.jobs.show', $jobListing);
+                ? redirect()->route('company.jobs.show', $job)
+                : redirect()->route('job-seeker.jobs.show', $job);
         }
 
         // Hanya tampilkan lowongan yang boleh dilihat publik
         abort_unless(
-            $jobListing->status === 'active' || $jobListing->status === 'closed',
+            $job->status === 'active' || $job->status === 'closed',
             404
         );
 
-        $company = CompanyProfile::current();
+        $company = Company::current();
 
-        return view('careers.show', compact('jobListing', 'company'));
+        return view('careers.show', compact('job', 'company'));
     }
 
     /**
      * Form lamaran lowongan.
-     * GET /career/apply-job/{jobListing} — route name: careers.apply.create
+     * GET /career/apply-job/{job} — route name: careers.apply.create
      */
-    public function apply(JobListing $jobListing)
+    public function apply(Job $job)
     {
         // Hanya tampilkan lowongan yang boleh dilihat publik
         abort_unless(
-            $jobListing->status === 'active' || $jobListing->status === 'closed',
+            $job->status === 'active' || $job->status === 'closed',
             404
         );
 
         abort_unless(
-            $jobListing->isOpenForApplication(),
+            $job->isOpenForApplication(),
             403,
             'Lowongan sudah ditutup atau melewati deadline.'
         );
@@ -129,14 +129,14 @@ class CareerController extends Controller
         $user = auth()->user();
         $profile = $user->profile();
 
-        return view('careers.apply-job', compact('jobListing', 'user', 'profile'));
+        return view('careers.apply-job', compact('job', 'user', 'profile'));
     }
 
     /**
      * Submit lamaran (wajib login sebagai pencari kerja).
-     * POST /careers/{jobListing}/apply — route name: careers.apply.store
+     * POST /careers/{job}/apply — route name: careers.apply
      */
-    public function storeApplication(StoreApplicationRequest $request, JobListing $jobListing)
+    public function storeApplication(StoreApplicationRequest $request, Job $job)
     {
         $user = $request->user();
 
@@ -148,14 +148,14 @@ class CareerController extends Controller
         );
 
         // BR-03: Cek lowongan masih aktif & belum deadline
-        abort_unless($jobListing->isOpenForApplication(), 403, 'Lowongan sudah ditutup atau melewati deadline.');
+        abort_unless($job->isOpenForApplication(), 403, 'Lowongan sudah ditutup atau melewati deadline.');
 
-        // BR-02: Cegah lamaran ganda by user_id atau email untuk lowongan yang sama
+        // BR-02: Cegah lamaran ganda by job_seeker_id atau email untuk lowongan yang sama
         // Lamaran yang sudah ditarik (withdrawn_at) tidak dihitung agar pelamar dapat melamar ulang.
-        $exists = Application::where('job_listing_id', $jobListing->id)
+        $exists = JobApplication::where('job_id', $job->id)
             ->whereNull('withdrawn_at')
             ->where(function ($q) use ($user) {
-                $q->where('user_id', $user->id)
+                $q->where('job_seeker_id', $user->id)
                   ->orWhere('applicant_email', $user->email);
             })
             ->exists();
@@ -175,9 +175,9 @@ class CareerController extends Controller
         $applicantName = $request->validated('applicant_name', $user->name);
         $applicantEmail = $user->email;
 
-        $application = Application::create([
-            'user_id'           => $user->id,
-            'job_listing_id'    => $jobListing->id,
+        $jobApplication = JobApplication::create([
+            'job_seeker_id'     => $user->id,
+            'job_id'            => $job->id,
             'applicant_name'    => $applicantName,
             'applicant_email'   => $applicantEmail,
             'applicant_phone'   => $request->validated('applicant_phone'),
@@ -192,7 +192,7 @@ class CareerController extends Controller
         ActivityLog::record(
             'create',
             'Lamaran Masuk',
-            "Pelamar {$applicantName} mengirimkan berkas lamaran untuk posisi {$jobListing->title}.",
+            "Pelamar {$applicantName} mengirimkan berkas lamaran untuk posisi {$job->title}.",
             $user
         );
 
@@ -209,7 +209,7 @@ class CareerController extends Controller
         );
 
         return redirect()
-            ->route('seeker.applications')
-            ->with('apply_success', 'Lamaran Anda untuk posisi "' . $jobListing->title . '" berhasil dikirim! Anda dapat memantau statusnya di halaman Lamaran Saya.');
+            ->route('job-seeker.applications.index')
+            ->with('apply_success', 'Lamaran Anda untuk posisi "' . $job->title . '" berhasil dikirim! Anda dapat memantau statusnya di halaman Lamaran Saya.');
     }
 }

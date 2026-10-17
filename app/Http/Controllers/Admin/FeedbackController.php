@@ -11,7 +11,7 @@ class FeedbackController extends Controller
 {
     /**
      * Tampilkan daftar feedback & evaluasi layanan.
-     * GET /admin/feedback — route name: admin.feedback.index
+     * GET /admin/feedback — route name: company.feedback.index
      */
     public function index(Request $request)
     {
@@ -39,7 +39,7 @@ class FeedbackController extends Controller
             'resolved'       => Feedback::where('status', 'Ditindaklanjuti')->count(),
         ];
 
-        return view('admin.feedback.index', compact('stats', 'feedbacks'));
+        return view('company.feedback.index', compact('stats', 'feedbacks'));
     }
 
     /**

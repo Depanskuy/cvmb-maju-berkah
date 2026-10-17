@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Application;
-use App\Models\CompanyProfile;
-use App\Models\JobListing;
+use App\Models\JobApplication;
+use App\Models\Company;
+use App\Models\Job;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -16,6 +17,8 @@ use Tests\TestCase;
  */
 class SecurityAndAccessTest extends TestCase
 {
+    use RefreshDatabase;
+
     private function makeSeeker(?string $email = null): User
     {
         return User::create([
@@ -36,9 +39,10 @@ class SecurityAndAccessTest extends TestCase
         ]);
     }
 
-    private function makeJob(array $overrides = []): JobListing
+    private function makeJob(array $overrides = []): Job
     {
-        return JobListing::create(array_merge([
+        return Job::create(array_merge([
+            'company_id'      => Company::current()->id,
             'title'           => 'Posisi ' . uniqid(),
             'category'        => 'Umum',
             'location'        => 'Jakarta',
@@ -50,16 +54,16 @@ class SecurityAndAccessTest extends TestCase
         ], $overrides));
     }
 
-    private function makeApplication(User $seeker, JobListing $job, array $overrides = []): Application
+    private function makeApplication(User $seeker, Job $job, array $overrides = []): JobApplication
     {
-        return Application::create(array_merge([
-            'user_id'          => $seeker->id,
-            'job_listing_id'   => $job->id,
+        return JobApplication::create(array_merge([
+            'job_seeker_id'          => $seeker->id,
+            'job_id'   => $job->id,
             'applicant_name'   => $seeker->name,
             'applicant_email'  => $seeker->email,
             'applicant_phone'  => '08123456789',
             'cv_path'          => 'cvs/dummy.pdf',
-            'status'           => Application::STATUS_PENDING,
+            'status'           => JobApplication::STATUS_PENDING,
         ], $overrides));
     }
 
@@ -67,25 +71,25 @@ class SecurityAndAccessTest extends TestCase
 
     public function test_guest_is_redirected_to_login_from_protected_areas(): void
     {
-        $this->get(route('seeker.dashboard'))->assertRedirect(route('login'));
-        $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('job-seeker.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('company.dashboard'))->assertRedirect(route('login'));
     }
 
     public function test_seeker_cannot_access_admin_area(): void
     {
         $seeker = $this->makeSeeker();
 
-        $this->actingAs($seeker)->get(route('admin.dashboard'))->assertStatus(403);
-        $this->actingAs($seeker)->get(route('admin.lowongan.index'))->assertStatus(403);
-        $this->actingAs($seeker)->get(route('admin.lamaran.index'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.dashboard'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.jobs.index'))->assertStatus(403);
+        $this->actingAs($seeker)->get(route('company.applications.index'))->assertStatus(403);
     }
 
     public function test_admin_cannot_access_seeker_area(): void
     {
         $admin = $this->makeAdmin();
 
-        $this->actingAs($admin)->get(route('seeker.dashboard'))->assertStatus(403);
-        $this->actingAs($admin)->get(route('seeker.applications'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.dashboard'))->assertStatus(403);
+        $this->actingAs($admin)->get(route('job-seeker.applications.index'))->assertStatus(403);
     }
 
     public function test_seeker_cannot_act_on_another_seekers_application(): void
@@ -95,17 +99,17 @@ class SecurityAndAccessTest extends TestCase
         $job   = $this->makeJob();
         $app   = $this->makeApplication($owner, $job);
 
-        $this->actingAs($other)->get(route('seeker.applications.show', $app))->assertStatus(403);
-        $this->actingAs($other)->get(route('seeker.applications.edit', $app))->assertStatus(403);
-        $this->actingAs($other)->put(route('seeker.applications.update', $app), [])->assertStatus(403);
-        $this->actingAs($other)->delete(route('seeker.applications.withdraw', $app))->assertStatus(403);
+        $this->actingAs($other)->get(route('job-seeker.applications.show', $app))->assertStatus(403);
+        $this->actingAs($other)->get(route('job-seeker.applications.edit', $app))->assertStatus(403);
+        $this->actingAs($other)->put(route('job-seeker.applications.update', $app), [])->assertStatus(403);
+        $this->actingAs($other)->delete(route('job-seeker.applications.destroy', $app))->assertStatus(403);
     }
 
     public function test_guest_cannot_submit_application(): void
     {
         $job = $this->makeJob();
 
-        $this->post(route('careers.apply.store', $job), [])->assertRedirect(route('login'));
+        $this->post(route('careers.apply', $job), [])->assertRedirect(route('login'));
     }
 
     // --- Aturan bisnis lamaran --------------------------------------------
@@ -122,18 +126,18 @@ class SecurityAndAccessTest extends TestCase
 
         $cv = UploadedFile::fake()->create('cv.pdf', 100, 'application/pdf');
 
-        $response = $this->actingAs($seeker)->post(route('careers.apply.store', $job), [
+        $response = $this->actingAs($seeker)->post(route('careers.apply', $job), [
             'applicant_name'  => $seeker->name,
             'applicant_email' => $seeker->email,
             'applicant_phone' => '08123456789',
             'cv'              => $cv,
         ]);
 
-        $response->assertRedirect(route('seeker.applications'));
+        $response->assertRedirect(route('job-seeker.applications.index'));
 
         $this->assertEquals(
             2,
-            Application::where('job_listing_id', $job->id)->where('user_id', $seeker->id)->count()
+            JobApplication::where('job_id', $job->id)->where('job_seeker_id', $seeker->id)->count()
         );
     }
 
@@ -141,11 +145,11 @@ class SecurityAndAccessTest extends TestCase
     {
         $seeker = $this->makeSeeker();
         $job    = $this->makeJob();
-        $app    = $this->makeApplication($seeker, $job, ['status' => Application::STATUS_PROCESSING]);
+        $app    = $this->makeApplication($seeker, $job, ['status' => JobApplication::STATUS_PROCESSING]);
 
         $this->actingAs($seeker)
-            ->get(route('seeker.applications.edit', $app))
-            ->assertRedirect(route('seeker.applications.show', $app));
+            ->get(route('job-seeker.applications.edit', $app))
+            ->assertRedirect(route('job-seeker.applications.show', $app));
     }
 
     public function test_pending_application_can_be_edited_by_owner(): void
@@ -156,15 +160,15 @@ class SecurityAndAccessTest extends TestCase
         $job    = $this->makeJob();
         $app    = $this->makeApplication($seeker, $job);
 
-        $this->actingAs($seeker)->get(route('seeker.applications.edit', $app))->assertStatus(200);
+        $this->actingAs($seeker)->get(route('job-seeker.applications.edit', $app))->assertStatus(200);
 
-        $response = $this->actingAs($seeker)->put(route('seeker.applications.update', $app), [
+        $response = $this->actingAs($seeker)->put(route('job-seeker.applications.update', $app), [
             'education'    => 'S1 Manajemen',
             'skills'       => 'Negosiasi, Distribusi',
             'cover_letter' => 'Saya berminat bergabung.',
         ]);
 
-        $response->assertRedirect(route('seeker.applications.show', $app));
+        $response->assertRedirect(route('job-seeker.applications.show', $app));
 
         $app->refresh();
         $this->assertEquals('S1 Manajemen', $app->education);
@@ -181,13 +185,13 @@ class SecurityAndAccessTest extends TestCase
         $app    = $this->makeApplication($seeker, $job);
 
         $this->actingAs($admin)
-            ->patch(route('admin.lamaran.status.update', $app), ['status' => Application::STATUS_ACCEPTED])
+            ->patch(route('company.applications.status', $app), ['status' => JobApplication::STATUS_ACCEPTED])
             ->assertRedirect();
-        $this->assertEquals(Application::STATUS_ACCEPTED, $app->fresh()->status);
+        $this->assertEquals(JobApplication::STATUS_ACCEPTED, $app->fresh()->status);
 
         // 'interview' bukan nilai status yang sah menurut kontrak blueprint.
         $this->actingAs($admin)
-            ->patch(route('admin.lamaran.status.update', $app), ['status' => 'interview'])
+            ->patch(route('company.applications.status', $app), ['status' => 'interview'])
             ->assertSessionHasErrors('status');
     }
 
@@ -199,10 +203,10 @@ class SecurityAndAccessTest extends TestCase
         $app    = $this->makeApplication($seeker, $job, ['withdrawn_at' => now()]);
 
         $response = $this->actingAs($admin)
-            ->patch(route('admin.lamaran.status.update', $app), ['status' => Application::STATUS_ACCEPTED]);
+            ->patch(route('company.applications.status', $app), ['status' => JobApplication::STATUS_ACCEPTED]);
 
         $response->assertSessionHas('error');
-        $this->assertNotEquals(Application::STATUS_ACCEPTED, $app->fresh()->status);
+        $this->assertNotEquals(JobApplication::STATUS_ACCEPTED, $app->fresh()->status);
     }
 
     // --- Filter & pencarian lowongan --------------------------------------
@@ -218,19 +222,19 @@ class SecurityAndAccessTest extends TestCase
         $seeker = $this->makeSeeker();
 
         // Pencarian kata kunci
-        $this->actingAs($seeker)->get(route('seeker.jobs', ['q' => $tokenA]))
+        $this->actingAs($seeker)->get(route('job-seeker.jobs.index', ['q' => $tokenA]))
             ->assertStatus(200)->assertSee($tokenA)->assertDontSee($tokenB);
 
         // Filter kategori
-        $this->actingAs($seeker)->get(route('seeker.jobs', ['category' => 'Pemasaran']))
+        $this->actingAs($seeker)->get(route('job-seeker.jobs.index', ['category' => 'Pemasaran']))
             ->assertStatus(200)->assertSee($tokenB)->assertDontSee($tokenA);
 
         // Filter lokasi
-        $this->actingAs($seeker)->get(route('seeker.jobs', ['location' => 'Bandung']))
+        $this->actingAs($seeker)->get(route('job-seeker.jobs.index', ['location' => 'Bandung']))
             ->assertStatus(200)->assertSee($tokenA)->assertDontSee($tokenB);
 
         // Urutan berdasarkan deadline terdekat
-        $this->actingAs($seeker)->get(route('seeker.jobs', ['sort' => 'deadline']))
+        $this->actingAs($seeker)->get(route('job-seeker.jobs.index', ['sort' => 'deadline']))
             ->assertStatus(200);
     }
 
@@ -248,12 +252,12 @@ class SecurityAndAccessTest extends TestCase
 
     // --- Profil perusahaan (admin) ----------------------------------------
 
-    public function test_admin_can_update_company_profile_contact_fields(): void
+    public function test_admin_can_update_companies_contact_fields(): void
     {
         $admin   = $this->makeAdmin();
-        $company = CompanyProfile::current();
+        $company = Company::current();
 
-        $response = $this->actingAs($admin)->put(route('admin.pengaturan.update'), [
+        $response = $this->actingAs($admin)->put(route('company.profile.update'), [
             'name'          => 'CV Maju Berkah',
             'slug'          => $company->slug,
             'description'   => 'Perusahaan distribusi barang dan penyediaan kebutuhan usaha.',
@@ -268,12 +272,12 @@ class SecurityAndAccessTest extends TestCase
         $this->assertEquals('021-1234567', $company->contact_phone);
     }
 
-    public function test_seeker_cannot_update_company_profile(): void
+    public function test_seeker_cannot_update_companies(): void
     {
         $seeker = $this->makeSeeker();
 
         $this->actingAs($seeker)
-            ->put(route('admin.pengaturan.update'), ['name' => 'Diretas'])
+            ->put(route('company.profile.update'), ['name' => 'Diretas'])
             ->assertStatus(403);
     }
 }

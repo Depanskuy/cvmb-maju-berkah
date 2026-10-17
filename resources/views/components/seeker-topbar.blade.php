@@ -17,7 +17,7 @@
     };
 
     $user = auth()->user();
-    $applications = $user ? $user->applications()->with('jobListing')->latest()->take(5)->get() : collect();
+    $applications = $user ? $user->applications()->with('job')->latest()->take(5)->get() : collect();
     $activeCount = $user ? $user->applications()->whereNull('withdrawn_at')->count() : 0;
 @endphp
 
@@ -30,7 +30,7 @@
         </button>
 
         <nav class="flex items-center gap-2 font-display text-sm sm:text-base">
-            <a href="{{ route('seeker.dashboard') }}" class="text-on-surface-variant hover:text-primary transition-colors font-semibold">
+            <a href="{{ route('job-seeker.dashboard') }}" class="text-on-surface-variant hover:text-primary transition-colors font-semibold">
                 Pelamar
             </a>
             <span class="text-outline-variant font-bold text-sm">›</span>
@@ -72,12 +72,12 @@
 
                 <div class="max-h-80 overflow-y-auto divide-y divide-outline-variant/10 text-xs">
                     @forelse ($applications as $app)
-                        <a href="{{ route('seeker.applications.show', $app) }}" onclick="clearSeekerNotifBadge()" class="p-3.5 flex items-start gap-3 hover:bg-surface-container-low/60 transition-colors block">
+                        <a href="{{ route('job-seeker.applications.show', $app) }}" onclick="clearSeekerNotifBadge()" class="p-3.5 flex items-start gap-3 hover:bg-surface-container-low/60 transition-colors block">
                             <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
                                 <span class="material-symbols-outlined text-[16px]">work</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <div class="font-bold text-on-surface truncate">{{ $app->jobListing->title ?? 'Posisi Pekerjaan' }}</div>
+                                <div class="font-bold text-on-surface truncate">{{ $app->job->title ?? 'Posisi Pekerjaan' }}</div>
                                 <div class="text-on-surface-variant mt-0.5">
                                     Status saat ini: <strong class="text-primary">{{ $app->status_label }}</strong>
                                 </div>
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="p-3 border-t border-outline-variant/20 bg-surface-container-low/30 text-center">
-                    <a href="{{ route('seeker.applications') }}" onclick="clearSeekerNotifBadge()" class="text-xs font-semibold text-primary hover:underline">
+                    <a href="{{ route('job-seeker.applications.index') }}" onclick="clearSeekerNotifBadge()" class="text-xs font-semibold text-primary hover:underline">
                         Lihat Seluruh Lamaran Saya &rarr;
                     </a>
                 </div>
@@ -107,7 +107,7 @@
         </div>
 
         {{-- User Avatar / Profil --}}
-        <a href="{{ route('seeker.profile.show') }}" class="flex items-center gap-2 pl-2 border-l border-surface-container-high text-decoration-none" title="Lihat Profil">
+        <a href="{{ route('job-seeker.profile.show') }}" class="flex items-center gap-2 pl-2 border-l border-surface-container-high text-decoration-none" title="Lihat Profil">
             <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-sm">
                 {{ substr(auth()->user()->name ?? 'P', 0, 1) }}
             </div>

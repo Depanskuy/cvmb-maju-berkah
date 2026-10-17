@@ -5,7 +5,7 @@
 @section('content')
 <section class="career-main">
     <div class="container-public" style="max-width: 860px;">
-        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('careers.show', $jobListing) }}" class="section-link" style="margin-bottom: 1.5rem; display: inline-flex;">
+        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('careers.show', $job) }}" class="section-link" style="margin-bottom: 1.5rem; display: inline-flex;">
             <span class="material-symbols-outlined">arrow_back</span>
             Kembali
         </a>
@@ -38,7 +38,7 @@
             @endif
 
             {{-- Closed notice --}}
-            @if (! $jobListing->isOpenForApplication())
+            @if (! $job->isOpenForApplication())
                 <div class="career-closed-notice">
                     <span class="material-symbols-outlined">event_busy</span>
                     <div>
@@ -56,13 +56,13 @@
                     <h1 class="apply-card__title">Form Lamaran Pekerjaan</h1>
                     <p class="apply-card__subtitle">
                         Lengkapi formulir untuk melamar posisi
-                        {{ $jobListing->title }}.
+                        {{ $job->title }}.
                     </p>
                 </div>
             </div>
 
-            @if ($jobListing->isOpenForApplication())
-                <form action="{{ route('careers.apply.store', $jobListing) }}"
+            @if ($job->isOpenForApplication())
+                <form action="{{ route('careers.apply', $job) }}"
                       method="POST"
                       enctype="multipart/form-data"
                       class="apply-form"

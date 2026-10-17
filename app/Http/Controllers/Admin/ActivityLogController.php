@@ -10,7 +10,7 @@ class ActivityLogController extends Controller
 {
     /**
      * Tampilkan riwayat log aktivitas sistem secara transparan.
-     * GET /admin/log — route name: admin.log.index
+     * GET /admin/log — route name: company.activity-log.index
      */
     public function index(Request $request)
     {
@@ -52,6 +52,6 @@ class ActivityLogController extends Controller
 
         $modules = ActivityLog::distinct()->pluck('module')->filter()->values();
 
-        return view('admin.log.index', compact('logs', 'stats', 'modules'));
+        return view('company.activity-log.index', compact('logs', 'stats', 'modules'));
     }
 }
