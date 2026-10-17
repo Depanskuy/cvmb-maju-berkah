@@ -88,16 +88,23 @@ class FeedbackController extends Controller
      */
     public function updateStatus(Request $request, Feedback $feedback)
     {
-        $newStatus = $feedback->status === 'Baru' ? 'Ditindaklanjuti' : 'Baru';
-        $feedback->update(['status' => $newStatus]);
+        // Kontrak transisi: satu arah. Masukan yang sudah ditindaklanjuti bersifat final.
+        if ($feedback->isFollowedUp()) {
+            return back()->with(
+                'error',
+                "Masukan dari {$feedback->name} sudah ditandai \"Ditindaklanjuti\" dan tidak dapat dikembalikan ke \"Baru\"."
+            );
+        }
+
+        $feedback->update(['status' => Feedback::STATUS_FOLLOWED]);
 
         ActivityLog::record(
             'status_change',
             'Feedback Layanan',
-            "Admin mengubah status masukan dari {$feedback->name} menjadi '{$newStatus}'."
+            "Admin mengubah status masukan dari {$feedback->name} menjadi '" . Feedback::STATUS_FOLLOWED . "'."
         );
 
-        return back()->with('success', "Status masukan dari {$feedback->name} ditandai sebagai {$newStatus}.");
+        return back()->with('success', "Status masukan dari {$feedback->name} ditandai sebagai " . Feedback::STATUS_FOLLOWED . '.');
     }
 
     /**

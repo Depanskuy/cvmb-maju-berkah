@@ -99,6 +99,15 @@ class PartnershipController extends Controller
             'admin_note' => ['nullable', 'string', 'max:500'],
         ]);
 
+        // Kontrak transisi: approved tidak dapat kembali ke pending; archived final.
+        if (! $partnership->canTransitionTo($validated['status'])) {
+            return back()->withInput()->with(
+                'error',
+                "Status kerja sama tidak dapat diubah dari \"{$partnership->status_label}\" ke status yang dipilih. "
+                . 'Pengajuan yang sudah disetujui tidak dapat dikembalikan ke menunggu review, dan arsip kemitraan bersifat final.'
+            );
+        }
+
         $partnership->update([
             'status'     => $validated['status'],
             'admin_note' => $validated['admin_note'] ?? $partnership->admin_note,

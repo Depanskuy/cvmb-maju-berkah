@@ -120,6 +120,17 @@ class ApplicationController extends Controller
             'status.required' => 'Status lamaran wajib dipilih.',
         ]);
 
+        // Kontrak transisi: keputusan accepted/rejected bersifat final.
+        // (Dicek setelah validasi agar nilai status yang tidak sah tetap
+        // dilaporkan sebagai kesalahan validasi.)
+        if (! $jobApplication->canTransitionTo($validated['status'])) {
+            return back()->withInput()->with(
+                'error',
+                "Status lamaran tidak dapat diubah dari \"{$jobApplication->status_label}\" ke status yang dipilih. "
+                . 'Keputusan "Diterima" atau "Ditolak" bersifat final.'
+            );
+        }
+
         $jobApplication->update([
             'status'      => $validated['status'],
             'review_note' => $validated['review_note'] ?? null,

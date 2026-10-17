@@ -25,6 +25,23 @@ class JobApplication extends Model
     public const STATUS_ACCEPTED   = 'accepted';
     public const STATUS_REJECTED   = 'rejected';
 
+    /**
+     * Kontrak transisi status lamaran (blueprint §6):
+     *   pending    → processing | accepted | rejected
+     *   processing → accepted | rejected
+     *   accepted   → (final, tidak dapat diubah lagi)
+     *   rejected   → (final, tidak dapat diubah lagi)
+     *
+     * Keputusan `accepted`/`rejected` bersifat FINAL: tidak bisa dikembalikan
+     * ke `pending`/`processing` maupun ditukar ke keputusan lain.
+     */
+    protected const ALLOWED_TRANSITIONS = [
+        self::STATUS_PENDING    => [self::STATUS_PROCESSING, self::STATUS_ACCEPTED, self::STATUS_REJECTED],
+        self::STATUS_PROCESSING => [self::STATUS_ACCEPTED, self::STATUS_REJECTED],
+        self::STATUS_ACCEPTED   => [],
+        self::STATUS_REJECTED   => [],
+    ];
+
     protected $fillable = [
         'job_seeker_id',
         'job_id',
@@ -143,5 +160,45 @@ class JobApplication extends Model
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
         ], true);
+    }
+
+    /**
+     * Daftar status tujuan yang sah dari sebuah status.
+     */
+    public static function allowedTransitionsFrom(string $status): array
+    {
+        return self::ALLOWED_TRANSITIONS[$status] ?? [];
+    }
+
+    /**
+     * Bolehkah lamaran ini dipindahkan ke $status?
+     *
+     * Menyimpan status yang sama tetap diizinkan (mis. admin hanya
+     * menambahkan catatan tanpa mengubah keputusan).
+     */
+    public function canTransitionTo(string $status): bool
+    {
+        if ($this->isWithdrawn()) {
+            return false;
+        }
+
+        if ($status === $this->status) {
+            return true;
+        }
+
+        return in_array($status, self::allowedTransitionsFrom($this->status), true);
+    }
+
+    /**
+     * Label Bahasa Indonesia untuk setiap status (untuk dropdown form).
+     */
+    public static function statusLabels(): array
+    {
+        return [
+            self::STATUS_PENDING    => 'Menunggu Review (Pending)',
+            self::STATUS_PROCESSING => 'Sedang Diproses (Screening)',
+            self::STATUS_ACCEPTED   => 'Diterima Bergabung (Accepted)',
+            self::STATUS_REJECTED   => 'Tidak Lolos / Ditolak (Rejected)',
+        ];
     }
 }

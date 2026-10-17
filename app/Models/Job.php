@@ -25,6 +25,15 @@ class Job extends Model
     public const TYPE_INTERNSHIP = 'internship';
     public const TYPE_CONTRACT   = 'contract';
 
+    /**
+     * Batas atas nilai gaji yang dapat disimpan.
+     *
+     * Kolom `salary_min`/`salary_max` bertipe `decimal(12,2)` sehingga nilai
+     * absolutnya harus di bawah 10^10. Tanpa validasi ini, input di atas batas
+     * akan ditolak PostgreSQL (SQLSTATE 22003) dan muncul sebagai error 500.
+     */
+    public const SALARY_MAX_ALLOWED = 9999999999;
+
     protected $fillable = [
         'company_id',
         'title', 'slug', 'category',

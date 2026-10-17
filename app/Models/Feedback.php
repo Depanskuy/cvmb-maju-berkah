@@ -10,6 +10,10 @@ class Feedback extends Model
 {
     use HasFactory;
 
+    // ============ STATUS CONSTANTS ============
+    public const STATUS_NEW      = 'Baru';
+    public const STATUS_FOLLOWED = 'Ditindaklanjuti';
+
     protected $table = 'feedbacks';
 
     protected $fillable = [
@@ -29,5 +33,13 @@ class Feedback extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Masukan yang sudah ditindaklanjuti bersifat final (satu arah).
+     */
+    public function isFollowedUp(): bool
+    {
+        return $this->status === self::STATUS_FOLLOWED;
     }
 }

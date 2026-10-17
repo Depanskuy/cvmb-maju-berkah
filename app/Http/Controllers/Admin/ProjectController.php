@@ -96,6 +96,14 @@ class ProjectController extends Controller
             'progress.between' => 'Progres fisik harus di antara 0% hingga 100%.',
         ]);
 
+        // Kontrak transisi: proyek berjalan satu arah, "Selesai" bersifat final.
+        if (! $project->canTransitionTo($validated['status'])) {
+            return back()->withInput()->withErrors([
+                'status' => "Status proyek tidak dapat dimundurkan dari \"{$project->status_label}\" ke status yang dipilih. "
+                    . 'Proyek yang sudah selesai bersifat final.',
+            ]);
+        }
+
         $oldProgress = $project->progress;
         $project->update($validated);
 

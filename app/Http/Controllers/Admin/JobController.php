@@ -88,8 +88,8 @@ class JobController extends Controller
                 Job::TYPE_CONTRACT,
             ])],
             'location'        => ['required', 'string', 'max:150'],
-            'salary_min'      => ['nullable', 'numeric', 'min:0'],
-            'salary_max'      => ['nullable', 'numeric', 'gte:salary_min'],
+            'salary_min'      => ['nullable', 'numeric', 'min:0', 'max:' . Job::SALARY_MAX_ALLOWED],
+            'salary_max'      => ['nullable', 'numeric', 'gte:salary_min', 'max:' . Job::SALARY_MAX_ALLOWED],
             'deadline'        => ['required', 'date', 'after:today'],
             'description'     => ['required', 'string'],
             'requirements'    => ['required', 'string'],
@@ -108,6 +108,8 @@ class JobController extends Controller
             'description.required'     => 'Deskripsi pekerjaan wajib diisi.',
             'requirements.required'    => 'Kualifikasi pekerjaan wajib diisi.',
             'salary_max.gte'           => 'Gaji maksimal harus lebih besar atau sama dengan gaji minimal.',
+            'salary_min.max'           => 'Gaji minimal terlalu besar. Nilai maksimal yang dapat disimpan adalah 9.999.999.999 (10 digit).',
+            'salary_max.max'           => 'Gaji maksimal terlalu besar. Nilai maksimal yang dapat disimpan adalah 9.999.999.999 (10 digit).',
         ]);
 
         // Generate slug unik
@@ -197,8 +199,8 @@ class JobController extends Controller
                 Job::TYPE_CONTRACT,
             ])],
             'location'        => ['required', 'string', 'max:150'],
-            'salary_min'      => ['nullable', 'numeric', 'min:0'],
-            'salary_max'      => ['nullable', 'numeric', 'gte:salary_min'],
+            'salary_min'      => ['nullable', 'numeric', 'min:0', 'max:' . Job::SALARY_MAX_ALLOWED],
+            'salary_max'      => ['nullable', 'numeric', 'gte:salary_min', 'max:' . Job::SALARY_MAX_ALLOWED],
             'deadline'        => ['required', 'date'],
             'description'     => ['required', 'string'],
             'requirements'    => ['required', 'string'],
@@ -216,6 +218,8 @@ class JobController extends Controller
             'description.required'     => 'Deskripsi pekerjaan wajib diisi.',
             'requirements.required'    => 'Kualifikasi pekerjaan wajib diisi.',
             'salary_max.gte'           => 'Gaji maksimal harus lebih besar atau sama dengan gaji minimal.',
+            'salary_min.max'           => 'Gaji minimal terlalu besar. Nilai maksimal yang dapat disimpan adalah 9.999.999.999 (10 digit).',
+            'salary_max.max'           => 'Gaji maksimal terlalu besar. Nilai maksimal yang dapat disimpan adalah 9.999.999.999 (10 digit).',
         ]);
 
         // Update slug jika judul berubah

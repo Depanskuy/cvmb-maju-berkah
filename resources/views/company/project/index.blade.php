@@ -147,6 +147,10 @@
                                     'progress'    => $prj->progress,
                                     'status'      => $prj->status,
                                     'description' => $prj->description,
+                                    'allowed_statuses' => array_merge(
+                                        [$prj->status],
+                                        \App\Models\Project::allowedTransitionsFrom($prj->status)
+                                    ),
                                     'update_url'  => route('company.project.update', $prj->id),
                                 ]) }})"
                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold hover:bg-primary hover:text-on-primary transition-all cursor-pointer">
@@ -347,6 +351,13 @@
                         <option value="ongoing">Sedang Berjalan</option>
                         <option value="completed">Selesai</option>
                     </select>
+                    <span id="editStatusNotice" class="hidden text-[11px] text-on-surface-variant/80 block mt-1.5">
+                        Proyek ini sudah <strong>Selesai</strong> — status tidak dapat dimundurkan. Kamu masih dapat
+                        memperbarui data dan catatan lapangan.
+                    </span>
+                    <span class="text-[11px] text-on-surface-variant/80 block mt-1.5">
+                        Status proyek berjalan satu arah: <strong>Tahap Persiapan → Sedang Berjalan → Selesai</strong>.
+                    </span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -404,8 +415,18 @@ function openUpdateProjectModal(data) {
     document.getElementById('editCategory').value = data.category;
     document.getElementById('editBudget').value = data.budget;
     document.getElementById('editTimeline').value = data.timeline;
-    document.getElementById('editStatus').value = data.status;
     document.getElementById('editDescription').value = data.description || '';
+
+    // Kontrak transisi status: hanya status yang masih sah dapat dipilih.
+    const allowedStatuses = data.allowed_statuses || [];
+    const statusSelect = document.getElementById('editStatus');
+    Array.from(statusSelect.options).forEach(function (option) {
+        const isAllowed = allowedStatuses.indexOf(option.value) !== -1;
+        option.disabled = ! isAllowed;
+        option.hidden = ! isAllowed;
+    });
+    statusSelect.value = data.status;
+    document.getElementById('editStatusNotice').classList.toggle('hidden', allowedStatuses.length > 1);
 
     updateSliderVal(data.progress);
 

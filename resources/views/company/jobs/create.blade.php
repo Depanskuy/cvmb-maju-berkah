@@ -96,7 +96,7 @@
                     <label for="salary_min" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                         Gaji Minimal (Rp)
                     </label>
-                    <input type="number" id="salary_min" name="salary_min" value="{{ old('salary_min') }}" placeholder="Contoh: 5000000" min="0" step="100000"
+                    <input type="number" id="salary_min" name="salary_min" value="{{ old('salary_min') }}" placeholder="Contoh: 5000000" min="0" max="9999999999" step="100000"
                            class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-lg text-sm text-on-surface border border-transparent focus:border-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20">
                 </div>
 
@@ -104,7 +104,7 @@
                     <label for="salary_max" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                         Gaji Maksimal (Rp)
                     </label>
-                    <input type="number" id="salary_max" name="salary_max" value="{{ old('salary_max') }}" placeholder="Contoh: 8000000" min="0" step="100000"
+                    <input type="number" id="salary_max" name="salary_max" value="{{ old('salary_max') }}" placeholder="Contoh: 8000000" min="0" max="9999999999" step="100000"
                            class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-lg text-sm text-on-surface border border-transparent focus:border-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20">
                 </div>
 

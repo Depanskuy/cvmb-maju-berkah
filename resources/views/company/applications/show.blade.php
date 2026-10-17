@@ -172,8 +172,31 @@
                     @endif
                 </div>
 
-                {{-- Form update status --}}
+                {{-- Form update status — hanya status tujuan yang sah (kontrak transisi blueprint §6) --}}
                 @if (! $jobApplication->isWithdrawn())
+                    @php
+                        $statusLabels = \App\Models\JobApplication::statusLabels();
+                        // Status saat ini tetap ditampilkan + status tujuan yang masih sah.
+                        $availableStatuses = array_merge(
+                            [$jobApplication->status],
+                            \App\Models\JobApplication::allowedTransitionsFrom($jobApplication->status)
+                        );
+                    @endphp
+
+                    @if ($jobApplication->isFinal())
+                        <div class="rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-xs text-on-surface-variant">
+                            <p class="font-bold text-on-surface mb-1 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-primary">lock</span>
+                                <span>Keputusan Final</span>
+                            </p>
+                            <p>
+                                Status <strong>{{ $jobApplication->status_label }}</strong> sudah final — tidak dapat
+                                dikembalikan ke tahap seleksi maupun ditukar ke keputusan lain. Kamu masih dapat
+                                menambah atau memperbarui catatan untuk pelamar di bawah ini.
+                            </p>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('company.applications.status', $jobApplication) }}" class="flex flex-col gap-4 mt-2">
                         @csrf
                         @method('PATCH')
@@ -184,19 +207,16 @@
                             </label>
                             <select id="status" name="status" required
                                     class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-lg text-sm text-on-surface border border-transparent focus:border-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20">
-                                <option value="pending" {{ old('status', $jobApplication->status) === 'pending' ? 'selected' : '' }}>
-                                    Menunggu Review (Pending)
-                                </option>
-                                <option value="processing" {{ old('status', $jobApplication->status) === 'processing' ? 'selected' : '' }}>
-                                    Sedang Diproses (Screening)
-                                </option>
-                                <option value="accepted" {{ old('status', $jobApplication->status) === 'accepted' ? 'selected' : '' }}>
-                                    Diterima Bergabung (Accepted)
-                                </option>
-                                <option value="rejected" {{ old('status', $jobApplication->status) === 'rejected' ? 'selected' : '' }}>
-                                    Tidak Lolos / Ditolak (Rejected)
-                                </option>
+                                @foreach ($availableStatuses as $statusValue)
+                                    <option value="{{ $statusValue }}" {{ old('status', $jobApplication->status) === $statusValue ? 'selected' : '' }}>
+                                        {{ $statusLabels[$statusValue] ?? $statusValue }}
+                                    </option>
+                                @endforeach
                             </select>
+                            <span class="text-[11px] text-on-surface-variant/80 block mt-1">
+                                Hanya status yang masih sah ditampilkan. Keputusan <strong>Diterima</strong> dan
+                                <strong>Ditolak</strong> bersifat final.
+                            </span>
                         </div>
 
                         <div>

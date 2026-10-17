@@ -137,6 +137,10 @@
                                             'message'      => $p->message,
                                             'status'       => $p->status,
                                             'admin_note'   => $p->admin_note,
+                                            'allowed_statuses' => array_merge(
+                                                [$p->status],
+                                                \App\Models\Partnership::allowedTransitionsFrom($p->status)
+                                            ),
                                             'update_url'   => route('company.partnership.status.update', $p->id)
                                         ]) }})"
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all cursor-pointer shadow-sm">
@@ -225,6 +229,13 @@
                         <option value="approved">Disetujui / Aktif (Rekanan Resmi)</option>
                         <option value="archived">Arsip Kemitraan (Nonaktif / Ditangguhkan)</option>
                     </select>
+                    <span id="modalStatusNotice" class="hidden text-[11px] text-on-surface-variant/80 block mt-1.5">
+                        Status kemitraan ini sudah tidak dapat dipindahkan lagi. Kamu masih dapat memperbarui catatan internal.
+                    </span>
+                    <span class="text-[11px] text-on-surface-variant/80 block mt-1.5">
+                        Status yang tidak sah otomatis dinonaktifkan. Pengajuan yang sudah <strong>Disetujui</strong>
+                        tidak dapat dikembalikan ke <strong>Menunggu Review</strong>, dan <strong>Arsip</strong> bersifat final.
+                    </span>
                 </div>
 
                 {{-- Admin Note --}}
@@ -259,7 +270,18 @@ function openReviewModal(data) {
     document.getElementById('modalType').textContent = data.type;
     document.getElementById('modalTimeline').textContent = data.timeline || 'Standar';
     document.getElementById('modalMessage').textContent = data.message;
-    document.getElementById('modalStatusSelect').value = data.status;
+
+    // Kontrak transisi status: hanya status yang masih sah dapat dipilih.
+    const allowedStatuses = data.allowed_statuses || [];
+    const statusSelect = document.getElementById('modalStatusSelect');
+    Array.from(statusSelect.options).forEach(function (option) {
+        const isAllowed = allowedStatuses.indexOf(option.value) !== -1;
+        option.disabled = ! isAllowed;
+        option.hidden = ! isAllowed;
+    });
+    statusSelect.value = data.status;
+    document.getElementById('modalStatusNotice').classList.toggle('hidden', allowedStatuses.length > 1);
+
     document.getElementById('modalAdminNote').value = data.admin_note || '';
 
     document.getElementById('reviewForm').action = data.update_url;
