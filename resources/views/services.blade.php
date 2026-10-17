@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Layanan Kami — CV Maju Sukses')
+@section('title', 'Layanan Kami — CV Maju Berkah')
 
 @section('content')
 
@@ -18,28 +18,28 @@
 
         <div class="page-hero__pill">
             <span class="page-hero__pill-dot"></span>
-            <span>Solusi End-to-End Korporasi</span>
+            <span>Solusi Distribusi &amp; Pengadaan Terpadu</span>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; align-items:end; width:100%;" class="services-hero-grid">
             <div>
                 <h1 class="page-hero__title">
-                    Layanan Konsultasi Strategis Terpadu Berstandar Global
+                    Layanan Distribusi Barang &amp; Penyediaan Kebutuhan Usaha
                 </h1>
                 <p class="page-hero__subtitle" style="margin-top:1rem;">
-                    Dari penataan restrukturisasi modal dan kepatuhan regulasi institusional hingga deployment otomasi manufaktur skala enterprise—kami menghantarkan kepastian eksekusi bagi jajaran direksi di era disrupsi.
+                    Dari pengadaan kebutuhan usaha sehari-hari hingga distribusi skala besar ke seluruh Indonesia—kami memastikan pasokan Anda tersedia tepat waktu, lengkap, dan dengan harga bersaing.
                 </p>
             </div>
 
             <div style="display:flex; flex-direction:column; gap:1rem; padding:1rem; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px); border-radius:0.75rem;">
                 <div>
-                    <div class="page-hero__metric-value">140+ Proyek</div>
-                    <div class="page-hero__metric-label">Tuntas Diselesaikan</div>
+                    <div class="page-hero__metric-value">2.000+ Mitra</div>
+                    <div class="page-hero__metric-label">Ritel, UMKM &amp; Institusi</div>
                 </div>
                 <div style="height:1px; background:rgba(255,255,255,0.15);"></div>
                 <div>
-                    <div class="page-hero__metric-value" style="color:#fff;">98.4%</div>
-                    <div class="page-hero__metric-label">Kepatuhan SLA &amp; Tata Kelola</div>
+                    <div class="page-hero__metric-value" style="color:#fff;">99%</div>
+                    <div class="page-hero__metric-label">Ketepatan Pengiriman</div>
                 </div>
             </div>
         </div>
@@ -51,62 +51,63 @@
     <div class="container-page">
         <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:3rem;" class="services-heading-row">
             <div>
-                <span class="section-tag-pill" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Katalog Solusi</span>
-                <h2 class="section-title-lg section-title-lg--primary" style="margin-top:0.25rem;">4 Pilar Transformasi Korporasi</h2>
+                <span class="section-tag-pill" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Katalog Layanan</span>
+                <h2 class="section-title-lg section-title-lg--primary" style="margin-top:0.25rem;">4 Layanan Distribusi Utama</h2>
             </div>
             <p style="font-size:15px; line-height:1.7; color:var(--on-surface-variant); max-width:28rem; margin:0;">
-                Integrasi multidisiplin dirancang khusus untuk entitas skala menengah hingga konglomerasi yang menuntut presisi matematis dan akuntabilitas yuridis.
+                Dirancang untuk memenuhi kebutuhan pasokan barang dan kebutuhan usaha bagi ritel, UMKM, perkantoran, hingga institusi.
             </p>
         </div>
 
         @php
             $services_list = [
                 [
-                    'icon' => 'finance_mode', 'badge' => 'Pilar 01',
-                    'title' => 'Konsultasi Finansial, M&A & Restrukturisasi Modal',
-                    'desc' => 'Arsitektur rekayasa finansial tingkat lanjut untuk mengoptimalkan struktur permodalan, valuasi aset riil, dan penyiapan sindikasi pembiayaan perbankan maupun private equity.',
+                    'icon' => 'inventory_2', 'badge' => 'Layanan 01',
+                    'title' => 'Distribusi Barang & Kebutuhan Usaha',
+                    'desc' => 'Penyediaan dan penyaluran barang kebutuhan sehari-hari, perlengkapan kantor, serta kebutuhan operasional usaha dalam jumlah besar maupun eceran.',
                     'items' => [
-                        'Valuasi Bisnis & Due Diligence Finansial Komprehensif',
-                        'Studi Kelayakan Investasi & Model Proyeksi Arus Kas',
-                        'Skema Sindikasi Pendanaan & Restrukturisasi Utang Korporat',
+                        'Pasokan rutin untuk ritel, toko, dan UMKM',
+                        'Pengadaan perlengkapan kantor & kebutuhan operasional',
+                        'Pengiriman terjadwal dengan armada yang andal',
                     ],
-                    'sectors' => ['Infrastruktur', 'Holding Korporasi', 'Properti & Real Estate'],
-                    'duration' => '8 - 20 Minggu',
+                    'sectors' => ['Ritel & Toko', 'UMKM', 'Perkantoran'],
+                    'duration' => 'Harian - Mingguan',
                 ],
                 [
-                    'icon' => 'precision_manufacturing', 'badge' => 'Pilar 02 · Flagship',
-                    'title' => 'Transformasi Digital, ERP & Otomasi Industri',
-                    'desc' => 'Modernisasi rantai pasok manufaktur dan orkestrasi data operasional real-time melalui integrasi Enterprise Resource Planning (ERP), IoT sensorik lini produksi, dan dashboard analitik terpadu.',
+                    'icon' => 'local_shipping', 'badge' => 'Layanan 02 · Unggulan',
+                    'title' => 'Logistik, Pergudangan & Pengiriman',
+                    'desc' => 'Dukungan penyimpanan dan pengiriman yang andal melalui jaringan gudang dan armada untuk memastikan barang sampai dengan aman dan tepat waktu.',
                     'items' => [
-                        'Audit Kesiapan Arsitektur TI & Roadmap Digital Industri 4.0',
-                        'Implementasi & Penyelarasan Sistem ERP (SAP/Oracle/Odoo)',
-                        'Command Center Telemetri Logistik & Pemeliharaan Prediktif',
+                        'Penyimpanan barang di gudang berstandar',
+                        'Pengiriman ke berbagai kota di Indonesia',
+                        'Pemantauan status pesanan yang transparan',
                     ],
-                    'duration' => '12 - 36 Minggu',
+                    'sectors' => ['Distribusi', 'Manufaktur', 'Institusi'],
+                    'duration' => 'Sesuai Jadwal',
                 ],
                 [
-                    'icon' => 'gavel', 'badge' => 'Pilar 03',
-                    'title' => 'Tata Kelola Perusahaan, Legal & Kepatuhan Risiko',
-                    'desc' => 'Membangun benteng pertahanan korporasi melalui penegakan Good Corporate Governance (GCG), mitigasi risiko kepatuhan hukum perizinan, dan kepatuhan standar audit perbankan serta OJK.',
+                    'icon' => 'shopping_cart', 'badge' => 'Layanan 03',
+                    'title' => 'Pengadaan Massal & Kemitraan Pemasok',
+                    'desc' => 'Pengadaan barang dalam jumlah besar dengan harga kompetitif melalui jaringan pemasok terpercaya dan terverifikasi.',
                     'items' => [
-                        'Penyusunan Pedoman GCG, Board Charter & Standar Kode Etik',
-                        'Compliance Review Regulasi Sektoral, Perpajakan & Perizinan OSS',
-                        'Sistem Manajemen Risiko Enterprise (ISO 31000) & Whistleblowing',
+                        'Negosiasi harga & kontrak pasokan',
+                        'Kurasi dan verifikasi pemasok',
+                        'Pengadaan sesuai spesifikasi mitra',
                     ],
-                    'sectors' => ['Jasa Keuangan', 'Energi & Tambang', 'FMCG & Ritel'],
-                    'duration' => '6 - 16 Minggu',
+                    'sectors' => ['Swasta', 'BUMN', 'Instansi'],
+                    'duration' => 'Per Kontrak',
                 ],
                 [
-                    'icon' => 'hub', 'badge' => 'Pilar 04',
-                    'title' => 'Manajemen Strategis, Organisasi & Efisiensi Operasional',
-                    'desc' => 'Restrukturisasi model bisnis, efisiensi rantai pasok dengan metodologi Lean Six Sigma, penataan matriks akuntabilitas organisasi (RACI), dan program change management menyeluruh.',
+                    'icon' => 'support_agent', 'badge' => 'Layanan 04',
+                    'title' => 'Layanan Pelanggan & Dukungan Mitra',
+                    'desc' => 'Tim layanan yang responsif membantu mitra mulai dari pemesanan, penanganan keluhan, hingga pengaturan pengiriman ulang.',
                     'items' => [
-                        'Redesain Struktur Organisasi & Standarisasi KPI/OKR Korporat',
-                        'Business Process Re-engineering (BPR) & Eliminasi Waste',
-                        'Manajemen Perubahan & Pelatihan Kepemimpinan Eksekutif',
+                        'Pemesanan & konsultasi via telepon/WhatsApp',
+                        'Penanganan keluhan dan retur barang',
+                        'Pendampingan untuk mitra usaha baru',
                     ],
-                    'sectors' => ['Logistik & Distribusi', 'Healthcare', 'Manufaktur Berat'],
-                    'duration' => '10 - 24 Minggu',
+                    'sectors' => ['Semua Sektor'],
+                    'duration' => 'Berkelanjutan',
                 ],
             ];
         @endphp
@@ -119,14 +120,14 @@
                             <div class="service-pillar__icon">
                                 <span class="material-symbols-outlined">{{ $svc['icon'] }}</span>
                             </div>
-                            <span class="service-pillar__badge {{ $svc['badge'] === 'Pilar 02 · Flagship' ? 'service-pillar__badge--featured' : '' }}">
+                            <span class="service-pillar__badge {{ str_contains($svc['badge'], 'Unggulan') ? 'service-pillar__badge--featured' : '' }}">
                                 {{ $svc['badge'] }}
                             </span>
                         </div>
                         <h3 class="service-pillar__title">{{ $svc['title'] }}</h3>
                         <p class="service-pillar__desc">{{ $svc['desc'] }}</p>
 
-                        <span class="service-pillar__deliverables-label">Cakupan Deliverable Utama:</span>
+                        <span class="service-pillar__deliverables-label">Yang Anda Dapatkan:</span>
                         <ul class="service-pillar__deliverables">
                             @foreach ($svc['items'] as $item)
                                 <li>
@@ -137,7 +138,7 @@
                         </ul>
 
                         @if (!empty($svc['sectors']))
-                            <span class="service-pillar__sectors-label">Fokus Sektor:</span>
+                            <span class="service-pillar__sectors-label">Cocok Untuk:</span>
                             <div class="service-pillar__sectors">
                                 @foreach ($svc['sectors'] as $sector)
                                     <span class="service-pillar__sector-tag">{{ $sector }}</span>
@@ -147,9 +148,9 @@
                     </div>
 
                     <div class="service-pillar__footer">
-                        <span class="service-pillar__duration">Durasi: {{ $svc['duration'] }}</span>
+                        <span class="service-pillar__duration">Periode: {{ $svc['duration'] }}</span>
                         <a class="service-pillar__cta" href="{{ route('contact') }}">
-                            Konsultasikan Layanan Ini
+                            Tanyakan Layanan Ini
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </a>
                     </div>
@@ -164,20 +165,20 @@
     <div class="container-page">
 
         <div class="section-heading">
-            <span class="section-tag-pill section-tag-pill--gold" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Kerangka Kerja Teruji</span>
-            <h2 class="section-title-lg section-title-lg--primary">Metodologi 4 Tahap Transformasi</h2>
+            <span class="section-tag-pill section-tag-pill--gold" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Alur Kerja Kami</span>
+            <h2 class="section-title-lg section-title-lg--primary">4 Tahap Layanan Distribusi</h2>
             <p class="section-sub-lg">
-                Setiap keterlibatan konsultan berlandaskan parameter analitik yang ketat demi meminimalisasi friksi operasional dan menjamin ROI strategis.
+                Setiap pesanan diproses secara terencana agar barang tiba lengkap, dalam kondisi baik, dan tepat waktu.
             </p>
         </div>
 
         <div class="methodology-grid">
             @php
                 $methods = [
-                    ['n' => '01', 'icon' => 'troubleshoot',      'title' => 'Audit Diagnostik Mendalam',  'desc' => 'Investigasi menyeluruh terhadap data historis, kapabilitas neraca, sistem operasional, dan interview pemangku kepentingan kunci.', 'duration' => 'Minggu 1 - 3'],
-                    ['n' => '02', 'icon' => 'schema',            'title' => 'Perumusan Roadmap & Solusi', 'desc' => 'Penyusunan blueprint arsitektural, kalkulasi mitigasi risiko, formulasi business case, dan penetapan KPI yang terukur presisi.',        'duration' => 'Minggu 4 - 6'],
-                    ['n' => '03', 'icon' => 'engineering',       'title' => 'Pendampingan & Eksekusi',    'desc' => 'Konsultan senior terjun langsung mendampingi implementasi di lantai operasi pabrik, integrasi server TI, maupun ruang sidang direksi.', 'duration' => 'Fase Utama'],
-                    ['n' => '04', 'icon' => 'workspace_premium', 'title' => 'Dampak & Transfer Ilmu',     'desc' => 'Audit pasca-implementasi, verifikasi capaian efisiensi finansial, penyusunan SOP institusional, dan sertifikasi tim internal klien.',  'duration' => 'Berkelanjutan'],
+                    ['n' => '01', 'icon' => 'edit_document',   'title' => 'Pemesanan & Konsultasi', 'desc' => 'Mitra menyampaikan kebutuhan barang melalui kontak, telepon, atau WhatsApp; tim kami mencatat spesifikasi dan jumlahnya.', 'duration' => 'Hari 1'],
+                    ['n' => '02', 'icon' => 'fact_check',      'title' => 'Verifikasi & Pengadaan', 'desc' => 'Kami memverifikasi ketersediaan stok, melakukan pengadaan dari pemasok terpercaya, dan menyiapkan pesanan Anda.',       'duration' => 'Hari 1 - 3'],
+                    ['n' => '03', 'icon' => 'local_shipping',  'title' => 'Penyiapan & Pengiriman', 'desc' => 'Barang dikemas dan dimuat ke armada setelah melewati pemeriksaan kualitas, lalu dikirim ke lokasi mitra.',            'duration' => 'Hari 2 - 5'],
+                    ['n' => '04', 'icon' => 'handshake',       'title' => 'Serah Terima & Dukungan','desc' => 'Barang diterima mitra disertai bukti serah terima, dengan dukungan penanganan jika terdapat kendala.',                'duration' => 'Berkelanjutan'],
                 ];
             @endphp
 
@@ -207,8 +208,8 @@
 
         <div class="section-heading">
             <span class="section-tag-pill" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Fleksibilitas Kemitraan</span>
-            <h2 class="section-title-lg section-title-lg--primary">Skema Keterlibatan Konsultan</h2>
-            <p class="section-sub-lg">Pilihan model kontrak kerja yang adaptif terhadap skala organisasi, kompleksitas regulasi, serta urgensi proyek korporasi Anda.</p>
+            <h2 class="section-title-lg section-title-lg--primary">Pilihan Model Kerja Sama</h2>
+            <p class="section-sub-lg">Pilihan model pasokan yang dapat disesuaikan dengan skala usaha, kebutuhan barang, dan anggaran Anda.</p>
         </div>
 
         <div class="engagement-grid">
@@ -217,36 +218,36 @@
                 <div>
                     <div class="engagement-card__head">
                         <span class="engagement-card__opt">Opsi A</span>
-                        <span class="material-symbols-outlined engagement-card__icon">assignment</span>
+                        <span class="material-symbols-outlined engagement-card__icon">shopping_bag</span>
                     </div>
-                    <h3 class="engagement-card__title">Project-Based Advisory</h3>
-                    <p class="engagement-card__desc">Ideal untuk inisiatif spesifik dengan ruang lingkup dan jangka waktu terdefinisi ketat, seperti studi kelayakan investasi atau audit kepatuhan GCG.</p>
+                    <h3 class="engagement-card__title">Pembelian Eceran &amp; Rutin</h3>
+                    <p class="engagement-card__desc">Cocok untuk toko, UMKM, dan pelanggan yang membutuhkan pasokan barang dalam jumlah kecil namun rutin.</p>
                     <ul class="engagement-card__features">
-                        <li><span class="material-symbols-outlined">check</span> Output &amp; deliverable terikat SLA kontraktual</li>
-                        <li><span class="material-symbols-outlined">check</span> Fixed budget tanpa biaya tersembunyi</li>
-                        <li><span class="material-symbols-outlined">check</span> Alokasi tim spesialis sektoral dedicated</li>
+                        <li><span class="material-symbols-outlined">check</span> Tanpa minimum pembelian besar</li>
+                        <li><span class="material-symbols-outlined">check</span> Harga transparan &amp; kompetitif</li>
+                        <li><span class="material-symbols-outlined">check</span> Pengiriman yang fleksibel</li>
                     </ul>
                 </div>
-                <a class="engagement-card__btn" href="{{ route('contact') }}">Pilih Skema Proyek</a>
+                <a class="engagement-card__btn" href="{{ route('contact') }}">Mulai Berbelanja</a>
             </div>
 
             {{-- Model B (Featured) --}}
             <div class="engagement-card engagement-card--featured" style="position:relative;">
-                <span class="engagement-card__ribbon">Paling Direkomendasikan</span>
+                <span class="engagement-card__ribbon">Paling Diminati</span>
                 <div>
                     <div class="engagement-card__head" style="margin-top:0.5rem;">
                         <span class="engagement-card__opt">Opsi B</span>
                         <span class="material-symbols-outlined engagement-card__icon">stars</span>
                     </div>
-                    <h3 class="engagement-card__title">Retainer Strategic Partner</h3>
-                    <p class="engagement-card__desc">Kemitraan berkesinambungan mendampingi jajaran Direksi, Komisaris, dan Kepala Divisi sebagai strategic counsel bulanan atau kuartalan.</p>
+                    <h3 class="engagement-card__title">Kemitraan Pasokan Rutin</h3>
+                    <p class="engagement-card__desc">Kemitraan jangka panjang untuk ritel dan institusi dengan pasokan berkala serta harga khusus mitra.</p>
                     <ul class="engagement-card__features">
-                        <li><span class="material-symbols-outlined">check_circle</span> Akses prioritas 24/7 konsultasi manajemen C-Level</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> Review berkala KPI &amp; pemantauan mitigasi risiko</li>
-                        <li><span class="material-symbols-outlined">check_circle</span> Seat permanen pada rapat evaluasi strategis</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Harga khusus mitra terdaftar</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Jadwal pengiriman tetap &amp; teratur</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Prioritas ketersediaan stok</li>
                     </ul>
                 </div>
-                <a class="engagement-card__btn" href="{{ route('contact') }}">Mulai Kemitraan Retainer</a>
+                <a class="engagement-card__btn" href="{{ route('contact') }}">Daftar Jadi Mitra</a>
             </div>
 
             {{-- Model C --}}
@@ -254,17 +255,17 @@
                 <div>
                     <div class="engagement-card__head">
                         <span class="engagement-card__opt">Opsi C</span>
-                        <span class="material-symbols-outlined engagement-card__icon">flash_on</span>
+                        <span class="material-symbols-outlined engagement-card__icon">request_quote</span>
                     </div>
-                    <h3 class="engagement-card__title">Specialized Task Force</h3>
-                    <p class="engagement-card__desc">Pengerahan tim ad-hoc multi-bidang dengan akselerasi tinggi untuk menangani krisis operasional, restrukturisasi mendesak, atau target M&amp;A agresif.</p>
+                    <h3 class="engagement-card__title">Pengadaan Massal &amp; Tender</h3>
+                    <p class="engagement-card__desc">Untuk kebutuhan pengadaan dalam jumlah besar, proyek, atau institusi melalui proses penawaran yang transparan.</p>
                     <ul class="engagement-card__features">
-                        <li><span class="material-symbols-outlined">check</span> Mobilisasi kilat dalam tempo &lt; 72 jam</li>
-                        <li><span class="material-symbols-outlined">check</span> Kombinasi pakar legal, keuangan &amp; IT forensik</li>
-                        <li><span class="material-symbols-outlined">check</span> Pelaporan harian berbasis executive dashboard</li>
+                        <li><span class="material-symbols-outlined">check</span> Penawaran harga kompetitif</li>
+                        <li><span class="material-symbols-outlined">check</span> Kapasitas pasokan besar</li>
+                        <li><span class="material-symbols-outlined">check</span> Dukungan administrasi pengadaan</li>
                     </ul>
                 </div>
-                <a class="engagement-card__btn" href="{{ route('contact') }}">Aktivasi Task Force</a>
+                <a class="engagement-card__btn" href="{{ route('contact') }}">Ajukan Penawaran</a>
             </div>
         </div>
     </div>
@@ -276,15 +277,15 @@
 
         <div class="section-heading">
             <span class="section-tag-pill" style="background:none; padding:0; color:var(--secondary); font-weight:700;">Pertanyaan Sering Diajukan</span>
-            <h2 class="section-title-lg section-title-lg--primary">Klarifikasi Prosedur Layanan</h2>
+            <h2 class="section-title-lg section-title-lg--primary">Klarifikasi Seputar Layanan</h2>
         </div>
 
         @php
             $faqs = [
-                ['q' => 'Bagaimana CV Maju Sukses menjamin kerahasiaan data korporasi klien (NDA)?', 'a' => 'Setiap penugasan didahului penandatanganan Non-Disclosure Agreement (NDA) dua arah yang mengikat secara hukum dengan klausul sanksi ketat. Akses data sensitif dienkripsi secara digital dan hanya dibuka pada konsultan inti yang memegang sertifikasi kepatuhan data ISO/IEC 27001.'],
-                ['q' => 'Berapa rata-rata durasi proyek konsultasi dari kickoff hingga go-live?', 'a' => 'Bergantung pada skala pilar yang dipilih. Proyek audit hukum atau tata kelola biasanya berkisar 6 hingga 12 minggu. Sementara proyek transformasi digital ERP pabrik atau restrukturisasi menyeluruh memerlukan waktu 16 hingga 36 minggu dengan pengawalan pasca-implementasi.'],
-                ['q' => 'Apa kualifikasi dan latar belakang konsultan yang ditugaskan?', 'a' => 'Tim penasihat kami terdiri dari mantan praktisi C-suite, akuntan publik tersertifikasi (CPA/CFA), advokat hukum korporasi terdaftar, serta arsitek industri terakreditasi Lean Six Sigma Black Belt dengan pengalaman rata-rata di atas 12 tahun di sektor terkait.'],
-                ['q' => 'Apakah ada program pendampingan lanjutan setelah proyek selesai diserahkan?', 'a' => 'Tentu. Kami menyediakan masa retensi audit paska-proyek (warranty support) selama 60 hingga 90 hari tanpa biaya tambahan, mencakup evaluasi stabilitas sistem baru serta bimbingan audit tindak lanjut bagi manajemen internal.'],
+                ['q' => 'Bagaimana cara memesan barang dari CV Maju Berkah?', 'a' => 'Anda dapat menghubungi tim kami melalui halaman kontak, telepon, atau WhatsApp. Sampaikan jenis barang, jumlah, dan lokasi pengiriman; tim kami akan mengonfirmasi ketersediaan stok, harga, dan estimasi waktu pengiriman.'],
+                ['q' => 'Apakah ada minimum pembelian untuk menjadi mitra?', 'a' => 'Untuk pembelian eceran tidak ada minimum besar. Untuk kemitraan pasokan rutin dan pengadaan massal, ketentuan minimum akan disesuaikan dengan jenis barang serta kesepakatan kerja sama.'],
+                ['q' => 'Apakah pengiriman menjangkau luar kota?', 'a' => 'Ya. Kami melayani pengiriman ke berbagai kota di Indonesia melalui armada sendiri dan mitra logistik terpercaya. Biaya serta estimasi waktu pengiriman akan diinformasikan sebelum pesanan diproses.'],
+                ['q' => 'Bagaimana jika barang yang diterima tidak sesuai?', 'a' => 'Kami menyediakan layanan penanganan keluhan dan retur. Hubungi tim layanan kami dengan menyertakan bukti pesanan dan foto barang, lalu kami akan memproses penukaran atau penyelesaian sesuai ketentuan.'],
             ];
         @endphp
 
@@ -312,18 +313,18 @@
             <div class="cta-block__glow-2"></div>
             <div class="cta-block__inner">
                 <div class="cta-block__content">
-                    <span class="cta-block__pill">Siap Mengakselerasi Daya Saing Organisasi?</span>
-                    <h2 class="cta-block__title">Diskusikan Kebutuhan Strategis Bersama Konsultan Senior Kami</h2>
+                    <span class="cta-block__pill">Butuh Pasokan Barang?</span>
+                    <h2 class="cta-block__title">Diskusikan Kebutuhan Pengadaan Bersama Tim Kami</h2>
                     <p class="cta-block__desc">
-                        Jadwalkan sesi confidential diagnostic assessment selama 45 menit tanpa komitmen awal untuk meninjau opsi solusi terbaik bagi perusahaan Anda.
+                        Hubungi kami untuk informasi ketersediaan barang, harga terbaru, dan jadwal pengiriman ke lokasi Anda.
                     </p>
                 </div>
                 <div class="cta-block__actions">
                     <a href="{{ route('contact') }}" class="btn-page btn-page--primary">
-                        Konsultasi Kebutuhan Anda
+                        Hubungi Kami
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
-                    <button class="btn-page btn-page--outline-white" onclick="alert('Katalog Layanan CV Maju Sukses (PDF) sedang diunduh.');" type="button">
+                    <button class="btn-page btn-page--outline-white" onclick="alert('Katalog Layanan CV Maju Berkah (PDF) sedang diunduh.');" type="button">
                         <span class="material-symbols-outlined">download</span>
                         Unduh Katalog (PDF)
                     </button>

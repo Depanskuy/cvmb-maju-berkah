@@ -14,7 +14,7 @@ class JobController extends Controller
      */
     public function index(Request $request)
     {
-        $query = JobListing::publiclyVisible()->latest();
+        $query = JobListing::publiclyVisible();
 
         // Filter keyword
         if ($request->filled('q')) {
@@ -36,15 +36,29 @@ class JobController extends Controller
             $query->where('employment_type', $request->input('type'));
         }
 
+        // Filter lokasi
+        if ($request->filled('location')) {
+            $query->where('location', 'ILIKE', '%' . $request->input('location') . '%');
+        }
+
+        // Urutan hasil
+        match ($request->input('sort', 'latest')) {
+            'deadline' => $query->orderBy('deadline'),
+            'title'    => $query->orderBy('title'),
+            default    => $query->latest(),
+        };
+
         $jobs = $query->paginate(9)->withQueryString();
 
         $categories = JobListing::publiclyVisible()
             ->select('category')
             ->selectRaw('count(*) as count')
             ->groupBy('category')
+            ->orderBy('category')
             ->get();
 
         $appliedJobIds = auth()->user()->applications()
+            ->whereNull('withdrawn_at')
             ->pluck('job_listing_id')
             ->toArray();
 
@@ -64,6 +78,7 @@ class JobController extends Controller
 
         $hasApplied = auth()->user()->applications()
             ->where('job_listing_id', $jobListing->id)
+            ->whereNull('withdrawn_at')
             ->first();
 
         return view('seeker.jobs.show', compact('jobListing', 'hasApplied'));
@@ -79,6 +94,7 @@ class JobController extends Controller
 
         $existing = auth()->user()->applications()
             ->where('job_listing_id', $jobListing->id)
+            ->whereNull('withdrawn_at')
             ->first();
 
         if ($existing) {

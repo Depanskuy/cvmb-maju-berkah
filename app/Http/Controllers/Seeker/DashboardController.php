@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $stats = [
             'total'      => Application::where('user_id', $user->id)->count(),
             'pending'    => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PENDING)->count(),
-            'processing' => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->whereIn('status', [Application::STATUS_PROCESSING, 'interview'])->count(),
+            'processing' => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING)->count(),
             'accepted'   => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_ACCEPTED)->count(),
         ];
 

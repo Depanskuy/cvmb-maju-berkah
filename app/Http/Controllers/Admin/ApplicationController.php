@@ -52,7 +52,7 @@ class ApplicationController extends Controller
         $stats = [
             'total'      => Application::count(),
             'pending'    => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_PENDING)->count(),
-            'processing' => Application::whereNull('withdrawn_at')->whereIn('status', [Application::STATUS_PROCESSING, 'interview'])->count(),
+            'processing' => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING)->count(),
             'accepted'   => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_ACCEPTED)->count(),
             'rejected'   => Application::whereNull('withdrawn_at')->where('status', Application::STATUS_REJECTED)->count(),
             'withdrawn'  => Application::whereNotNull('withdrawn_at')->count(),
@@ -86,7 +86,6 @@ class ApplicationController extends Controller
             'status' => ['required', Rule::in([
                 Application::STATUS_PENDING,
                 Application::STATUS_PROCESSING,
-                'interview',
                 Application::STATUS_ACCEPTED,
                 Application::STATUS_REJECTED,
             ])],

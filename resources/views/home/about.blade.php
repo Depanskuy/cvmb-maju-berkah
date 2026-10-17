@@ -7,13 +7,13 @@
             {{-- Visual --}}
             <div class="about__visual">
                 <div class="about__visual-main">
-                    <span class="about__visual-text">MS</span>
+                    <span class="about__visual-text">MB</span>
                 </div>
                 <div class="about__badge">
                     <span class="material-symbols-outlined">verified</span>
                     <div>
                         <div class="about__badge-title">Terpercaya</div>
-                        <div class="about__badge-sub">Sejak 2015</div>
+                        <div class="about__badge-sub">Sejak 2010</div>
                     </div>
                 </div>
             </div>

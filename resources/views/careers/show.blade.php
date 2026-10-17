@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $jobListing->title . ' — CV Maju Sukses')
+@section('title', $jobListing->title . ' — CV Maju Berkah')
 
 @section('content')
 

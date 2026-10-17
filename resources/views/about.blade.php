@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Tentang Kami — CV Maju Sukses')
+@section('title', 'Tentang Kami — CV Maju Berkah')
 
 @section('content')
 
@@ -21,32 +21,32 @@
 
         <div class="page-hero__pill">
             <span class="page-hero__pill-dot"></span>
-            <span>Rekam Jejak &amp; Kredibilitas Korporasi</span>
+            <span>Distribusi Barang &amp; Kebutuhan Usaha</span>
         </div>
 
         <h1 class="page-hero__title">
-            Mendedikasikan Keahlian untuk Pertumbuhan Tangguh Korporasi Indonesia
+            Menyalurkan Barang Berkualitas untuk Pertumbuhan Usaha Indonesia
         </h1>
         <p class="page-hero__subtitle">
-            15+ tahun mendampingi 500+ enterprise, BUMN, dan institusi nasional dalam transformasi manajemen, restrukturisasi keuangan, dan tata kelola berstandar dunia.
+            15+ tahun menghubungkan produsen terpercaya dengan ribuan mitra usaha, ritel, dan institusi melalui jaringan distribusi yang andal di seluruh Indonesia.
         </p>
 
         <div class="page-hero__metrics">
             <div class="page-hero__metric">
                 <div class="page-hero__metric-value">15+</div>
-                <div class="page-hero__metric-label">Tahun Eksistensi</div>
+                <div class="page-hero__metric-label">Tahun Pengalaman</div>
             </div>
             <div class="page-hero__metric">
-                <div class="page-hero__metric-value">500+</div>
-                <div class="page-hero__metric-label">Klien Korporasi</div>
+                <div class="page-hero__metric-value">2.000+</div>
+                <div class="page-hero__metric-label">Mitra Usaha</div>
             </div>
             <div class="page-hero__metric">
-                <div class="page-hero__metric-value">98.4%</div>
-                <div class="page-hero__metric-label">Tingkat Retensi</div>
+                <div class="page-hero__metric-value">200+</div>
+                <div class="page-hero__metric-label">Pemasok Terpercaya</div>
             </div>
             <div class="page-hero__metric">
                 <div class="page-hero__metric-value">34 Prov</div>
-                <div class="page-hero__metric-label">Jangkauan Nasional</div>
+                <div class="page-hero__metric-label">Jangkauan Distribusi</div>
             </div>
         </div>
     </div>
@@ -59,15 +59,15 @@
 
             <div class="about-story__content">
                 <div class="about-story__eyebrow">
-                    <span class="material-symbols-outlined">history_edu</span>
+                    <span class="material-symbols-outlined">local_shipping</span>
                     Perjalanan Kami Sejak 2010
                 </div>
                 <h2 class="section-title-md">
-                    Membangun Standar Baru Konsultasi Manajemen di Era Ketidakpastian
+                    Membangun Jaringan Distribusi yang Andal dan Terpercaya
                 </h2>
                 <div class="about-story__text">
-                    <p>Berawal dari kantor kecil di kawasan Jakarta Pusat pada tahun 2010, <strong>CV Maju Sukses</strong> didirikan dengan satu komitmen mendasar: menyediakan layanan advisori strategis berkelas dunia yang membumi dengan dinamika regulasi dan bisnis di Indonesia.</p>
-                    <p>Melalui kombinasi ketajaman analisis finansial, integrasi kepatuhan hukum, dan pemahaman operasional yang teruji, kami telah berevolusi dari agensi konsultasi lokal menjadi mitra strategis terpercaya bagi puluhan konglomerasi dan entitas publik terkemuka.</p>
+                    <p>Berawal dari sebuah gudang kecil di Jakarta pada tahun 2010, <strong>CV Maju Berkah</strong> didirikan dengan satu komitmen mendasar: memastikan barang dan kebutuhan usaha sampai ke tangan mitra secara tepat waktu, tepat jumlah, dan dengan harga bersaing.</p>
+                    <p>Dengan dukungan jaringan gudang, armada logistik, dan kemitraan bersama ratusan pemasok terpercaya, kami tumbuh menjadi mitra distribusi andal bagi ritel, UMKM, perkantoran, hingga institusi di seluruh Indonesia.</p>
                 </div>
 
                 <div class="quote-box">
@@ -75,13 +75,13 @@
                         <span class="material-symbols-outlined quote-box__icon">format_quote</span>
                         <div>
                             <blockquote class="quote-box__text">
-                                "Kredibilitas bukan dibangun dari janji ekspansi instan, melainkan disiplin tata kelola, transparansi terukur, dan keberanian mengambil keputusan berbasis integritas."
+                                "Kepercayaan mitra dibangun dari ketepatan pengiriman, konsistensi kualitas barang, dan pelayanan yang andal setiap hari."
                             </blockquote>
                             <div class="quote-box__author">
-                                <div class="quote-box__avatar">BP</div>
+                                <div class="quote-box__avatar">HW</div>
                                 <div>
-                                    <p class="quote-box__name">Bambang Prakoso, S.E., M.B.A.</p>
-                                    <p class="quote-box__role">Managing Partner &amp; Co-Founder</p>
+                                    <p class="quote-box__name">Hendra Wijaya, S.E.</p>
+                                    <p class="quote-box__role">Direktur Utama &amp; Pendiri</p>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
 
             <div class="about-showcase">
                 <div class="about-showcase__image">
-                    <img alt="Executive Boardroom Meeting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBjr9R82ZZunNUbDUd7T-LEP_UTZTf0zQtnCK6cYDEHF1cKrPXfUWwYTdbITmGBHlwnIDTmQZiIExD0G4HTstTjyPxCyjtjCX5dTDLy4esKiP0gtlATnW3WbV56b7bSw0815ZQb4KRK_jyYrpLqFjaJRz4cpiD0Jyi9QlLv7Okq0g1N_QUO-CyzwdAPzEy7hbbYJ1R4GPxSEr54jlyQi1nE3TtQLUdNl8ukcLmcJf1FsrCHVSP6Zq_Bw"/>
+                    <img alt="Gudang dan Distribusi CV Maju Berkah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBjr9R82ZZunNUbDUd7T-LEP_UTZTf0zQtnCK6cYDEHF1cKrPXfUWwYTdbITmGBHlwnIDTmQZiIExD0G4HTstTjyPxCyjtjCX5dTDLy4esKiP0gtlATnW3WbV56b7bSw0815ZQb4KRK_jyYrpLqFjaJRz4cpiD0Jyi9QlLv7Okq0g1N_QUO-CyzwdAPzEy7hbbYJ1R4GPxSEr54jlyQi1nE3TtQLUdNl8ukcLmcJf1FsrCHVSP6Zq_Bw"/>
                 </div>
 
                 <div class="about-float-card about-float-card--top">
@@ -100,17 +100,17 @@
                     </div>
                     <div>
                         <p class="about-float-card__value">15+ Tahun</p>
-                        <p class="about-float-card__label">Dedikasi &amp; Pengalaman Nasional</p>
+                        <p class="about-float-card__label">Pengalaman Distribusi Nasional</p>
                     </div>
                 </div>
 
                 <div class="about-float-card about-float-card--bottom">
                     <div class="about-float-card__icon about-float-card__icon--secondary">
-                        <span class="material-symbols-outlined">corporate_fare</span>
+                        <span class="material-symbols-outlined">warehouse</span>
                     </div>
                     <div>
-                        <p class="about-float-card__value" style="color:var(--on-surface);">500+ Mitra</p>
-                        <p class="about-float-card__label">Korporasi &amp; Institusi Publik</p>
+                        <p class="about-float-card__value" style="color:var(--on-surface);">2.000+ Mitra</p>
+                        <p class="about-float-card__label">Ritel, UMKM &amp; Institusi</p>
                     </div>
                 </div>
             </div>
@@ -124,9 +124,9 @@
     <div class="container-page">
 
         <div class="section-heading">
-            <span class="section-tag-pill">Arah &amp; Prinsip Strategis</span>
-            <h2 class="section-title-lg">Pondasi Keunggulan Berkelanjutan</h2>
-            <p class="section-sub-lg">Mengintegrasikan orientasi visi jangka panjang dengan eksekusi pragmatis berakar pada 4 pilar filosofi kerja.</p>
+            <span class="section-tag-pill">Arah &amp; Prinsip Kerja</span>
+            <h2 class="section-title-lg">Pondasi Layanan Distribusi Kami</h2>
+            <p class="section-sub-lg">Memadukan orientasi pelayanan jangka panjang dengan eksekusi operasional yang berakar pada 4 pilar kerja.</p>
         </div>
 
         <div class="visi-misi-grid">
@@ -135,14 +135,14 @@
                     <div class="visi-misi-card__icon visi-misi-card__icon--primary">
                         <span class="material-symbols-outlined">visibility</span>
                     </div>
-                    <h3 class="visi-misi-card__title">Visi Korporat</h3>
+                    <h3 class="visi-misi-card__title">Visi Perusahaan</h3>
                     <p class="visi-misi-card__text">
-                        Menjadi akselerator konsultasi manajemen dan tata kelola bisnis paling terpercaya di Asia Tenggara, membentuk institusi bisnis Indonesia yang tangguh, etis, dan berdaya saing global.
+                        Menjadi mitra distribusi barang dan kebutuhan usaha paling andal di Indonesia, yang menghubungkan produsen berkualitas dengan pelaku usaha di seluruh negeri.
                     </p>
                 </div>
                 <div class="visi-misi-card__footer visi-misi-card__footer--primary">
                     <span class="material-symbols-outlined">check_circle</span>
-                    Standar Akuntabilitas Internasional
+                    Standar Layanan Distribusi Nasional
                 </div>
             </div>
 
@@ -151,25 +151,25 @@
                     <div class="visi-misi-card__icon visi-misi-card__icon--secondary">
                         <span class="material-symbols-outlined">track_changes</span>
                     </div>
-                    <h3 class="visi-misi-card__title">Misi Strategis</h3>
+                    <h3 class="visi-misi-card__title">Misi Kami</h3>
                     <ul class="visi-misi-card__list">
                         <li>
                             <span class="material-symbols-outlined">arrow_forward</span>
-                            Mentransformasi ekosistem korporasi melalui kerangka tata kelola (GCG) yang adaptif dan teruji.
+                            Menyediakan pasokan barang dan kebutuhan usaha yang berkualitas dengan harga bersaing.
                         </li>
                         <li>
                             <span class="material-symbols-outlined">arrow_forward</span>
-                            Mengoptimalkan efisiensi operasional dan kapabilitas finansial klien melalui metodologi data-driven.
+                            Menjaga ketepatan waktu, jumlah, dan kondisi barang dalam setiap pengiriman.
                         </li>
                         <li>
                             <span class="material-symbols-outlined">arrow_forward</span>
-                            Membangun kapabilitas talenta lokal agar siap bersaing di tingkat enterprise multinasional.
+                            Membangun jaringan pemasok dan mitra usaha yang luas serta saling menguntungkan.
                         </li>
                     </ul>
                 </div>
                 <div class="visi-misi-card__footer visi-misi-card__footer--secondary">
                     <span class="material-symbols-outlined">stars</span>
-                    Fokus Dampak Kuantitatif Nyata
+                    Fokus pada Ketepatan &amp; Kepuasan Mitra
                 </div>
             </div>
         </div>
@@ -177,10 +177,10 @@
         <div class="pillars-grid">
             @php
                 $pillars = [
-                    ['icon' => 'policy',      'title' => 'Integritas Tanpa Kompromi',       'desc' => 'Menegakkan standar etika tertinggi dalam setiap audit, rekomendasi kepatuhan, serta pengelolaan data rahasia klien.',  'tag' => 'Pilar 01 • Etika Mutlak'],
-                    ['icon' => 'query_stats', 'title' => 'Presisi Analitis & Berbasis Data', 'desc' => 'Seluruh panduan konsultasi berlandaskan validasi fakta terperinci, simulasi risiko kuantitatif, dan riset pasar mendalam.', 'tag' => 'Pilar 02 • Validasi Fakta'],
-                    ['icon' => 'lightbulb',   'title' => 'Inovasi Berkelanjutan',           'desc' => 'Merancang solusi yang tidak hanya menyelesaikan krisis hari ini, tetapi juga menciptakan daya adaptasi masa depan yang kokoh.', 'tag' => 'Pilar 03 • Daya Adaptasi'],
-                    ['icon' => 'handshake',   'title' => 'Kemitraan Berdampak Nyata',       'desc' => 'Kami bertindak sebagai perpanjangan tangan manajemen eksekutif klien—berkomitmen bersama hingga tujuan tercapai.',          'tag' => 'Pilar 04 • Tanggung Jawab'],
+                    ['icon' => 'handshake',    'title' => 'Integritas & Kepercayaan', 'desc' => 'Menjaga amanah mitra melalui transparansi harga, kualitas barang, dan komunikasi yang jujur.', 'tag' => 'Pilar 01 • Amanah'],
+                    ['icon' => 'local_shipping','title' => 'Ketepatan & Kecepatan',  'desc' => 'Memastikan setiap pesanan diproses dan dikirim sesuai jadwal dengan gudang serta armada yang andal.', 'tag' => 'Pilar 02 • Tepat Waktu'],
+                    ['icon' => 'verified',     'title' => 'Kualitas Terjamin',        'desc' => 'Setiap produk melewati pemeriksaan mutu sebelum sampai ke tangan mitra usaha.', 'tag' => 'Pilar 03 • Kendali Mutu'],
+                    ['icon' => 'diversity_3',  'title' => 'Kemitraan Jangka Panjang', 'desc' => 'Tumbuh bersama mitra melalui pelayanan yang responsif dan dukungan yang berkelanjutan.', 'tag' => 'Pilar 04 • Tumbuh Bersama'],
                 ];
             @endphp
 
@@ -204,17 +204,17 @@
 
         <div class="section-heading" style="align-items: flex-start; text-align: left; margin-left: 0; margin-right: 0; max-width: none;">
             <span class="section-tag-pill">Kepemimpinan</span>
-            <h2 class="section-title-lg">Dewan Pakar &amp; Pimpinan Eksekutif</h2>
-            <p class="section-sub-lg" style="max-width: 42rem;">Dipimpin oleh para profesional berpengalaman lintas industri yang memiliki rekam jejak terverifikasi dalam restrukturisasi korporat dan transformasi nasional.</p>
+            <h2 class="section-title-lg">Tim Manajemen &amp; Operasional</h2>
+            <p class="section-sub-lg" style="max-width: 42rem;">Dipimpin oleh tim berpengalaman di bidang pengadaan, pergudangan, dan distribusi yang berkomitmen memastikan kepuasan mitra usaha.</p>
         </div>
 
         <div class="leaders-grid">
             @php
                 $leaders = [
-                    ['name' => 'Bambang Prakoso, S.E., M.B.A.',  'role' => 'Managing Partner / Direktur Utama', 'spec' => 'Spesialisasi: Perencanaan Strategis Korporasi, Merger & Akuisisi, serta Tata Kelola Enterprise (GCG).',                 'tag' => '20+ Thn Pengalaman'],
-                    ['name' => 'Ratna Dewi, Ak., M.Ak., CA',      'role' => 'Partner Konsultasi Keuangan',       'spec' => 'Spesialisasi: Restrukturisasi Utang Korporasi, Valuasi Aset Strategis, dan Audit Finansial Komprehensif.',            'tag' => 'Mantan Direktur Big 4'],
-                    ['name' => 'Hendra Kurniawan, S.T., M.Sc.',   'role' => 'Partner Transformasi Digital',       'spec' => 'Spesialisasi: Otomasi Proses Operasional, Integrasi Cloud ERP, dan Optimalisasi Efisiensi Supply Chain.',             'tag' => 'Ahli Lean Six Sigma'],
-                    ['name' => 'Siti Aminah, S.H., LL.M.',        'role' => 'Legal & Governance Advisor',         'spec' => 'Spesialisasi: Regulasi Hukum Bisnis, Mitigasi Risiko Kepatuhan BUMN & Swasta, serta Audit Kontrak Komersial.',        'tag' => 'Konsultan Hukum Resmi'],
+                    ['name' => 'Hendra Wijaya, S.E.',      'role' => 'Direktur Utama & Pendiri', 'spec' => 'Fokus: Strategi Distribusi, Pengembangan Jaringan Mitra, dan Manajemen Rantai Pasok.',      'tag' => '15+ Thn Pengalaman'],
+                    ['name' => 'Ratna Dewi, S.E., M.M.',   'role' => 'Direktur Operasional',      'spec' => 'Fokus: Manajemen Pergudangan, Logistik, dan Optimalisasi Rute Pengiriman.',                  'tag' => 'Ahli Supply Chain'],
+                    ['name' => 'Budi Santoso, S.T.',       'role' => 'Manajer Pengadaan',         'spec' => 'Fokus: Pengadaan Barang, Negosiasi dengan Pemasok, dan Kendali Kualitas Produk.',            'tag' => 'Jaringan 200+ Pemasok'],
+                    ['name' => 'Siti Aminah, S.E.',        'role' => 'Manajer Pelayanan Mitra',   'spec' => 'Fokus: Layanan Pelanggan, Penanganan Pesanan, dan Retensi Mitra Usaha.',                     'tag' => 'Layanan Responsif'],
                 ];
             @endphp
 
@@ -243,11 +243,11 @@
             <div class="certifications-card__content">
                 <div class="certifications-card__eyebrow">
                     <span class="material-symbols-outlined">verified</span>
-                    Kepatuhan &amp; Akreditasi Resmi
+                    Kepatuhan &amp; Sertifikasi
                 </div>
-                <h3 class="certifications-card__title">Standar Mutu Mutlak Tanpa Toleransi</h3>
+                <h3 class="certifications-card__title">Standar Mutu dalam Setiap Proses</h3>
                 <p class="certifications-card__desc">
-                    Seluruh metodologi konsultasi, tata kelola data informasi klien, serta kerangka kerja operasional kami diaudit secara berkala untuk memenuhi standar keandalan global.
+                    Seluruh proses pengadaan, penyimpanan, dan pengiriman kami mengikuti prosedur mutu untuk menjamin barang sampai dengan aman, lengkap, dan tepat waktu.
                 </p>
             </div>
 
@@ -263,11 +263,11 @@
                 </div>
                 <div class="cert-badge">
                     <div class="cert-badge__icon cert-badge__icon--primary">
-                        <span class="material-symbols-outlined">lock</span>
+                        <span class="material-symbols-outlined">inventory_2</span>
                     </div>
                     <div>
-                        <p class="cert-badge__name">ISO 27001:2022</p>
-                        <p class="cert-badge__sub">Keamanan Data Klien</p>
+                        <p class="cert-badge__name">Standar Pergudangan</p>
+                        <p class="cert-badge__sub">Penyimpanan &amp; Kendali Stok</p>
                     </div>
                 </div>
                 <div class="cert-badge">
@@ -295,18 +295,18 @@
                 <div class="cta-block__content">
                     <span class="cta-block__pill">
                         <span class="material-symbols-outlined" style="font-size:16px;">calendar_month</span>
-                        Sesi Diskusi Eksklusif
+                        Mulai Bermitra
                     </span>
-                    <h2 class="cta-block__title">Siap Mengakselerasi Potensi Bisnis Anda?</h2>
+                    <h2 class="cta-block__title">Butuh Pasokan Barang untuk Usaha Anda?</h2>
                     <p class="cta-block__desc">
-                        Diskusikan tantangan tata kelola, ekspansi pasar, atau efisiensi finansial korporasi Anda bersama Managing Partner CV Maju Sukses.
+                        Diskusikan kebutuhan pengadaan dan distribusi barang bersama tim CV Maju Berkah. Kami siap membantu pasokan usaha Anda.
                     </p>
                 </div>
 
                 <div class="cta-block__actions">
                     <a href="{{ route('contact') }}" class="btn-page btn-page--primary">
                         <span class="material-symbols-outlined">chat</span>
-                        Jadwalkan Konsultasi Gratis
+                        Hubungi Kami
                     </a>
                     <a href="{{ route('services') }}" class="btn-page btn-page--outline-white">
                         Lihat Layanan Kami

@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Jelajahi Lowongan Kerja — CV Maju Sukses')
+@section('title', 'Jelajahi Lowongan Kerja — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -12,7 +12,7 @@
                 Jelajahi Lowongan Kerja
             </h1>
             <p class="text-sm text-on-surface-variant mt-0.5">
-                Temukan peluang karir terbaik sesuai kompetensi dan aspirasi profesional Anda di CV Maju Sukses.
+                Temukan peluang karir terbaik sesuai kompetensi dan aspirasi profesional Anda di CV Maju Berkah.
             </p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
@@ -51,11 +51,21 @@
                 <option value="contract" {{ request('type') === 'contract' ? 'selected' : '' }}>Kontrak</option>
             </select>
 
+            <input type="text" name="location" value="{{ request('location') }}" placeholder="Kota / lokasi..."
+                   class="w-full sm:w-40 px-3.5 py-2.5 bg-surface-container-low rounded-xl text-sm text-on-surface placeholder-on-surface-variant/60 border-none focus:ring-2 focus:ring-primary/20">
+
+            <select name="sort"
+                    class="px-3.5 py-2.5 bg-surface-container-low rounded-xl text-sm text-on-surface border-none focus:ring-2 focus:ring-primary/20">
+                <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Terbaru</option>
+                <option value="deadline" {{ request('sort') === 'deadline' ? 'selected' : '' }}>Deadline Terdekat</option>
+                <option value="title" {{ request('sort') === 'title' ? 'selected' : '' }}>Judul A-Z</option>
+            </select>
+
             <button type="submit" class="px-4 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-xs hover:bg-primary-container shadow-xs transition-colors cursor-pointer">
                 Terapkan
             </button>
 
-            @if(request()->hasAny(['q', 'category', 'type']))
+            @if(request()->hasAny(['q', 'category', 'type', 'location', 'sort']))
                 <a href="{{ route('seeker.jobs') }}" class="text-xs text-rose-600 hover:underline">
                     Reset Filter
                 </a>

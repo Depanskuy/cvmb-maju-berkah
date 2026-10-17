@@ -22,12 +22,10 @@ return new class extends Migration
             $table->text('skills')->nullable();
             $table->text('cover_letter')->nullable();
             $table->string('cv_path');
-            $table->enum('status', ['pending', 'processing', 'accepted', 'rejected', 'menunggu', 'interview'])->default('pending');
+            $table->enum('status', ['pending', 'processing', 'accepted', 'rejected'])->default('pending');
             $table->text('review_note')->nullable();
             $table->timestamp('withdrawn_at')->nullable();
             $table->timestamps();
-            $table->unique(['job_listing_id', 'applicant_email']);
-            
         });
     }
 

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pengajuan Kerja Sama — Admin CV Maju Sukses')
+@section('title', 'Pengajuan Kerja Sama — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -12,7 +12,7 @@
                 Pengajuan Kerja Sama &amp; Kemitraan
             </h1>
             <p class="text-sm text-on-surface-variant mt-0.5">
-                Kelola permohonan kemitraan vendor, subkontraktor, dan kerja sama bisnis B2B CV Maju Sukses.
+                Kelola permohonan kemitraan vendor, subkontraktor, dan kerja sama bisnis B2B CV Maju Berkah.
             </p>
         </div>
     </div>

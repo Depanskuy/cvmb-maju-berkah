@@ -25,7 +25,7 @@ class CareerController extends Controller
                 : redirect()->route('seeker.jobs');
         }
 
-        $query = JobListing::publiclyVisible()->latest();
+        $query = JobListing::publiclyVisible();
 
         // Filter keyword
         if ($request->filled('q')) {
@@ -35,6 +35,11 @@ class CareerController extends Controller
                   ->orWhere('category', 'ILIKE', "%{$keyword}%")
                   ->orWhere('location', 'ILIKE', "%{$keyword}%");
             });
+        }
+
+        // Filter kategori
+        if ($request->filled('category')) {
+            $query->where('category', $request->input('category'));
         }
 
         // Filter tipe kerja
@@ -47,9 +52,23 @@ class CareerController extends Controller
             $query->where('location', 'ILIKE', '%' . $request->input('location') . '%');
         }
 
+        // Urutan hasil
+        match ($request->input('sort', 'latest')) {
+            'deadline' => $query->orderBy('deadline'),
+            'title'    => $query->orderBy('title'),
+            default    => $query->latest(),
+        };
+
         $jobs = $query->paginate(9)->withQueryString();
 
-        return view('careers.index', compact('jobs'));
+        $categories = JobListing::publiclyVisible()
+            ->select('category')
+            ->selectRaw('count(*) as count')
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+
+        return view('careers.index', compact('jobs', 'categories'));
     }
 
     /**
@@ -132,7 +151,9 @@ class CareerController extends Controller
         abort_unless($jobListing->isOpenForApplication(), 403, 'Lowongan sudah ditutup atau melewati deadline.');
 
         // BR-02: Cegah lamaran ganda by user_id atau email untuk lowongan yang sama
+        // Lamaran yang sudah ditarik (withdrawn_at) tidak dihitung agar pelamar dapat melamar ulang.
         $exists = Application::where('job_listing_id', $jobListing->id)
+            ->whereNull('withdrawn_at')
             ->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
                   ->orWhere('applicant_email', $user->email);

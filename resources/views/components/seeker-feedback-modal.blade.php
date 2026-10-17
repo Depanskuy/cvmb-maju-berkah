@@ -58,7 +58,7 @@
                         Pesan &amp; Saran Perbaikan <span class="text-rose-500">*</span>
                     </label>
                     <textarea name="message" rows="4" required minlength="5" maxlength="1000"
-                              placeholder="Bagikan pengalaman Anda selama proses seleksi di CV Maju Sukses, apa yang sudah baik dan apa yang perlu ditingkatkan..."
+                              placeholder="Bagikan pengalaman Anda selama proses seleksi di CV Maju Berkah, apa yang sudah baik dan apa yang perlu ditingkatkan..."
                               class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs text-on-surface placeholder-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary/20"></textarea>
                 </div>
             </div>

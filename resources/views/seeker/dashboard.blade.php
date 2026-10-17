@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Dashboard Pelamar — CV Maju Sukses')
+@section('title', 'Dashboard Pelamar — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -26,7 +26,7 @@
                 Selamat Datang, {{ auth()->user()->name }}!
             </h1>
             <p class="text-white/80 text-sm mt-1 max-w-xl">
-                Pantau proses seleksi berkas, jadwal wawancara, dan temukan peluang karir terbaik di CV Maju Sukses.
+                Pantau proses seleksi berkas, jadwal wawancara, dan temukan peluang karir terbaik di CV Maju Berkah.
             </p>
         </div>
         <div class="flex items-center gap-3 shrink-0 flex-wrap">
@@ -81,7 +81,7 @@
                 {{ $stats['processing'] }}
             </div>
             <div class="text-xs text-on-surface-variant/80 mt-1">
-                Tahap evaluasi berkas &amp; interview
+                Berkas sedang ditinjau tim rekrutmen
             </div>
         </div>
 
@@ -151,7 +151,6 @@
                                         $badgeClass = match($app->status) {
                                             'pending'    => 'bg-amber-100 text-amber-800 border-amber-200',
                                             'processing' => 'bg-sky-100 text-sky-800 border-sky-200',
-                                            'interview'  => 'bg-purple-100 text-purple-800 border-purple-200',
                                             'accepted'   => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                                             'rejected'   => 'bg-rose-100 text-rose-800 border-rose-200',
                                             default      => 'bg-slate-100 text-slate-800 border-slate-200',

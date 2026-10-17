@@ -20,11 +20,11 @@ class PartnershipController extends Controller
         if ($request->filled('search')) {
             $search = trim($request->input('search'));
             $query->where(function ($q) use ($search) {
-                $q->where('company_name', 'like', "%{$search}%")
-                  ->orWhere('contact_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('type', 'like', "%{$search}%");
+                $q->where('company_name', 'ILIKE', "%{$search}%")
+                  ->orWhere('contact_name', 'ILIKE', "%{$search}%")
+                  ->orWhere('email', 'ILIKE', "%{$search}%")
+                  ->orWhere('phone', 'ILIKE', "%{$search}%")
+                  ->orWhere('type', 'ILIKE', "%{$search}%");
             });
         }
 
@@ -85,7 +85,7 @@ class PartnershipController extends Controller
             "Calon mitra '{$partnership->company_name}' (PIC: {$partnership->contact_name}) mengajukan proposal kerja sama di bidang {$partnership->type}."
         );
 
-        return back()->with('success_contact', 'Permintaan konsultasi & kemitraan Anda berhasil dikirim! Tim representatif CV Maju Sukses akan menghubungi Anda dalam waktu 1x24 jam kerja.');
+        return back()->with('success_contact', 'Permintaan konsultasi & kemitraan Anda berhasil dikirim! Tim representatif CV Maju Berkah akan menghubungi Anda dalam waktu 1x24 jam kerja.');
     }
 
     /**

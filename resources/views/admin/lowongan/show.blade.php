@@ -209,7 +209,6 @@
                 <option value="">Semua Status</option>
                 <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Menunggu Review</option>
                 <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>Diproses</option>
-                <option value="interview" {{ request('status') === 'interview' ? 'selected' : '' }}>Interview</option>
                 <option value="accepted" {{ request('status') === 'accepted' ? 'selected' : '' }}>Diterima</option>
                 <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Ditolak</option>
                 <option value="withdrawn" {{ request('status') === 'withdrawn' ? 'selected' : '' }}>Dibatalkan</option>
@@ -241,14 +240,14 @@
                     @forelse ($applications as $app)
                         <tr class="hover:bg-surface-container-low/40 transition-colors">
                             <td class="px-4 py-3.5">
-                                <div class="font-bold text-on-surface">{{ $app->name }}</div>
+                                <div class="font-bold text-on-surface">{{ $app->applicant_name }}</div>
                                 <div class="text-xs text-on-surface-variant">
                                     {{ $app->user ? 'Akun Terdaftar: ' . $app->user->email : 'Lamaran Arsip (Legacy)' }}
                                 </div>
                             </td>
                             <td class="px-4 py-3.5 text-xs">
-                                <div class="font-medium text-on-surface">{{ $app->email }}</div>
-                                <div class="text-on-surface-variant">{{ $app->phone }}</div>
+                                <div class="font-medium text-on-surface">{{ $app->applicant_email }}</div>
+                                <div class="text-on-surface-variant">{{ $app->applicant_phone }}</div>
                             </td>
                             <td class="px-4 py-3.5 text-xs text-on-surface-variant">
                                 {{ $app->created_at->format('d M Y, H:i') }}
@@ -257,9 +256,7 @@
                                 @php
                                     $badge = match ($app->status) {
                                         'pending'     => 'bg-amber-100 text-amber-800 border-amber-200',
-                                        'reviewed'    => 'bg-blue-100 text-blue-800 border-blue-200',
-                                        'shortlisted' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
-                                        'interviewed' => 'bg-purple-100 text-purple-800 border-purple-200',
+                                        'processing'  => 'bg-sky-100 text-sky-800 border-sky-200',
                                         'accepted'    => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                                         'rejected'    => 'bg-rose-100 text-rose-800 border-rose-200',
                                         default       => 'bg-slate-100 text-slate-800 border-slate-200',

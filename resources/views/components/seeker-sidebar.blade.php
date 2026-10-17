@@ -18,7 +18,7 @@
                     MS
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-title-md text-title-md text-on-primary tracking-tight leading-snug">CV Maju Sukses</span>
+                    <span class="font-title-md text-title-md text-on-primary tracking-tight leading-snug">CV Maju Berkah</span>
                     <span class="font-label-sm text-label-sm text-secondary-fixed tracking-wide uppercase">Portal Pelamar</span>
                 </div>
             </a>

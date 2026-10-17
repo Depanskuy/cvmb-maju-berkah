@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Review Lamaran: ' . $application->applicant_name . ' — Admin CV Maju Sukses')
+@section('title', 'Review Lamaran: ' . $application->applicant_name . ' — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-5xl mx-auto">
@@ -154,7 +154,6 @@
                         $badgeClass = match($application->status) {
                             'pending'    => 'bg-amber-100 text-amber-800 border-amber-200',
                             'processing' => 'bg-sky-100 text-sky-800 border-sky-200',
-                            'interview'  => 'bg-purple-100 text-purple-800 border-purple-200',
                             'accepted'   => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                             'rejected'   => 'bg-rose-100 text-rose-800 border-rose-200',
                             default      => 'bg-slate-100 text-slate-800 border-slate-200',
@@ -190,9 +189,6 @@
                                 </option>
                                 <option value="processing" {{ old('status', $application->status) === 'processing' ? 'selected' : '' }}>
                                     Sedang Diproses (Screening)
-                                </option>
-                                <option value="interview" {{ old('status', $application->status) === 'interview' ? 'selected' : '' }}>
-                                    Lolos Tahap Interview
                                 </option>
                                 <option value="accepted" {{ old('status', $application->status) === 'accepted' ? 'selected' : '' }}>
                                     Diterima Bergabung (Accepted)

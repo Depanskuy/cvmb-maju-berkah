@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard — Admin CV Maju Sukses')
+@section('title', 'Dashboard — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -12,7 +12,7 @@
                 Selamat Datang, {{ auth()->user()->name }}!
             </h1>
             <p class="text-white/80 text-sm mt-1">
-                Panel Administrasi CV Maju Sukses — Kelola lowongan karir dan lamaran masuk secara efisien.
+                Panel Administrasi CV Maju Berkah — Kelola lowongan karir dan lamaran masuk secara efisien.
             </p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
@@ -137,7 +137,6 @@
                                         $badgeClass = match($app->status) {
                                             'pending'    => 'bg-amber-100 text-amber-800 border-amber-200',
                                             'processing' => 'bg-sky-100 text-sky-800 border-sky-200',
-                                            'interview'  => 'bg-purple-100 text-purple-800 border-purple-200',
                                             'accepted'   => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                                             'rejected'   => 'bg-rose-100 text-rose-800 border-rose-200',
                                             default      => 'bg-slate-100 text-slate-800 border-slate-200',

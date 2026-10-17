@@ -123,7 +123,6 @@ class Application extends Model
             self::STATUS_PROCESSING => 'Diproses',
             self::STATUS_ACCEPTED   => 'Diterima',
             self::STATUS_REJECTED   => 'Ditolak',
-            'interview'             => 'Interview',
             default                 => $this->status,
         };
     }
@@ -140,7 +139,7 @@ class Application extends Model
 
         return match ($this->status) {
             self::STATUS_PENDING    => 'pending',
-            self::STATUS_PROCESSING, 'interview' => 'processing',
+            self::STATUS_PROCESSING => 'processing',
             self::STATUS_ACCEPTED   => 'accepted',
             self::STATUS_REJECTED   => 'rejected',
             default                 => 'draft',

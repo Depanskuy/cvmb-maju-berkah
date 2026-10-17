@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Log Aktivitas Sistem — Admin CV Maju Sukses')
+@section('title', 'Log Aktivitas Sistem — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">

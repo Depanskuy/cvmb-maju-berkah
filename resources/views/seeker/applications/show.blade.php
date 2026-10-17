@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Detail Lamaran #' . $application->id . ' — CV Maju Sukses')
+@section('title', 'Detail Lamaran #' . $application->id . ' — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-5xl mx-auto">
@@ -142,7 +142,6 @@
                         $badgeClass = match($application->status) {
                             'pending'    => 'bg-amber-100 text-amber-800 border-amber-200',
                             'processing' => 'bg-sky-100 text-sky-800 border-sky-200',
-                            'interview'  => 'bg-purple-100 text-purple-800 border-purple-200',
                             'accepted'   => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                             'rejected'   => 'bg-rose-100 text-rose-800 border-rose-200',
                             default      => 'bg-slate-100 text-slate-800 border-slate-200',
@@ -176,9 +175,13 @@
                     </div>
                 @endif
 
-                {{-- Aksi Pembatalan jika masih Pending --}}
+                {{-- Aksi Ubah / Pembatalan jika masih Pending --}}
                 @if ($application->canBeWithdrawn())
-                    <div class="pt-4 border-t border-outline-variant/15">
+                    <div class="pt-4 border-t border-outline-variant/15 flex flex-col gap-3">
+                        <a href="{{ route('seeker.applications.edit', $application) }}" class="w-full py-2.5 px-4 rounded-lg bg-primary text-on-primary font-semibold text-xs hover:bg-primary-container transition-colors flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                            <span>Ubah Lamaran Ini</span>
+                        </a>
                         <form method="POST" action="{{ route('seeker.applications.withdraw', $application) }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan lamaran ini? Tindakan ini tidak dapat dibatalkan.');" class="m-0">
                             @csrf
                             @method('DELETE')

@@ -20,7 +20,7 @@ return new class extends Migration
 
         // Update status constraint for PostgreSQL
         DB::statement("ALTER TABLE applications DROP CONSTRAINT IF EXISTS applications_status_check");
-        DB::statement("ALTER TABLE applications ADD CONSTRAINT applications_status_check CHECK (status::text = ANY (ARRAY['pending'::text, 'processing'::text, 'accepted'::text, 'rejected'::text, 'menunggu'::text, 'interview'::text]))");
+        DB::statement("ALTER TABLE applications ADD CONSTRAINT applications_status_check CHECK (status::text = ANY (ARRAY['pending'::text, 'processing'::text, 'accepted'::text, 'rejected'::text]))");
         DB::statement("ALTER TABLE applications ALTER COLUMN status SET DEFAULT 'pending'");
     }
 
@@ -36,8 +36,8 @@ return new class extends Migration
         });
 
         DB::statement("ALTER TABLE applications DROP CONSTRAINT IF EXISTS applications_status_check");
-        DB::statement("ALTER TABLE applications ADD CONSTRAINT applications_status_check CHECK (status::text = ANY (ARRAY['menunggu'::text, 'interview'::text, 'accepted'::text, 'rejected'::text]))");
-        DB::statement("ALTER TABLE applications ALTER COLUMN status SET DEFAULT 'menunggu'");
+        DB::statement("ALTER TABLE applications ADD CONSTRAINT applications_status_check CHECK (status::text = ANY (ARRAY['pending'::text, 'processing'::text, 'accepted'::text, 'rejected'::text]))");
+        DB::statement("ALTER TABLE applications ALTER COLUMN status SET DEFAULT 'pending'");
     }
 };
 

@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'CV Maju Sukses — Bertumbuh Bersama, Melangkah Lebih Maju')</title>
+    <title>@yield('title', 'CV Maju Berkah — Bertumbuh Bersama, Melangkah Lebih Maju')</title>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>

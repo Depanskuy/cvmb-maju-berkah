@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class SettingController extends Controller
 {
@@ -25,21 +28,45 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
+        $company = CompanyProfile::current();
+
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:150'],
-            'email'       => ['required', 'email', 'max:150'],
-            'phone'       => ['nullable', 'string', 'max:50'],
-            'address'     => ['nullable', 'string', 'max:500'],
-            'description' => ['nullable', 'string'],
+            'name'          => ['required', 'string', 'max:150'],
+            'slug'          => ['required', 'string', 'max:150', Rule::unique('company_profile', 'slug')->ignore($company->id)],
+            'tagline'       => ['nullable', 'string', 'max:200'],
+            'description'   => ['required', 'string'],
+            'vision'        => ['nullable', 'string'],
+            'mission'       => ['nullable', 'string'],
+            'services'      => ['nullable', 'string'],
+            'address'       => ['nullable', 'string', 'max:500'],
+            'contact_email' => ['required', 'email', 'max:150'],
+            'contact_phone' => ['nullable', 'string', 'max:50'],
+            'logo'          => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
         ], [
-            'name.required'  => 'Nama perusahaan wajib diisi.',
-            'email.required' => 'Email resmi perusahaan wajib diisi.',
-            'email.email'    => 'Format email tidak valid.',
+            'name.required'          => 'Nama perusahaan wajib diisi.',
+            'slug.required'          => 'Slug perusahaan wajib diisi.',
+            'slug.unique'            => 'Slug sudah digunakan oleh data lain.',
+            'description.required'   => 'Deskripsi perusahaan wajib diisi.',
+            'contact_email.required' => 'Email resmi perusahaan wajib diisi.',
+            'contact_email.email'    => 'Format email tidak valid.',
+            'logo.mimes'             => 'Logo harus berformat PNG, JPG, WEBP, atau SVG.',
+            'logo.max'               => 'Ukuran logo maksimal 2 MB.',
         ]);
 
-        $company = CompanyProfile::current();
-        $company->update($validated);
+        $data = $validated;
+        unset($data['logo']);
 
-        return back()->with('success', 'Pengaturan profil perusahaan berhasil disimpan.');
+        if ($request->hasFile('logo')) {
+            if ($company->logo_path && Storage::disk('public')->exists($company->logo_path)) {
+                Storage::disk('public')->delete($company->logo_path);
+            }
+            $data['logo_path'] = $request->file('logo')->store('logos', 'public');
+        }
+
+        $company->update($data);
+
+        ActivityLog::record('update', 'Profil Perusahaan', "Admin memperbarui profil perusahaan '{$company->name}'.");
+
+        return back()->with('success', 'Profil perusahaan berhasil disimpan.');
     }
 }

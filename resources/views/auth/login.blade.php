@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'Login — CV Maju Sukses')
+@section('title', 'Login — CV Maju Berkah')
 
 @section('content')
 <div class="auth-page">
@@ -27,9 +27,9 @@
                 {{-- Header branding --}}
                 <div class="auth-brand__header">
                     <div class="auth-brand__identity">
-                        <div class="auth-brand__logo">MS</div>
+                        <div class="auth-brand__logo">MB</div>
                         <div>
-                            <div class="auth-brand__name">CV Maju Sukses</div>
+                            <div class="auth-brand__name">CV Maju Berkah</div>
                             <div class="auth-brand__subtitle">Sistem Terpadu</div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                     <span class="auth-brand__tag">Akses Akun Terintegrasi</span>
                     <h1 class="auth-brand__title">Selamat Datang Kembali</h1>
                     <p class="auth-brand__description">
-                        Masuk untuk mengakses layanan CV Maju Sukses, baik untuk pengelolaan operasional perusahaan maupun portal karir dan lamaran kerja Anda.
+                        Masuk untuk mengakses layanan CV Maju Berkah, baik untuk pengelolaan operasional perusahaan maupun portal karir dan lamaran kerja Anda.
                     </p>
 
                     {{-- Security badges --}}
@@ -75,7 +75,7 @@
                             "Satu portal terpadu untuk kemudahan pelamar memantau proses seleksi kerja dan tim perusahaan mengelola operasional secara efisien."
                         </p>
                         <p class="auth-brand__quote-author">
-                            — CV Maju Sukses Portal
+                            — CV Maju Berkah Portal
                         </p>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
                                 <span>Ingat saya selama 30 hari</span>
                             </label>
                             <a href="#" class="auth-options__forgot"
-                               onclick="event.preventDefault(); alert('Silakan hubungi administrator CV Maju Sukses untuk bantuan pemulihan akun.');">
+                               onclick="event.preventDefault(); alert('Silakan hubungi administrator CV Maju Berkah untuk bantuan pemulihan akun.');">
                                 Lupa password?
                             </a>
                         </div>
@@ -218,7 +218,7 @@
 
                 {{-- Footer --}}
                 <div class="auth-form-panel__footer">
-                    <p>&copy; {{ date('Y') }} CV Maju Sukses. Seluruh hak cipta dilindungi.</p>
+                    <p>&copy; {{ date('Y') }} CV Maju Berkah. Seluruh hak cipta dilindungi.</p>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Kirim Lamaran: ' . $jobListing->title . ' — CV Maju Sukses')
+@section('title', 'Kirim Lamaran: ' . $jobListing->title . ' — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-4xl mx-auto">
@@ -62,28 +62,28 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {{-- Nama Lengkap --}}
                 <div>
-                    <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
+                    <label for="applicant_name" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                         Nama Lengkap <span class="text-rose-600">*</span>
                     </label>
-                    <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required
+                    <input type="text" id="applicant_name" name="applicant_name" value="{{ old('applicant_name', $user->name) }}" required
                            class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                 </div>
 
                 {{-- Email --}}
                 <div>
-                    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
+                    <label for="applicant_email" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                         Alamat Email (Terkunci ke Akun) <span class="text-rose-600">*</span>
                     </label>
-                    <input type="email" id="email" name="email" value="{{ $user->email }}" readonly
+                    <input type="email" id="applicant_email" name="applicant_email" value="{{ $user->email }}" readonly
                            class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant/30 bg-surface-container-low text-on-surface-variant text-sm cursor-not-allowed outline-none">
                 </div>
 
                 {{-- Nomor WhatsApp / HP --}}
                 <div>
-                    <label for="phone" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
+                    <label for="applicant_phone" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                         Nomor WhatsApp / HP <span class="text-rose-600">*</span>
                     </label>
-                    <input type="text" id="phone" name="phone" value="{{ old('phone', $profile->phone ?? '') }}" required placeholder="Contoh: 081234567890"
+                    <input type="text" id="applicant_phone" name="applicant_phone" value="{{ old('applicant_phone', $profile->phone ?? '') }}" required placeholder="Contoh: 081234567890"
                            class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                 </div>
 
@@ -99,11 +99,11 @@
 
             {{-- Alamat Domisili --}}
             <div>
-                <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label for="applicant_address" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-1.5">
                     Alamat Domisili Saat Ini
                 </label>
-                <textarea id="address" name="address" rows="2" placeholder="Alamat lengkap tempat tinggal"
-                          class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-y">{{ old('address', $profile->address ?? '') }}</textarea>
+                <textarea id="applicant_address" name="applicant_address" rows="2" placeholder="Alamat lengkap tempat tinggal"
+                          class="w-full px-3.5 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-y">{{ old('applicant_address', $profile->address ?? '') }}</textarea>
             </div>
 
             {{-- Ringkasan Keahlian --}}
@@ -135,7 +135,7 @@
                     <label for="cv" class="block text-xs text-on-surface-variant mb-1">
                         {{ !empty($profile->cv_path) ? 'Atau unggah berkas CV khusus untuk lowongan ini:' : 'Pilih berkas CV PDF Anda:' }}
                     </label>
-                    <input type="file" id="cv" name="cv" accept=".pdf,application/pdf" {{ empty($profile->cv_path) ? 'required' : '' }}
+                    <input type="file" id="cv" name="cv" accept=".pdf,application/pdf" required
                            class="block w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-on-primary hover:file:bg-primary-container cursor-pointer">
                 </div>
             </div>

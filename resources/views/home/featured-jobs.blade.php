@@ -9,7 +9,7 @@
             <div class="featured-jobs__header-text">
                 <span class="section-tag">Karir</span>
                 <h2 class="section-title">Lowongan Terbaru</h2>
-                <p class="section-desc">Bergabunglah dengan tim kami dan tumbuh bersama CV Maju Sukses</p>
+                <p class="section-desc">Bergabunglah dengan tim kami dan tumbuh bersama CV Maju Berkah</p>
             </div>
             <a href="{{ route('careers.index') }}" class="section-link">
                 <span>Lihat Semua</span>

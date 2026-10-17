@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
     {
         // 1. Admin Perusahaan
         User::firstOrCreate(
-            ['email' => 'admin@majusukses.test'],
+            ['email' => 'admin@majuberkah.test'],
             [
                 'name'     => 'Administrator Perusahaan',
                 'password' => Hash::make('password'),
@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
 
         // 2. Pencari Kerja
         $seeker = User::firstOrCreate(
-            ['email' => 'seeker@majusukses.test'],
+            ['email' =>'seeker@majuberkah.test'],
             [
                 'name'     => 'Budi Santoso',
                 'password' => Hash::make('password'),

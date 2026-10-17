@@ -14,7 +14,7 @@ class BusinessModulesTest extends TestCase
     private function createAdmin(): User
     {
         return User::firstOrCreate(
-            ['email' => 'admin_test@majusukses.test'],
+            ['email' => 'admin_test@majuberkah.test'],
             [
                 'name'     => 'Super Admin Test',
                 'password' => bcrypt('password'),

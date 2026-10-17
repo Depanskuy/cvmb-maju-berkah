@@ -129,9 +129,9 @@ class JobListingController extends Controller
         if ($request->filled('search')) {
             $search = trim($request->input('search'));
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                $q->where('applicant_name', 'ILIKE', "%{$search}%")
+                  ->orWhere('applicant_email', 'ILIKE', "%{$search}%")
+                  ->orWhere('applicant_phone', 'ILIKE', "%{$search}%");
             });
         }
 
@@ -140,7 +140,7 @@ class JobListingController extends Controller
             if ($status === 'withdrawn') {
                 $query->whereNotNull('withdrawn_at');
             } elseif ($status === 'processing') {
-                $query->whereNull('withdrawn_at')->whereIn('status', ['processing', 'interview']);
+                $query->whereNull('withdrawn_at')->where('status', 'processing');
             } else {
                 $query->whereNull('withdrawn_at')->where('status', $status);
             }

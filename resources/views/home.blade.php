@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'CV Maju Sukses — Bertumbuh Bersama, Melangkah Lebih Maju')
+@section('title', 'CV Maju Berkah — Bertumbuh Bersama, Melangkah Lebih Maju')
 
 @section('content')
     @include('home.hero')

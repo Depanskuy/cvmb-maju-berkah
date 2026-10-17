@@ -28,14 +28,18 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/about',    fn() => view('about'))->name('about');
 Route::get('/services', fn() => view('services'))->name('services');
 Route::get('/contact',  fn() => view('contact'))->name('contact');
-Route::post('/contact/partnership', [AdminPartnershipController::class, 'storePublic'])->name('contact.partnership');
+Route::post('/contact/partnership', [AdminPartnershipController::class, 'storePublic'])
+    ->middleware('throttle:10,1')
+    ->name('contact.partnership');
 
 Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
 Route::get('/careers/{jobListing}', [CareerController::class, 'show'])->name('careers.show');
 
-// Alur Lamar Pekerjaan (wajib login pencari kerja)
-Route::get('/career/apply-job/{jobListing}', [CareerController::class, 'apply'])->name('careers.apply.create');
-Route::post('/careers/{jobListing}/apply', [CareerController::class, 'storeApplication'])->name('careers.apply.store');
+// Alur Lamar Pekerjaan (wajib login sebagai pencari kerja)
+Route::get('/careers/{jobListing}/apply', [CareerController::class, 'apply'])->name('careers.apply.create');
+Route::post('/careers/{jobListing}/apply', [CareerController::class, 'storeApplication'])
+    ->middleware(['auth', 'role:job_seeker'])
+    ->name('careers.apply.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +48,9 @@ Route::post('/careers/{jobListing}/apply', [CareerController::class, 'storeAppli
 */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
-    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+    Route::post('/login', [LoginController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('login.store');
 
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
@@ -69,6 +75,8 @@ Route::middleware(['auth', 'role:job_seeker'])->prefix('seeker')->name('seeker.'
     // Menu "Lamaran Saya"
     Route::get('/applications', [SeekerApplicationController::class, 'index'])->name('applications');
     Route::get('/applications/{application}', [SeekerApplicationController::class, 'show'])->name('applications.show');
+    Route::get('/applications/{application}/edit', [SeekerApplicationController::class, 'edit'])->name('applications.edit');
+    Route::put('/applications/{application}', [SeekerApplicationController::class, 'update'])->name('applications.update');
     Route::delete('/applications/{application}/withdraw', [SeekerApplicationController::class, 'withdraw'])->name('applications.withdraw');
     Route::get('/applications/{application}/cv', [SeekerApplicationController::class, 'downloadCv'])->name('applications.cv');
 

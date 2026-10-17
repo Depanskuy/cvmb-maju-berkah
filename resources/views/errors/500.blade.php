@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', '500 — Gangguan Sistem — CV Maju Sukses')
+@section('title', '500 — Gangguan Sistem — CV Maju Berkah')
 
 @section('content')
 <section class="career-main" style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 4rem 1rem;">

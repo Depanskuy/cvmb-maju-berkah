@@ -29,7 +29,7 @@ class ApplicationController extends Controller
             if ($status === 'withdrawn') {
                 $query->whereNotNull('withdrawn_at');
             } elseif ($status === 'processing') {
-                $query->whereNull('withdrawn_at')->whereIn('status', [Application::STATUS_PROCESSING, 'interview']);
+                $query->whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING);
             } else {
                 $query->whereNull('withdrawn_at')->where('status', $status);
             }
@@ -40,11 +40,11 @@ class ApplicationController extends Controller
             $search = trim($request->input('search'));
             $query->where(function ($q) use ($search) {
                 $q->whereHas('jobListing', function ($sub) use ($search) {
-                    $sub->where('title', 'like', "%{$search}%")
-                        ->orWhere('department', 'like', "%{$search}%")
-                        ->orWhere('location', 'like', "%{$search}%");
-                })->orWhere('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    $sub->where('title', 'ILIKE', "%{$search}%")
+                        ->orWhere('category', 'ILIKE', "%{$search}%")
+                        ->orWhere('location', 'ILIKE', "%{$search}%");
+                })->orWhere('applicant_name', 'ILIKE', "%{$search}%")
+                  ->orWhere('applicant_email', 'ILIKE', "%{$search}%");
             });
         }
 
@@ -53,7 +53,7 @@ class ApplicationController extends Controller
         $stats = [
             'total'      => Application::where('user_id', $user->id)->count(),
             'pending'    => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PENDING)->count(),
-            'processing' => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->whereIn('status', [Application::STATUS_PROCESSING, 'interview'])->count(),
+            'processing' => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_PROCESSING)->count(),
             'accepted'   => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_ACCEPTED)->count(),
             'rejected'   => Application::where('user_id', $user->id)->whereNull('withdrawn_at')->where('status', Application::STATUS_REJECTED)->count(),
         ];
@@ -77,6 +77,83 @@ class ApplicationController extends Controller
         $application->load('jobListing');
 
         return view('seeker.applications.show', compact('application'));
+    }
+
+    /**
+     * Tampilkan form ubah lamaran (hanya saat status masih pending & belum ditarik).
+     * GET /seeker/applications/{application}/edit — route name: seeker.applications.edit
+     */
+    public function edit(Request $request, Application $application)
+    {
+        abort_unless(
+            $application->user_id === $request->user()->id,
+            403,
+            'Anda tidak memiliki akses ke lamaran ini.'
+        );
+
+        if (! $application->canBeWithdrawn()) {
+            return redirect()
+                ->route('seeker.applications.show', $application)
+                ->with('error', 'Lamaran hanya dapat diubah selama status masih Menunggu (pending).');
+        }
+
+        $application->load('jobListing');
+
+        return view('seeker.applications.edit', compact('application'));
+    }
+
+    /**
+     * Simpan perubahan lamaran (hanya saat status masih pending & belum ditarik).
+     * PUT /seeker/applications/{application} — route name: seeker.applications.update
+     */
+    public function update(Request $request, Application $application)
+    {
+        abort_unless(
+            $application->user_id === $request->user()->id,
+            403,
+            'Anda tidak memiliki akses ke lamaran ini.'
+        );
+
+        if (! $application->canBeWithdrawn()) {
+            return back()->with('error', 'Lamaran hanya dapat diubah selama status masih Menunggu (pending).');
+        }
+
+        $validated = $request->validate([
+            'cover_letter' => ['nullable', 'string', 'max:2000'],
+            'education'    => ['nullable', 'string', 'max:100'],
+            'skills'       => ['nullable', 'string', 'max:1000'],
+            'cv'           => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
+        ], [
+            'cv.mimes' => 'Berkas CV harus berformat PDF.',
+            'cv.max'   => 'Ukuran berkas CV maksimal 2MB.',
+        ]);
+
+        $data = [
+            'cover_letter' => $validated['cover_letter'] ?? null,
+            'education'    => $validated['education'] ?? null,
+            'skills'       => $validated['skills'] ?? null,
+        ];
+
+        if ($request->hasFile('cv')) {
+            // Hapus berkas CV lama agar tidak menumpuk di penyimpanan
+            if ($application->cv_path && Storage::disk('local')->exists($application->cv_path)) {
+                Storage::disk('local')->delete($application->cv_path);
+            }
+            $data['cv_path'] = $request->file('cv')->store('cvs', 'local');
+        }
+
+        $application->update($data);
+
+        ActivityLog::record(
+            'update',
+            'Lamaran Masuk',
+            "Pelamar {$application->applicant_name} memperbarui berkas lamaran untuk posisi {$application->jobListing->title}.",
+            $request->user()
+        );
+
+        return redirect()
+            ->route('seeker.applications.show', $application)
+            ->with('success', 'Lamaran Anda berhasil diperbarui.');
     }
 
     /**

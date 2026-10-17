@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Project — Admin CV Maju Sukses')
+@section('title', 'Manajemen Project — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -12,7 +12,7 @@
                 Manajemen Project &amp; Portofolio
             </h1>
             <p class="text-sm text-on-surface-variant mt-0.5">
-                Monitoring pelaksanaan proyek lapangan, update progres fisik (%), dan status pengerjaan CV Maju Sukses.
+                Monitoring pelaksanaan proyek lapangan, update progres fisik (%), dan status pengerjaan CV Maju Berkah.
             </p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
@@ -184,7 +184,7 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-lg font-display text-on-surface">Tambah Project Baru</h3>
-                    <p class="text-xs text-on-surface-variant">Daftarkan proyek baru ke sistem portofolio CV Maju Sukses.</p>
+                    <p class="text-xs text-on-surface-variant">Daftarkan proyek baru ke sistem portofolio CV Maju Berkah.</p>
                 </div>
             </div>
             <button type="button" onclick="closeCreateProjectModal()" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">

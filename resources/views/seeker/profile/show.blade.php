@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Profil Saya — CV Maju Sukses')
+@section('title', 'Profil Saya — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-5xl mx-auto">

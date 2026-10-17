@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Lamar Pekerjaan — CV Maju Sukses')
+@section('title', 'Lamar Pekerjaan — CV Maju Berkah')
 
 @section('content')
 <section class="career-main">
@@ -210,7 +210,7 @@
                         <input type="checkbox" name="consent" id="consent" value="1" required>
                         <label for="consent">
                             Saya menyatakan bahwa data yang diisi akurat dan memberikan izin
-                            kepada Tim Rekrutmen CV Maju Sukses untuk memproses data pribadi saya
+                            kepada Tim Rekrutmen CV Maju Berkah untuk memproses data pribadi saya
                             sesuai kebijakan privasi perusahaan.
                         </label>
                     </div>

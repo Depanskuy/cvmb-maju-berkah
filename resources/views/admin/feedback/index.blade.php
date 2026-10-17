@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Feedback & Evaluasi — Admin CV Maju Sukses')
+@section('title', 'Feedback & Evaluasi — Admin CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -12,7 +12,7 @@
                 Feedback &amp; Evaluasi Layanan
             </h1>
             <p class="text-sm text-on-surface-variant mt-0.5">
-                Saluran penampung ulasan, rating kepuasan, dan saran perbaikan dari pelamar kerja serta pengguna portal CV Maju Sukses.
+                Saluran penampung ulasan, rating kepuasan, dan saran perbaikan dari pelamar kerja serta pengguna portal CV Maju Berkah.
             </p>
         </div>
     </div>

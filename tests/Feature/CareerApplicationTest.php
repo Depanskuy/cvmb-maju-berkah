@@ -57,7 +57,7 @@ class CareerApplicationTest extends TestCase
     private function createAdmin(): User
     {
         return User::firstOrCreate(
-            ['email' => 'admin_test@majusukses.test'],
+            ['email' => 'admin_test@majuberkah.test'],
             [
                 'name'     => 'Super Admin Test',
                 'password' => bcrypt('password'),
@@ -168,7 +168,7 @@ class CareerApplicationTest extends TestCase
             'applicant_address' => 'Jl. Sudirman No. 10 Jakarta',
             'education'         => 'S1 Teknik Arsitektur',
             'skills'            => 'AutoCAD, Revit, 3ds Max',
-            'cover_letter'      => 'Saya ingin bergabung dengan tim konstruksi CV Maju Sukses.',
+            'cover_letter'      => 'Saya ingin bergabung dengan tim konstruksi CV Maju Berkah.',
             'cv'                => $cvFile,
             'consent'           => '1',
         ]);

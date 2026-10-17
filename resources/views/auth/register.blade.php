@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'Daftar Pencari Kerja — CV Maju Sukses')
+@section('title', 'Daftar Pencari Kerja — CV Maju Berkah')
 
 @section('content')
 <div class="auth-page">
@@ -21,9 +21,9 @@
             <div class="auth-brand__inner">
                 <div class="auth-brand__header">
                     <div class="auth-brand__identity">
-                        <div class="auth-brand__logo">MS</div>
+                        <div class="auth-brand__logo">MB</div>
                         <div>
-                            <div class="auth-brand__name">CV Maju Sukses</div>
+                            <div class="auth-brand__name">CV Maju Berkah</div>
                             <div class="auth-brand__subtitle">Karier &amp; Rekrutmen</div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                     <span class="auth-brand__tag">Langkah Awal Karier</span>
                     <h1 class="auth-brand__title">Daftar &amp; Temukan Karier Impian</h1>
                     <p class="auth-brand__description">
-                        Buat akun pencari kerja untuk melamar berbagai posisi strategis di CV Maju Sukses dan pantau status berkas lamaran Anda secara langsung.
+                        Buat akun pencari kerja untuk melamar berbagai posisi strategis di CV Maju Berkah dan pantau status berkas lamaran Anda secara langsung.
                     </p>
 
                     <div class="auth-brand__badges">
@@ -66,7 +66,7 @@
                             "Bergabunglah bersama talenta profesional kami untuk mendorong kemajuan ekosistem bisnis di Indonesia."
                         </p>
                         <p class="auth-brand__quote-author">
-                            — Tim People &amp; Talent CV Maju Sukses
+                            — Tim People &amp; Talent CV Maju Berkah
                         </p>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                 </div>
 
                 <div class="auth-form-panel__footer">
-                    <p>&copy; {{ date('Y') }} CV Maju Sukses. Seluruh hak cipta dilindungi.</p>
+                    <p>&copy; {{ date('Y') }} CV Maju Berkah. Seluruh hak cipta dilindungi.</p>
                 </div>
             </div>
         </div>

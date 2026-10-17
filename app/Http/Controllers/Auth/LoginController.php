@@ -3,21 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
+     * Tampilkan halaman login.
+     * GET /login — route name: login
      */
     public function create()
     {
@@ -25,7 +19,8 @@ class LoginController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Proses autentikasi pengguna.
+     * POST /login — route name: login.store
      */
     public function store(Request $request)
     {
@@ -52,7 +47,7 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        \App\Models\ActivityLog::record(
+        ActivityLog::record(
             'auth',
             'Autentikasi',
             "Pengguna {$user->name} ({$user->role_label}) berhasil login ke sistem.",
@@ -65,37 +60,5 @@ class LoginController extends Controller
         }
 
         return redirect()->intended(route('seeker.dashboard'));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

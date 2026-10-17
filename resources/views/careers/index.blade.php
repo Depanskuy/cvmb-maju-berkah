@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Karier — CV Maju Sukses')
+@section('title', 'Karier — CV Maju Berkah')
 
 @section('content')
 
@@ -25,7 +25,7 @@
                     Budaya Kerja Inklusif &amp; Berorientasi Dampak
                 </span>
             </div>
-            <h1 class="career-hero__title">Karier di CV Maju Sukses</h1>
+            <h1 class="career-hero__title">Karier di CV Maju Berkah</h1>
             <p style="font-size:17px; line-height:1.7; color:rgba(255,255,255,0.85); margin:0;">
                 Temukan posisi yang sesuai dengan keahlianmu dan jadilah bagian dari
                 transformasi bisnis terdepan di Indonesia.
@@ -42,6 +42,20 @@
                    placeholder="Cari posisi, kata kunci..."
                    style="flex:1; min-width:200px; padding:0.75rem 1rem; background:var(--surface-container-low); border:1px solid transparent; border-radius:var(--radius-md); font-family:inherit; font-size:15px; outline:none;">
 
+            <select name="category"
+                    style="padding:0.75rem 1rem; background:var(--surface-container-low); border:1px solid transparent; border-radius:var(--radius-md); font-family:inherit; font-size:15px; outline:none;">
+                <option value="">Semua Kategori</option>
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat->category }}" {{ request('category') === $cat->category ? 'selected' : '' }}>
+                        {{ $cat->category }} ({{ $cat->count }})
+                    </option>
+                @endforeach
+            </select>
+
+            <input type="text" name="location" value="{{ request('location') }}"
+                   placeholder="Kota / lokasi..."
+                   style="min-width:160px; padding:0.75rem 1rem; background:var(--surface-container-low); border:1px solid transparent; border-radius:var(--radius-md); font-family:inherit; font-size:15px; outline:none;">
+
             <select name="type"
                     style="padding:0.75rem 1rem; background:var(--surface-container-low); border:1px solid transparent; border-radius:var(--radius-md); font-family:inherit; font-size:15px; outline:none;">
                 <option value="">Semua Tipe</option>
@@ -51,10 +65,24 @@
                 <option value="contract" {{ request('type') === 'contract' ? 'selected' : '' }}>Kontrak</option>
             </select>
 
+            <select name="sort"
+                    style="padding:0.75rem 1rem; background:var(--surface-container-low); border:1px solid transparent; border-radius:var(--radius-md); font-family:inherit; font-size:15px; outline:none;">
+                <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Terbaru</option>
+                <option value="deadline" {{ request('sort') === 'deadline' ? 'selected' : '' }}>Deadline Terdekat</option>
+                <option value="title" {{ request('sort') === 'title' ? 'selected' : '' }}>Judul A-Z</option>
+            </select>
+
             <button type="submit"
                     style="padding:0.75rem 1.5rem; background:var(--primary); color:#fff; border:none; border-radius:var(--radius-md); font-family:var(--font-display); font-size:15px; font-weight:600; cursor:pointer;">
                 Cari
             </button>
+
+            @if (request()->hasAny(['q', 'category', 'location', 'type', 'sort']))
+                <a href="{{ route('careers.index') }}"
+                   style="display:inline-flex; align-items:center; padding:0.75rem 1rem; color:#b91c1c; font-size:14px; font-weight:600; text-decoration:none;">
+                    Reset
+                </a>
+            @endif
         </form>
     </div>
 </section>

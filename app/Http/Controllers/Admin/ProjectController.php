@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ProjectController extends Controller
 {
     /**
-     * Tampilkan daftar proyek & portofolio CV Maju Sukses.
+     * Tampilkan daftar proyek & portofolio CV Maju Berkah.
      * GET /admin/project — route name: admin.project.index
      */
     public function index(Request $request)
@@ -20,9 +20,9 @@ class ProjectController extends Controller
         if ($request->filled('search')) {
             $search = trim($request->input('search'));
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('client', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
+                $q->where('name', 'ILIKE', "%{$search}%")
+                  ->orWhere('client', 'ILIKE', "%{$search}%")
+                  ->orWhere('category', 'ILIKE', "%{$search}%");
             });
         }
 

@@ -1,6 +1,6 @@
 @extends('layouts.seeker')
 
-@section('title', 'Lamaran Saya — CV Maju Sukses')
+@section('title', 'Lamaran Saya — CV Maju Berkah')
 
 @section('content')
 <div class="flex flex-col w-full gap-6 max-w-7xl mx-auto">
@@ -31,7 +31,7 @@
                 Daftar Lamaran Pekerjaan Saya
             </h1>
             <p class="text-sm text-on-surface-variant mt-0.5">
-                Pantau riwayat berkas, jadwal wawancara, dan keputusan tim rekrutmen CV Maju Sukses secara real-time.
+                Pantau riwayat berkas, jadwal wawancara, dan keputusan tim rekrutmen CV Maju Berkah secara real-time.
             </p>
         </div>
         <div class="flex items-center gap-3 shrink-0 flex-wrap">
@@ -154,7 +154,6 @@
                                     $badgeClass = match($app->status) {
                                         'pending'    => 'bg-amber-100 text-amber-800 border-amber-200',
                                         'processing' => 'bg-sky-100 text-sky-800 border-sky-200',
-                                        'interview'  => 'bg-purple-100 text-purple-800 border-purple-200',
                                         'accepted'   => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                                         'rejected'   => 'bg-rose-100 text-rose-800 border-rose-200',
                                         default      => 'bg-slate-100 text-slate-800 border-slate-200',
@@ -175,6 +174,9 @@
                                     </a>
 
                                     @if ($app->canBeWithdrawn())
+                                        <a href="{{ route('seeker.applications.edit', $app) }}" class="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors" title="Ubah Lamaran">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </a>
                                         <form method="POST" action="{{ route('seeker.applications.withdraw', $app) }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan lamaran ini? Tindakan ini tidak dapat dibatalkan.');" class="inline m-0">
                                             @csrf
                                             @method('DELETE')

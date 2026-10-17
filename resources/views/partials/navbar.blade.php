@@ -3,7 +3,7 @@
 
         <a href="{{ route('home') }}" class="public-navbar__brand">
             <div class="public-navbar__logo"><span>MS</span></div>
-            <span class="public-navbar__name">CV Maju Sukses</span>
+            <span class="public-navbar__name">CV Maju Berkah</span>
         </a>
 
         <nav class="public-navbar__menu">
