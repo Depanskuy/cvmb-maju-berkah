@@ -72,7 +72,7 @@
                 @if ($job->isOpenForApplication())
                     @auth
                         @if (auth()->user()->isAdmin())
-                            <span class="career-hero__btn-primary" style="opacity:0.75; cursor:not-allowed; background:#47607a;" title="Admin perusahaan tidak dapat melamar pekerjaan">
+                            <span class="career-hero__btn-primary" style="opacity:0.75; cursor:not-allowed; background:#64748B;" title="Admin perusahaan tidak dapat melamar pekerjaan">
                                 <span class="material-symbols-outlined" style="font-size:18px;">admin_panel_settings</span>
                                 <span>Akun Admin (Tidak Dapat Melamar)</span>
                             </span>

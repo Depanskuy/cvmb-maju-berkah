@@ -2,31 +2,6 @@
    AUTH PAGE STYLES — CV Maju Berkah
    ============================================================ */
 
-/* ============ DESIGN TOKENS ============ */
-:root {
-    --color-primary:              #00355f;
-    --color-primary-container:    #0f4c81;
-    --color-on-primary:           #ffffff;
-    --color-on-primary-container: #8ebdf9;
-    --color-surface:              #f9f9ff;
-    --color-surface-low:          #f1f3ff;
-    --color-surface-lowest:       #ffffff;
-    --color-surface-high:         #e2e8fc;
-    --color-surface-highest:      #dce2f6;
-    --color-surface-variant:      #dce2f6;
-    --color-on-surface:           #151b2a;
-    --color-on-surface-variant:   #42474f;
-    --color-outline-variant:      #c2c7d1;
-    --color-secondary-fixed-dim:  #ffb955;
-    --color-secondary-container:  #feae2c;
-    --color-surface-tint:         #2d6197;
-    --color-error:                #ba1a1a;
-    --color-error-container:      #ffdad6;
-    --color-on-error-container:   #93000a;
-}
-
-* { box-sizing: border-box; }
-
 body.auth-body {
     margin: 0;
     padding: 0;
@@ -64,7 +39,7 @@ body.auth-body {
 /* ============ LEFT: BRAND PANEL ============ */
 .auth-brand {
     position: relative;
-    background: linear-gradient(135deg, #00355f 0%, #0f4c81 100%);
+    background: linear-gradient(135deg, #0F2E5B 0%, #153F91 100%);
     color: var(--color-on-primary);
     padding: 2.5rem;
     gap: 1.5rem;
@@ -97,7 +72,7 @@ body.auth-body {
 .auth-brand::after {
     bottom: -5rem; right: -5rem;
     width: 20rem; height: 20rem;
-    background: rgba(254, 174, 44, 0.2);
+    background: rgba(59, 130, 246, 0.2);
 }
 
 .auth-brand__grid {
@@ -450,7 +425,7 @@ body.auth-body {
 
 .auth-field__input:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 4px 12px rgba(0, 53, 95, 0.1);
+    box-shadow: 0 4px 12px rgba(15, 46, 91, 0.1);
 }
 
 .auth-field__input.is-invalid {
@@ -531,13 +506,13 @@ body.auth-body {
     justify-content: center;
     gap: 0.5rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 53, 95, 0.2);
+    box-shadow: 0 4px 12px rgba(15, 46, 91, 0.2);
     transition: all 0.2s;
 }
 
 .auth-submit:hover {
     background: var(--color-primary-container);
-    box-shadow: 0 6px 16px rgba(0, 53, 95, 0.25);
+    box-shadow: 0 6px 16px rgba(15, 46, 91, 0.25);
 }
 
 .auth-submit:active { transform: scale(0.99); }

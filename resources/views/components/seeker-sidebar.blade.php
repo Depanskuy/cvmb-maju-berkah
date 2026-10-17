@@ -8,7 +8,7 @@
     ];
 @endphp
 
-<aside id="seeker-sidebar" class="fixed left-0 top-0 h-full w-[260px] bg-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+<aside id="seeker-sidebar" class="fixed left-0 top-0 h-full w-[260px] bg-dark-900 z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
 
     <div class="flex flex-col">
         {{-- Brand --}}

@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
+    {{-- Design tokens global (sumber tunggal warna & komponen) --}}
+    <link href="{{ asset('css/tokens.css') }}" rel="stylesheet">
+
     @include('partials.tailwind')
 </head>
 <body class="bg-background font-body-md text-on-surface antialiased">
