@@ -25,7 +25,13 @@ class DashboardController extends Controller
 
         $stats = [
             'total_jobs'        => Job::where('company_id', $companyId)->count(),
-            'active_jobs'       => Job::where('company_id', $companyId)->where('status', Job::STATUS_ACTIVE)->count(),
+            // BR-10: "aktif" bagi publik = status aktif DAN deadline belum lewat.
+            'active_jobs'       => Job::where('company_id', $companyId)->publiclyVisible()->count(),
+            // Lowongan berstatus aktif tetapi sudah melewati deadline (tidak tampil publik).
+            'expired_jobs'      => Job::where('company_id', $companyId)
+                                        ->where('status', Job::STATUS_ACTIVE)
+                                        ->whereDate('deadline', '<', now()->toDateString())
+                                        ->count(),
             'total_apps'        => $apps()->count(),
             'pending_apps'      => $apps()->whereNull('withdrawn_at')->where('status', JobApplication::STATUS_PENDING)->count(),
             'total_seekers'     => User::where('role', User::ROLE_SEEKER)->count(),
@@ -37,7 +43,7 @@ class DashboardController extends Controller
             ->get();
 
         $activeJobs = Job::where('company_id', $companyId)->withCount('applications')
-            ->where('status', Job::STATUS_ACTIVE)
+            ->publiclyVisible()
             ->latest()
             ->take(5)
             ->get();

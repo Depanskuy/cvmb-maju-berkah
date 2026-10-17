@@ -117,22 +117,22 @@
 
                     {{-- Action Controls --}}
                     <div class="flex items-center justify-between gap-2 pt-2 border-t border-outline-variant/15">
-                        <form method="POST" action="{{ route('company.feedback.status.update', $fb->id) }}" class="m-0">
-                            @csrf
-                            @method('PATCH')
-                            @if ($fb->isFollowedUp())
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 bg-surface-container-high text-on-surface-variant cursor-not-allowed"
-                                      title="Masukan yang sudah ditindaklanjuti bersifat final.">
-                                    <span class="material-symbols-outlined text-[14px]">lock</span>
-                                    <span>Sudah Ditindaklanjuti</span>
-                                </span>
-                            @else
+                        @if ($fb->isFollowedUp())
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 bg-surface-container-high text-on-surface-variant cursor-not-allowed"
+                                  title="Masukan yang sudah ditindaklanjuti bersifat final.">
+                                <span class="material-symbols-outlined text-[14px]">lock</span>
+                                <span>Sudah Ditindaklanjuti</span>
+                            </span>
+                        @else
+                            <form method="POST" action="{{ route('company.feedback.status.update', $fb->id) }}" class="m-0">
+                                @csrf
+                                @method('PATCH')
                                 <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors bg-emerald-100 text-emerald-800 hover:bg-emerald-200">
                                     <span class="material-symbols-outlined text-[14px]">done_all</span>
                                     <span>Tandai Selesai</span>
                                 </button>
-                            @endif
-                        </form>
+                            </form>
+                        @endif
 
                         <form method="POST" action="{{ route('company.feedback.destroy', $fb->id) }}" onsubmit="return confirm('Hapus masukan dari {{ $fb->name }}? Tindakan ini tidak dapat dibatalkan.');" class="m-0">
                             @csrf

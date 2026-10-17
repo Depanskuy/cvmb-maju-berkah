@@ -367,4 +367,104 @@ class StatusTransitionTest extends TestCase
 
         $this->assertSame(1, Job::where('title', 'Lowongan Gaji Batas Maksimum')->count());
     }
+
+    // --- Deadline lowongan (validasi kondisional saat edit) --------------
+
+    private function jobPayload(Job $job, array $overrides = []): array
+    {
+        return array_merge([
+            'title'           => $job->title,
+            'category'        => $job->category,
+            'employment_type' => $job->employment_type,
+            'location'        => $job->location,
+            'salary_min'      => $job->salary_min,
+            'salary_max'      => $job->salary_max,
+            'deadline'        => $job->deadline->toDateString(),
+            'description'     => $job->description,
+            'requirements'    => $job->requirements,
+            'status'          => $job->status,
+        ], $overrides);
+    }
+
+    public function test_edit_lowongan_lama_tanpa_mengubah_deadline_tetap_lulus(): void
+    {
+        $admin = $this->makeAdmin();
+        // Lowongan lama yang deadline-nya sudah lewat tetap boleh dirapikan.
+        $job = $this->makeJob(['deadline' => now()->subDays(3), 'status' => 'active']);
+
+        $this->actingAs($admin)
+            ->put(route('company.jobs.update', $job), $this->jobPayload($job, [
+                'title' => $job->title . ' (revisi)',
+            ]))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame($job->title . ' (revisi)', $job->fresh()->title);
+    }
+
+    public function test_deadline_baru_di_masa_lalu_ditolak(): void
+    {
+        $admin = $this->makeAdmin();
+        $job   = $this->makeJob(['deadline' => now()->addDays(10)]);
+
+        $this->actingAs($admin)
+            ->put(route('company.jobs.update', $job), $this->jobPayload($job, [
+                'deadline' => now()->subDay()->toDateString(),
+            ]))
+            ->assertSessionHasErrors('deadline');
+
+        $this->assertSame($job->deadline->toDateString(), $job->fresh()->deadline->toDateString());
+    }
+
+    public function test_deadline_baru_di_masa_depan_diterima(): void
+    {
+        $admin       = $this->makeAdmin();
+        $job         = $this->makeJob(['deadline' => now()->addDays(10)]);
+        $newDeadline = now()->addDays(30)->toDateString();
+
+        $this->actingAs($admin)
+            ->put(route('company.jobs.update', $job), $this->jobPayload($job, [
+                'deadline' => $newDeadline,
+            ]))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame($newDeadline, $job->fresh()->deadline->toDateString());
+    }
+
+    // --- Sinkronisasi progres project & penanda kedaluwarsa dashboard ----
+
+    public function test_project_selesai_otomatis_berprogres_seratus(): void
+    {
+        $admin   = $this->makeAdmin();
+        $project = $this->makeProject(Project::STATUS_ONGOING);
+
+        $this->actingAs($admin)
+            ->put(route('company.project.update', $project), [
+                'name'        => $project->name,
+                'client'      => $project->client,
+                'category'    => $project->category,
+                'budget'      => $project->budget,
+                'timeline'    => $project->timeline,
+                'progress'    => 60,
+                'status'      => Project::STATUS_COMPLETED,
+                'description' => 'Pekerjaan dinyatakan selesai.',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $project->refresh();
+        $this->assertSame(Project::STATUS_COMPLETED, $project->status);
+        $this->assertSame(100, $project->progress);
+    }
+
+    public function test_dashboard_menandai_lowongan_kedaluwarsa(): void
+    {
+        $admin = $this->makeAdmin();
+        $this->makeJob(['deadline' => now()->subDay(), 'status' => 'active']);   // kedaluwarsa
+        $this->makeJob(['deadline' => now()->addDays(5), 'status' => 'active']); // masih terbuka
+
+        $this->actingAs($admin)
+            ->get(route('company.dashboard'))
+            ->assertOk()
+            ->assertViewHas('stats', fn (array $stats) => $stats['active_jobs'] === 1 && $stats['expired_jobs'] === 1)
+            ->assertSee('kedaluwarsa');
+    }
 }

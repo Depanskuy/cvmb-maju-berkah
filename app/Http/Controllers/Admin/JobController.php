@@ -201,7 +201,21 @@ class JobController extends Controller
             'location'        => ['required', 'string', 'max:150'],
             'salary_min'      => ['nullable', 'numeric', 'min:0', 'max:' . Job::SALARY_MAX_ALLOWED],
             'salary_max'      => ['nullable', 'numeric', 'gte:salary_min', 'max:' . Job::SALARY_MAX_ALLOWED],
-            'deadline'        => ['required', 'date'],
+            // Deadline boleh tetap bernilai lama (mis. lowongan lama yang tinggal diedit
+            // bagian lain). Bila diubah, nilainya wajib setelah hari ini.
+            'deadline'        => [
+                'required',
+                'date',
+                function (string $attribute, mixed $value, \Closure $fail) use ($job) {
+                    if ($value === $job->deadline->toDateString()) {
+                        return;
+                    }
+
+                    if (! \Illuminate\Support\Carbon::parse($value)->startOfDay()->isAfter(now()->startOfDay())) {
+                        $fail('Batas akhir lamaran yang baru harus berupa tanggal setelah hari ini.');
+                    }
+                },
+            ],
             'description'     => ['required', 'string'],
             'requirements'    => ['required', 'string'],
             'status'          => ['required', Rule::in([

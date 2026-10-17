@@ -52,8 +52,15 @@
             <div class="text-3xl font-bold font-display text-emerald-600 mt-2">
                 {{ $stats['active_jobs'] }}
             </div>
-            <div class="text-xs text-on-surface-variant/80 mt-1">
-                Terbuka untuk dilamar publik
+            <div class="text-xs text-on-surface-variant/80 mt-1 flex items-center gap-1.5 flex-wrap">
+                <span>Terbuka untuk dilamar publik</span>
+                @if ($stats['expired_jobs'] > 0)
+                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-semibold"
+                          title="Lowongan berstatus aktif, tetapi deadline-nya sudah lewat sehingga tidak tampil di katalog publik.">
+                        <span class="material-symbols-outlined text-[12px]">schedule</span>
+                        {{ $stats['expired_jobs'] }} kedaluwarsa
+                    </span>
+                @endif
             </div>
         </div>
 

@@ -104,6 +104,12 @@ class ProjectController extends Controller
             ]);
         }
 
+        // Proyek yang ditandai "Selesai" otomatis berprogres 100%
+        // (mencegah data janggal seperti Selesai tetapi progres 60%).
+        if ($validated['status'] === Project::STATUS_COMPLETED) {
+            $validated['progress'] = 100;
+        }
+
         $oldProgress = $project->progress;
         $project->update($validated);
 
