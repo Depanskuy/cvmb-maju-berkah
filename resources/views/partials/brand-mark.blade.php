@@ -26,8 +26,10 @@
 @endphp
 
 @if ($brandLogoUrl)
+    {{-- Plat putih tipis di belakang logo agar tetap terbaca di header putih
+         maupun di sidebar/footer bernuansa navy. --}}
     <div class="{{ $brandWrapper }} brand-mark--image"
-         style="background:#FFFFFF; padding:0.25rem; overflow:hidden; box-sizing:border-box;">
+         style="background:#FFFFFF; padding:0.15rem; overflow:hidden; box-sizing:border-box; box-shadow:none;">
         <img src="{{ $brandLogoUrl }}"
              alt="Logo CV Maju Berkah"
              style="width:100%; height:100%; object-fit:contain; display:block;">
