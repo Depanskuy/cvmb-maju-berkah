@@ -1,0 +1,370 @@
+/* ============================================================
+   DESIGN TOKENS GLOBAL — CV Maju Berkah
+   ------------------------------------------------------------
+   Satu-satunya sumber warna & nilai desain untuk seluruh aplikasi
+   (halaman publik, autentikasi, dan dashboard).
+
+   Palet mengikuti style guide yang ditetapkan pemilik produk
+   (menggantikan saran tema gelap pada blueprint §11.1):
+
+     Dark 900   #0F2E5B   judul / teks sangat kuat
+     Dark 800   #153F91   teks pada aksen
+     Dark 700   #2563EB   secondary / hover
+     Dark 600   #3882F6   border aksen
+     Text       #0F172A   judul / teks utama
+     Muted      #64748B   teks pendukung
+     Accent     #3B82F6   tombol utama & aksen
+     Accent hover #2563EB
+     Surface    #F8FAFC   permukaan kartu
+     Background #F1F5F9   latar halaman
+     Border     #E2E8F0   garis
+     Success    #22C55E   Warning #F59E0B   Danger #EF4444
+     Indigo     #6366F1
+
+   Tipografi: Inter — Heading 1 32px, Heading 2 24px, Heading 3 20px,
+   Body 16px, Small 14px, Caption 12px.
+
+   Warna pada resources/views/partials/tailwind.blade.php memakai nilai
+   yang sama agar dashboard dan halaman publik konsisten.
+   ============================================================ */
+
+:root {
+    color-scheme: light;
+
+    /* ============ SEMANTIC TOKENS (dipakai langsung) ============ */
+    --color-primary:        #3B82F6;   /* aksen / tombol utama */
+    --color-primary-hover:  #2563EB;
+    --color-primary-active: #1D4ED8;
+    --color-on-primary:     #FFFFFF;
+
+    --color-secondary:      #2563EB;
+    --color-accent:         #22C55E;
+    --color-indigo:         #6366F1;
+
+    --color-success:        #22C55E;
+    --color-warning:        #F59E0B;
+    --color-danger:         #EF4444;
+    --color-info:           #3B82F6;
+
+    --color-dark-900:       #0F2E5B;
+    --color-dark-800:       #153F91;
+    --color-dark-700:       #2563EB;
+    --color-dark-600:       #3882F6;
+
+    --color-background:     #F1F5F9;
+    --color-surface:        #F8FAFC;
+    --color-card:           #FFFFFF;
+    --color-card-hover:     #F8FAFC;
+    --color-border:         #E2E8F0;
+    --color-border-strong:  #CBD5E1;
+
+    --color-text:           #0F172A;   /* judul / teks utama */
+    --color-text-muted:     #64748B;   /* teks pendukung */
+    --color-text-subtle:    #94A3B8;
+    --color-muted:          #64748B;   /* alias sesuai style guide */
+
+    /* ============ TOKEN KOMPATIBILITAS (Material 3) ============
+       Dipetakan ke tema terang agar seluruh CSS lama yang memakai
+       var(--primary), var(--surface), dst. otomatis menyesuaikan. */
+    --primary:               var(--color-primary);
+    --primary-container:     #1D4ED8;   /* kontainer gelap + teks putih */
+    --primary-fixed:         #DBEAFE;
+    --primary-fixed-dim:     #93C5FD;
+    --on-primary:            #FFFFFF;
+    --on-primary-container:  #93C5FD;   /* teks/ikon terang di atas panel navy */
+
+    --secondary:             #2563EB;
+    --secondary-container:   #DBEAFE;
+    --secondary-fixed:       #DBEAFE;
+    --secondary-fixed-dim:   #93C5FD;
+    --on-secondary:          #FFFFFF;
+    --on-secondary-container:#1D4ED8;
+    --on-secondary-fixed:    #1E3A8A;
+
+    --tertiary:              #0F2E5B;   /* footer / ujung gradien gelap */
+    --tertiary-container:    #4338CA;
+    --tertiary-fixed:        #E0E7FF;
+    --tertiary-fixed-dim:    #A5B4FC;
+    --on-tertiary:           #FFFFFF;
+    --on-tertiary-container: #C7D2FE;
+
+    --surface:                   #F8FAFC;
+    --surface-bright:            #FFFFFF;
+    --surface-dim:               #E2E8F0;
+    --surface-container-lowest:  #FFFFFF;
+    --surface-container-low:     #F8FAFC;
+    --surface-container:         #F1F5F9;
+    --surface-container-high:    #E2E8F0;
+    --surface-container-highest: #CBD5E1;
+    --surface-variant:           #E2E8F0;
+    --surface-tint:              var(--color-primary);
+
+    --on-surface:            #0F172A;
+    --on-surface-variant:    #64748B;
+    --outline:               #94A3B8;
+    --outline-variant:       #E2E8F0;
+
+    --error:                 #EF4444;
+    --error-container:       #FEE2E2;
+    --on-error:              #FFFFFF;
+    --on-error-container:    #991B1B;
+
+    --background:            #F1F5F9;
+    --on-background:         #0F172A;
+
+    /* Nama bergaya --color-* (dipakai auth.css) */
+    --color-surface-low:          #F8FAFC;
+    --color-surface-lowest:       #FFFFFF;
+    --color-surface-high:         #E2E8F0;
+    --color-surface-highest:      #CBD5E1;
+    --color-surface-variant:      #E2E8F0;
+    --color-surface-tint:         var(--color-primary);
+    --color-primary-container:    #1D4ED8;
+    --color-on-primary-container: #93C5FD;
+    --color-on-surface:           #0F172A;
+    --color-on-surface-variant:   #64748B;
+    --color-outline-variant:      #E2E8F0;
+    --color-secondary-container:  #DBEAFE;
+    --color-secondary-fixed-dim:  #93C5FD;
+    --color-error:                #EF4444;
+    --color-error-container:      #FEE2E2;
+    --color-on-error-container:   #991B1B;
+
+    /* ============ TIPOGRAFI ============ */
+    --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+
+    --text-h1: 2rem;        /* 32px */
+    --text-h2: 1.5rem;      /* 24px */
+    --text-h3: 1.25rem;     /* 20px */
+    --text-body: 1rem;      /* 16px */
+    --text-small: 0.875rem; /* 14px */
+    --text-caption: 0.75rem;/* 12px */
+
+    /* ============ LAYOUT ============ */
+    --container-max:         1280px;
+    --navbar-height:         72px;
+    --margin-mobile:         1.25rem;
+    --margin-tablet:         2rem;
+    --margin:                4rem;
+    --gutter:                1.5rem;
+
+    /* ============ SPACING ============ */
+    --space-xs:  0.25rem;
+    --space-sm:  0.5rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2.5rem;
+
+    /* ============ RADIUS ============ */
+    --radius-xs:   0.25rem;
+    --radius-sm:   0.375rem;
+    --radius-md:   0.5rem;
+    --radius-lg:   0.75rem;
+    --radius-xl:   1rem;
+    --radius-2xl:  1.25rem;
+    --radius-3xl:  1.5rem;
+    --radius-full: 9999px;
+}
+
+/* ============ BASE ============ */
+html { scrollbar-color: var(--color-border-strong) var(--color-background); }
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { color: var(--color-dark-900); }
+
+::selection { background: var(--color-primary); color: var(--color-on-primary); }
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   KOMPONEN BERSAMA (blueprint §11.3)
+   ============================================================ */
+
+/* ---- Badge status ---- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+.badge--success,
+.badge--accepted,
+.badge--active   { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+.badge--warning,
+.badge--pending  { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+.badge--info,
+.badge--processing { background: #DBEAFE; color: #1E40AF; border-color: #BFDBFE; }
+.badge--danger,
+.badge--rejected,
+.badge--closed   { background: #FEE2E2; color: #991B1B; border-color: #FECACA; }
+.badge--neutral,
+.badge--draft    { background: #F1F5F9; color: #475569; border-color: #E2E8F0; }
+.badge--primary  { background: #DBEAFE; color: #1E40AF; border-color: #BFDBFE; }
+
+/* ---- Alert / notifikasi ---- */
+.alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+.alert--success { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
+.alert--warning { background: #FFFBEB; color: #92400E; border-color: #FDE68A; }
+.alert--danger  { background: #FEF2F2; color: #991B1B; border-color: #FECACA; }
+.alert--info    { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
+
+/* ---- Empty state ---- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+}
+.empty-state__title { font-weight: 600; color: var(--color-text); }
+
+/* ---- Pagination (Laravel default markup) ---- */
+nav[role="navigation"] .pagination,
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+}
+.pagination li > span,
+.pagination li > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.625rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+.pagination li > a:hover { background: var(--color-card-hover); border-color: var(--color-border-strong); }
+.pagination li.active > span { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-on-primary); }
+.pagination li.disabled > span { opacity: 0.45; }
+
+/* ---- Tombol ---- */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:active { background: var(--color-primary-active); }
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn-outline:hover { background: var(--color-surface); border-color: var(--color-primary); color: var(--color-primary); }
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-ghost:hover { background: var(--color-surface-container); }
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-link:hover { color: var(--color-primary-hover); text-decoration: underline; }
+
+/* ---- Form controls ---- */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-size: var(--text-small);
+    font-family: inherit;
+}
+.form-input::placeholder,
+.form-textarea::placeholder { color: var(--color-text-subtle); }
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
